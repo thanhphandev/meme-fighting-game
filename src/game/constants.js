@@ -4,12 +4,23 @@ export const CONFIG = {
     gravity: 0.8,
     groundY: 60,
     fps: 48,
-    baseHp: 200,
-    baseDamage: 10,
+    baseHp: 500, // Revert to reasonable HP for longer fights
+    baseDamage: 20, // Increased base damage
+
+    // Physics
+    friction: 0.85,
+    airResistance: 0.98,
+
+    // Combat
+    hitStun: 400, // ms
+    knockbackForce: 15,
+    blockReduction: 0.8, // 80% damage reduction
+
+    // Resources
     dashCost: 35,
-    attackCost: 15,
+    attackCost: 10,
     skillCost: 50,
-    skillCooldown: 3000,
+    skillCooldown: 5000,
 };
 
 export const CHARACTERS = [

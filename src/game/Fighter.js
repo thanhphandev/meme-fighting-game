@@ -68,11 +68,42 @@ export class Fighter {
         this.input = input;
     }
 
-    update(deltaTime, opponent, onHit) {
+    update(deltaTime, opponent, onHit, spawnParticle) {
+        this.hitStunTimer = Math.max(0, this.hitStunTimer - deltaTime);
+
+        // Update Blocking Status
+        this.isBlocking = false;
+        if (!this.isDead && (this.state === 'idle' || this.state === 'run')) {
+            if (this.facingRight && this.input.left) this.isBlocking = true;
+            else if (!this.facingRight && this.input.right) this.isBlocking = true;
+        }
+
+        // Hit Stun Freeze
+        if (this.hitStunTimer > 0) {
+            // Apply friction even during stun
+            this.x += this.velocityX;
+            this.y += this.velocityY;
+            this.velocityX *= CONFIG.friction;
+            if (this.y + this.height < CONFIG.canvasHeight - CONFIG.groundY) {
+                this.velocityY += CONFIG.gravity;
+            } else {
+                this.y = CONFIG.canvasHeight - this.height - CONFIG.groundY;
+                this.velocityY = 0;
+            }
+            // Allow 'hit' animation update
+            if (this.state === 'hit') this.updateAnimation(deltaTime, true);
+            return;
+        }
+
         if (this.isDead) {
             this.setState('ko');
             this.updateAnimation(deltaTime, true);
             return;
+        }
+
+        // Particles on movement (Dust)
+        if (this.onGround && Math.abs(this.velocityX) > 5 && Math.random() < 0.2 && spawnParticle) {
+            spawnParticle(this.x + this.width / 2, this.y + this.height, 'dust');
         }
 
         this.x += this.velocityX;
@@ -88,26 +119,24 @@ export class Fighter {
             this.onGround = true;
         }
 
-        this.velocityX *= 0.85;
+        this.velocityX *= CONFIG.friction;
 
-        // Update Hitbox Position (Centered)
+        // Update Hitbox Position
         this.hitbox.x = this.x + (this.width - this.hitbox.width) / 2;
         this.hitbox.y = this.y + (this.height - this.hitbox.height);
 
-        // Update Attackbox Position (Extends from center)
+        // Update Attackbox Position
         const centerX = this.x + this.width / 2;
         this.attackBox.x = this.facingRight ? centerX : centerX - this.attackBox.width;
         this.attackBox.y = this.hitbox.y + 20;
 
         // State Machine
         if (this.state === 'hit' || this.state === 'attack' || this.state === 'skill') {
-            // Busy states - no input handling
+            // Busy
         } else if (this.state === 'roll') {
-            // Roll physics
             const speed = this.charData.stats.speed;
             this.velocityX = this.facingRight ? speed * 3 : -speed * 3;
         } else {
-            // Input handling for controllable states
             if (this.input.skill && this.stamina >= CONFIG.skillCost && this.skillCooldown <= 0) {
                 this.useSkill(onHit);
             } else if (this.input.attack && this.stamina >= CONFIG.attackCost) {
@@ -145,19 +174,13 @@ export class Fighter {
         if (this.x < 0) this.x = 0;
         if (this.x > CONFIG.canvasWidth - this.width) this.x = CONFIG.canvasWidth - this.width;
 
-        this.hitbox.x = this.x + 55;
-        this.hitbox.y = this.y + 40;
-        this.attackBox.x = this.facingRight ? this.hitbox.x + 30 : this.hitbox.x - 70;
-        this.attackBox.y = this.hitbox.y + 20;
-
         const stopAnim = this.state === 'jump' || this.state === 'fall';
         const layout = this.updateAnimation(deltaTime, stopAnim);
 
-        // State Machine transitions based on animation completion
         if (this.state === 'hit' && layout) {
             this.setState('idle');
         } else if (this.state === 'attack') {
-            if (this.frameX === 3) this.checkAttackCollision(opponent, onHit);
+            if (this.frameX === 3) this.checkAttackCollision(opponent, onHit, spawnParticle);
             if (layout) this.setState('idle');
         } else if (this.state === 'skill') {
             this.handleSkillUpdate(deltaTime, opponent, onHit);
@@ -169,7 +192,7 @@ export class Fighter {
         }
     }
 
-    checkAttackCollision(opponent, onHit) {
+    checkAttackCollision(opponent, onHit, spawnParticle) {
         if (opponent.isDead || opponent.state === 'roll') return;
 
         if (this.attackBox.x < opponent.hitbox.x + opponent.hitbox.width &&
@@ -177,22 +200,39 @@ export class Fighter {
             this.attackBox.y < opponent.hitbox.y + opponent.hitbox.height &&
             this.attackBox.y + this.attackBox.height > opponent.hitbox.y) {
 
-            opponent.takeDamage(this.charData.stats.damage);
+            // Calculate impact direction
+            const direction = this.facingRight ? 1 : -1;
+            opponent.takeDamage(this.charData.stats.damage, direction, spawnParticle);
             onHit(opponent.x + opponent.width / 2, opponent.y);
         }
     }
 
-    takeDamage(amount) {
+    takeDamage(amount, direction, spawnParticle) {
         if (this.isInvincible || this.state === 'roll') return;
-        this.health -= amount;
-        if (this.health <= 0) {
-            this.health = 0;
-            this.isDead = true;
+
+        if (this.isBlocking) {
+            // Blocked hit
+            this.health -= amount * (1 - CONFIG.blockReduction);
+            this.velocityX = direction * CONFIG.knockbackForce * 0.5; // Pushback on block
+            this.hitStunTimer = 100; // Short stun on block
+            if (spawnParticle) spawnParticle(this.hitbox.x + this.hitbox.width / 2, this.hitbox.y + 20, 'spark');
         } else {
-            this.setState('hit');
-            this.velocityX = this.facingRight ? -15 : 15;
-            this.scale = 0.8;
-            setTimeout(() => this.scale = 1, 200);
+            // Clean hit
+            this.health -= amount;
+            this.hitStunTimer = CONFIG.hitStun;
+            this.velocityX = direction * CONFIG.knockbackForce;
+
+            if (this.health <= 0) {
+                this.health = 0;
+                this.isDead = true;
+            } else {
+                this.setState('hit');
+                // this.scale is handled by breathe effect mostly, maybe skip shake here?
+            }
+            if (spawnParticle) {
+                // Spawn multiple blood particles
+                for (let i = 0; i < 5; i++) spawnParticle(this.hitbox.x + this.hitbox.width / 2, this.hitbox.y + 40, 'blood');
+            }
         }
     }
 

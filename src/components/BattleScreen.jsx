@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Fighter } from '../game/Fighter'
 import { AI } from '../game/AI'
 import { InputHandler } from '../game/InputHandler'
+import { Particle } from '../game/Particle'
 import { CONFIG, BACKGROUNDS, MEME_WORDS } from '../game/constants'
 
 export default function BattleScreen({ playerChar, cpuChar, background, onGameOver }) {
@@ -30,6 +31,12 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         let lastTime = 0
         let animationId
         let isFinished = false
+
+        // Particle System
+        let particles = []
+        const spawnParticle = (x, y, type) => {
+            particles.push(new Particle(x, y, type))
+        }
 
         const spawnMeme = (x, y, isSpecial = false) => {
             const words = isSpecial ?
@@ -62,8 +69,13 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             if (!p1.isDead) p1.handleInput(input.getPlayerInput())
             if (!p2.isDead) ai.update(deltaTime, p1)
 
-            p1.update(deltaTime, p2, spawnMeme)
-            p2.update(deltaTime, p1, spawnMeme)
+            p1.update(deltaTime, p2, spawnMeme, spawnParticle)
+            p2.update(deltaTime, p1, spawnMeme, spawnParticle)
+
+            // Render Particles
+            particles.forEach(p => p.update())
+            particles = particles.filter(p => p.alive)
+            particles.forEach(p => p.draw(ctx))
 
             // Draw HUD overlay (abstracted to react but stats from objects)
             setHudData({

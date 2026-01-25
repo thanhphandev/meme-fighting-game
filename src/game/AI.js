@@ -18,20 +18,34 @@ export class AI {
     makeDecision(opponent) {
         const dx = (opponent.x + opponent.width / 2) - (this.fighter.x + this.fighter.width / 2);
         const dist = Math.abs(dx);
-        this.input = { left: false, right: false, up: false, attack: false, roll: false };
+        this.input = { left: false, right: false, up: false, attack: false, roll: false, skill: false };
 
         if (opponent.isDead) return;
 
-        if (dist > 180) {
+        // Defensive Logic (Block if opponent attacking)
+        if (opponent.state === 'attack' && dist < 250 && Math.random() < 0.7) {
+            // Block by moving away
+            if (dx > 0) this.input.left = true;
+            else this.input.right = true;
+            return;
+        }
+
+        if (dist > 150) {
+            // Chase
             if (dx > 0) this.input.right = true;
             else this.input.left = true;
+
+            // Long range skill
+            if (dist > 300 && Math.random() < 0.05) this.input.skill = true;
         } else {
-            if (Math.random() < 0.3) this.input.attack = true;
+            // Melee
+            if (Math.random() < 0.6) this.input.attack = true;
             else if (Math.random() < 0.1) this.input.skill = true;
             else if (Math.random() < 0.1) this.input.roll = true;
-            else if (dx > 0) this.input.left = true;
-            else this.input.right = true;
+            else if (dx > 0) this.input.right = true; // Face opponent
+            else this.input.left = true;
         }
-        if (Math.random() < 0.05) this.input.up = true;
+
+        if (Math.random() < 0.02) this.input.up = true;
     }
 }
