@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Menu from './components/Menu'
 import SelectionScreen from './components/SelectionScreen'
 import BattleScreen from './components/BattleScreen'
-import { BACKGROUNDS } from './game/constants'
+import { BACKGROUNDS, CHARACTERS } from './game/constants'
 import './index.css'
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
   const selectCharacter = (char) => {
     setPlayerChar(char)
     // Random CPU char and Random BG
-    const otherChars = ['doge', 'buff_doge', 'pepe', 'gigachad']
+    const otherChars = CHARACTERS.map(c => c.id).filter(id => id !== char)
     const randomCpu = otherChars[Math.floor(Math.random() * otherChars.length)]
     const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)]
 

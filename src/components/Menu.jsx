@@ -25,8 +25,8 @@ export default function Menu({ onStart }) {
                 START BONKING
             </motion.button>
 
-            <div className="flex gap-6 mt-10">
-                {['DOGE', 'PEPE', 'CHAD'].map((m) => (
+            <div className="flex gap-6 mt-10 flex-wrap justify-center max-w-2xl">
+                {['DOGE', 'PEPE', 'CHAD', 'NYAN', 'SHREK', 'BALD'].map((m) => (
                     <span key={m} className="px-4 py-2 bg-neutral-800 rounded-lg text-neutral-400 font-comic text-sm border border-neutral-700">
                         #{m}
                     </span>

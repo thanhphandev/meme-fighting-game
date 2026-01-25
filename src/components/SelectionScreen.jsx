@@ -15,13 +15,13 @@ export default function SelectionScreen({ onSelect }) {
                         onClick={() => onSelect(char.id)}
                     >
                         <div className="w-32 h-32 relative mb-4 overflow-hidden rounded-2xl bg-neutral-800">
-                            {/* Show a preview image (frame 1) */}
-                            <img
-                                src={`/assets/${char.asset}`}
-                                className="absolute max-w-none transform scale-[4]"
+                            <div
                                 style={{
-                                    left: -0, // Assuming first frame
-                                    top: -(char.rows.idle * 256) / 2 // Rough preview alignment
+                                    backgroundImage: `url(/assets/${char.asset})`,
+                                    backgroundSize: '600% 800%',
+                                    backgroundPosition: `0% ${char.rows.idle * (100 / 7)}%`, // 100% / 7 = ~14.28% per row step
+                                    width: '100%',
+                                    height: '100%'
                                 }}
                             />
                         </div>

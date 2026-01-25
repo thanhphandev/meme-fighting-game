@@ -78,7 +78,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
             if ((p1.isDead || p2.isDead) && !isFinished) {
                 isFinished = true
-                setTimeout(() => onGameOver(p1.isDead ? 'cpu' : 'p1'), 2000)
+                setTimeout(() => onGameOver(p1.isDead ? 'cpu' : 'p1'), 3000)
             }
 
             animationId = requestAnimationFrame(gameLoop)

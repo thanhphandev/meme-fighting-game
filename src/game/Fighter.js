@@ -6,14 +6,25 @@ export class Fighter {
         this.characterId = characterId;
         this.charData = CHARACTERS.find(c => c.id === characterId);
 
-        this.width = 180;
-        this.height = 180;
+        this.width = 256;
+        this.height = 256;
         this.x = x;
         this.y = CONFIG.canvasHeight - this.height - CONFIG.groundY;
         this.isAI = isAI;
 
         this.image = new Image();
         this.image.src = `/assets/${this.charData.asset}`;
+
+        this.spriteWidth = 0;
+        this.spriteHeight = 0;
+        // Assume 6x8 layout as per standard
+        this.cols = 6;
+        this.rows = 8;
+
+        this.image.onload = () => {
+            this.spriteWidth = this.image.width / this.cols;
+            this.spriteHeight = this.image.height / this.rows;
+        };
 
         this.frameX = 0;
         this.frameY = 0;
@@ -30,8 +41,13 @@ export class Fighter {
         this.isDead = false;
         this.state = 'idle';
 
-        this.hitbox = { x: 0, y: 0, width: 70, height: 110 };
-        this.attackBox = { x: 0, y: 0, width: 100, height: 60 };
+        // Dynamic Hitbox centered in 256 frame
+        const hbW = 70;
+        const hbH = 110;
+        this.hitbox = { width: hbW, height: hbH, x: 0, y: 0 }; // x,y updated in update()
+
+        // Attack box wider
+        this.attackBox = { x: 0, y: 0, width: 140, height: 80 };
         this.input = { left: false, right: false, up: false, attack: false, roll: false, skill: false };
 
         this.skillCooldown = 0;
@@ -48,7 +64,7 @@ export class Fighter {
     }
 
     handleInput(input) {
-        if (this.isDead || (this.state === 'hit' && this.frameX < 3)) return;
+        if (this.isDead || (this.state === 'hit' && this.frameX < 5)) return;
         this.input = input;
     }
 
@@ -74,20 +90,24 @@ export class Fighter {
 
         this.velocityX *= 0.85;
 
+        // Update Hitbox Position (Centered)
+        this.hitbox.x = this.x + (this.width - this.hitbox.width) / 2;
+        this.hitbox.y = this.y + (this.height - this.hitbox.height);
+
+        // Update Attackbox Position (Extends from center)
+        const centerX = this.x + this.width / 2;
+        this.attackBox.x = this.facingRight ? centerX : centerX - this.attackBox.width;
+        this.attackBox.y = this.hitbox.y + 20;
+
         // State Machine
-        if (this.state === 'hit') {
-            if (this.frameX >= 3) this.setState('idle');
-        } else if (this.state === 'attack') {
-            if (this.frameX === 2) this.checkAttackCollision(opponent, onHit);
-            if (this.frameX >= 3) this.setState('idle');
-        } else if (this.state === 'skill') {
-            this.handleSkillUpdate(deltaTime, opponent, onHit);
-            if (this.frameX >= 3 && this.skillActiveTimer <= 0) this.setState('idle');
+        if (this.state === 'hit' || this.state === 'attack' || this.state === 'skill') {
+            // Busy states - no input handling
         } else if (this.state === 'roll') {
+            // Roll physics
             const speed = this.charData.stats.speed;
             this.velocityX = this.facingRight ? speed * 3 : -speed * 3;
-            if (this.frameX >= 3) this.setState('idle');
         } else {
+            // Input handling for controllable states
             if (this.input.skill && this.stamina >= CONFIG.skillCost && this.skillCooldown <= 0) {
                 this.useSkill(onHit);
             } else if (this.input.attack && this.stamina >= CONFIG.attackCost) {
@@ -130,7 +150,23 @@ export class Fighter {
         this.attackBox.x = this.facingRight ? this.hitbox.x + 30 : this.hitbox.x - 70;
         this.attackBox.y = this.hitbox.y + 20;
 
-        this.updateAnimation(deltaTime);
+        const stopAnim = this.state === 'jump' || this.state === 'fall';
+        const layout = this.updateAnimation(deltaTime, stopAnim);
+
+        // State Machine transitions based on animation completion
+        if (this.state === 'hit' && layout) {
+            this.setState('idle');
+        } else if (this.state === 'attack') {
+            if (this.frameX === 3) this.checkAttackCollision(opponent, onHit);
+            if (layout) this.setState('idle');
+        } else if (this.state === 'skill') {
+            this.handleSkillUpdate(deltaTime, opponent, onHit);
+            if (layout && this.skillActiveTimer <= 0) this.setState('idle');
+        } else if (this.state === 'roll') {
+            const speed = this.charData.stats.speed;
+            this.velocityX = this.facingRight ? speed * 3 : -speed * 3;
+            if (layout) this.setState('idle');
+        }
     }
 
     checkAttackCollision(opponent, onHit) {
@@ -199,32 +235,67 @@ export class Fighter {
     }
 
     updateAnimation(deltaTime, stopAtEnd = false) {
-        if (this.frameTimer > this.frameInterval) {
-            if (this.frameX < 3) {
+        let cycleCompleted = false;
+        // Hardcoded 24 FPS for animation consistency (approx 41ms per frame)
+        // regardless of game logic FPS
+        const animInterval = 1000 / 24;
+
+        if (this.frameTimer > animInterval) {
+            if (this.frameX < 5) {
                 this.frameX++;
             } else if (!stopAtEnd) {
                 this.frameX = 0;
+                cycleCompleted = true;
             }
             this.frameTimer = 0;
         } else {
             this.frameTimer += deltaTime;
         }
+        return cycleCompleted;
     }
 
     draw() {
+        if (this.spriteWidth === 0 || this.spriteHeight === 0) return;
+
         this.ctx.save();
         // Shadow
         this.ctx.fillStyle = 'rgba(0,0,0,0.3)';
         this.ctx.beginPath();
-        this.ctx.ellipse(this.x + this.width / 2, CONFIG.canvasHeight - CONFIG.groundY, 50, 15, 0, 0, Math.PI * 2);
+        this.ctx.ellipse(
+            Math.floor(this.x + this.width / 2),
+            Math.floor(CONFIG.canvasHeight - CONFIG.groundY),
+            50, 15, 0, 0, Math.PI * 2
+        );
         this.ctx.fill();
 
+        // Round all coordinates to avoid anti-aliasing blur
+        const drawX = Math.floor(this.x);
+        const drawY = Math.floor(this.y);
+        const drawW = Math.floor(this.width * this.scale);
+        const drawH = Math.floor(this.height * this.scale);
+
+        // Offset Y for breathing scale effect
+        const offsetY = Math.floor(this.height * (this.scale - 1));
+
+        const srcX = Math.floor(this.frameX * this.spriteWidth);
+        const srcY = Math.floor(this.frameY * this.spriteHeight);
+        const srcW = Math.floor(this.spriteWidth);
+        const srcH = Math.floor(this.spriteHeight);
+
         if (this.facingRight) {
-            this.ctx.drawImage(this.image, this.frameX * 256, this.frameY * 256, 256, 256, this.x, this.y - (this.height * (this.scale - 1)), this.width * this.scale, this.height * this.scale);
+            this.ctx.drawImage(
+                this.image,
+                srcX, srcY, srcW, srcH,
+                drawX, drawY - offsetY, drawW, drawH
+            );
         } else {
-            this.ctx.translate(this.x + this.width, this.y);
+            this.ctx.translate(drawX + this.width, drawY);
             this.ctx.scale(-1, 1);
-            this.ctx.drawImage(this.image, this.frameX * 256, this.frameY * 256, 256, 256, 0, -(this.height * (this.scale - 1)), this.width * this.scale, this.height * this.scale);
+            this.ctx.drawImage(
+                this.image,
+                srcX, srcY, srcW, srcH,
+                0, -offsetY, drawW, drawH
+            );
         }
         this.ctx.restore();
     }
