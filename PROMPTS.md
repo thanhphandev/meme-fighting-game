@@ -1,43 +1,46 @@
-# Standard Sprite Generation Prompts
+# 🎨 Master Sprite Generation Prompts
 
-These prompts are designed to generate consistent 6x8 sprite sheets for the Meme Rumble engine.
+Use these prompts to generate sprite sheets that match the high-quality standard (Nyan Cat reference).
 
-## Global Settings
-- **Canvas Size**: 1536 x 2048 pixels (6 columns * 256px, 8 rows * 256px)
-- **Aspect Ratio**: **3:4 (Portrait)**. *Crucial to prevent stretching.*
-- **Cell Size**: 256 x 256 pixels
-- **Grid**: 6 Frames per row.
-- **Background**: Solid White (to be made transparent).
-- **Style**: High-quality Pixel Art or Vector Cartoon (Must be consistent).
+## 🏆 The "Standard" Master Prompt
+**Copy this structure for any new character:**
 
-## Row Mapping
-- **Row 0**: Idle (Breathing, Standing)
-- **Row 1**: Run (Looping movement)
-- **Row 2**: Jump (Rising air pose)
-- **Row 3**: Fall (Falling air pose)
-- **Row 4**: Attack (Punch, Kick, or Bite)
-- **Row 5**: Skill (Special pose with effect)
-- **Row 6**: Hit (Damage reaction)
-- **Row 7**: KO (Defeated, lying down)
+> **Prompt:**
+> "High-quality 2D pixel art sprite sheet of **[CHARACTER NAME]**.
+> **Format:** Uniform 6x8 grid (6 columns, 8 rows).
+> **Resolution:** 1014x1014 pixels (Aspect Ratio 3:4). Each cell is exactly 256x256 pixels.
+> **Style:** Crisp, vibrant modern pixel art. Clean distinct edges. Solid white background.
+>
+> **Animations (Top to Bottom):**
+> - Row 1: Idle (Breathing/Standing)
+> - Row 2: Run Cycle (Looping)
+> - Row 3: Jump (Rising Pose)
+> - Row 4: Fall (Dropping Pose)
+> - Row 5: Attack (Punch/Kick/Action)
+> - Row 6: Skill (Special Effect/Power)
+> - Row 7: Hit (Wince/Damage Frame)
+> - Row 8: KO (Defeated/Lying Down)
+>
+> **Constraint:** Ensure perfect centering in each 256x256 cell. No overlapping."
 
 ---
 
-## Character Prompts
+## 🚀 Character Specific Prompts
 
-### 1. Lil Doge
-> **Prompt**: "Sprite sheet of Lil Doge meme, shiba inu dog. Uniform 6x8 grid. Pixel art style. Row 0: Idle standing. Row 1: Running cycle. Row 2: Jumping up. Row 3: Falling down. Row 4: Bite attack. Row 5: Glowing power up skill. Row 6: Wincing from hit. Row 7: Lying defeated. White background. Each frame 256x256 centered."
+### 🐕 Lil Doge
+> "High-quality 2D pixel art sprite sheet of **Lil Doge (Cute Shiba Inu)**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Run, Jump, Fall, Bite, Much Wow Skill, Hit, KO. White background."
 
-### 2. Buff Doge
-> **Prompt**: "Sprite sheet of Buff Doge, muscular dog man. Uniform 6x8 grid. Pixel art style. Row 0: Idle flexing. Row 1: Heavy run. Row 2: Jump. Row 3: Fall. Row 4: Strong punch. Row 5: Super flex skill. Row 6: Taking damage. Row 7: Knocked out on ground. White background. Each frame 256x256 centered."
+### 🐸 Pepe
+> "High-quality 2D pixel art sprite sheet of **Pepe the Frog**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Run, Jump, Fall, Slap, REEEE Skill, Hit, KO. White background."
 
-### 3. Pepe
-> **Prompt**: "Sprite sheet of Pepe the Frog. Uniform 6x8 grid. Pixel art style. Row 0: Idle. Row 1: Running. Row 2: Jump. Row 3: Fall. Row 4: Slap attack. Row 5: Screaming REEEE skill. Row 6: Hurt. Row 7: Dead pose. White background. Each frame 256x256 centered."
+### 💪 GigaChad
+> "High-quality 2D pixel art sprite sheet of **GigaChad**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Run, Jump, Fall, Jaw Smash, Chad Aura, Hit, KO. White background."
 
-### 4. GigaChad
-> **Prompt**: "Sprite sheet of GigaChad. Uniform 6x8 grid. Pixel art style. Row 0: Idle posing. Row 1: Running. Row 2: Jump. Row 3: Fall. Row 4: Chin smash attack. Row 5: Chad aura skill. Row 6: Hit reaction. Row 7: Defeated. White background. Each frame 256x256 centered."
+### 🌈 Nyan Cat (Reference)
+> "High-quality 2D pixel art sprite sheet of **Nyan Cat**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Fly, Jump, Fall, Attack, Rainbow Skill, Hit, KO. White background."
 
-### 5. Nyan Cat
-> **Prompt**: "Sprite sheet of Nyan Cat. Uniform 6x8 grid. Pixel art style. Row 0: Idle floating. Row 1: Flying run. Row 2: Jump. Row 3: Fall. Row 4: Scratch. Row 5: Rainbow blast skill. Row 6: Hurt. Row 7: Falling KO. White background. Each frame 256x256 centered."
+### 👊 Baldy (One Punch)
+> "High-quality 2D pixel art sprite sheet of **Bald Hero with Yellow Suit and White Cape**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Fast Run, Jump, Fall, Normal Punch, Serious Punch Skill, Hit, KO. White background."
 
-### 6. Shrek
-> **Prompt**: "Sprite sheet of Shrek. Uniform 6x8 grid. Pixel art style. Row 0: Idle. Row 1: Charging run. Row 2: Jump. Row 3: Fall. Row 4: Smash attack. Row 5: Roar skill. Row 6: Hit. Row 7: Defeated. White background. Each frame 256x256 centered."
+### 🐾 Capybara
+> "High-quality 2D pixel art sprite sheet of **Chill Capybara**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Run, Jump, Fall, Punch/Kick, Chill Vibes Aura Skill, Hit, KO. White background."

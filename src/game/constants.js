@@ -41,40 +41,22 @@ export const CHARACTERS = [
         skill: { name: 'REEEEEE', type: 'projectile' }
     },
     {
-        id: 'gigachad',
-        name: 'GigaChad',
-        asset: 'gigachad.png',
-        description: 'Average fight enjoyer.',
-        stats: { speed: 7, jump: 16, damage: 22 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        skill: { name: 'CHAD ENERGY', type: 'dash' }
-    },
-    {
         id: 'nyan_cat',
         name: 'Nyan Cat',
         asset: 'nyan_cat.png',
-        description: 'Rainbow speedster.',
+        description: 'The Standard Bearer.',
         stats: { speed: 12, jump: 25, damage: 10 },
         rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
         skill: { name: 'RAINBOW BLAST', type: 'projectile' }
     },
     {
-        id: 'shrek',
-        name: 'The Ogre',
-        asset: 'shrek.png',
-        description: 'Get out of my swamp!',
-        stats: { speed: 5, jump: 12, damage: 25 },
+        id: 'capybara',
+        name: 'Capy',
+        asset: 'capybara.png',
+        description: 'Ok I pull up.',
+        stats: { speed: 6, jump: 12, damage: 18 },
         rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        skill: { name: 'SWAMP ROAR', type: 'buff' }
-    },
-    {
-        id: 'bald_man',
-        name: 'Baldy',
-        asset: 'bald_man.png',
-        description: 'Just a hero for fun.',
-        stats: { speed: 10, jump: 20, damage: 30 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        skill: { name: 'SERIOUS PUNCH', type: 'slam' }
+        skill: { name: 'CHILL VIBES', type: 'buff' }
     }
 ];
 
