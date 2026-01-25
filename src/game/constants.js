@@ -68,12 +68,38 @@ export const CHARACTERS = [
         stats: { speed: 6, jump: 12, damage: 18 },
         rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
         skill: { name: 'CHILL VIBES', type: 'buff' }
+    },
+    {
+        id: 'samurai',
+        name: 'Doge Samurai',
+        asset: 'samurai.png',
+        description: 'Honor and Cheems.',
+        stats: { speed: 9, jump: 18, damage: 25 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        skill: { name: 'KATANA SLASH', type: 'dash' }
+    },
+    {
+        id: 'ninja',
+        name: 'Shadow Fox',
+        asset: 'shadow-fox-ninja.png',
+        description: 'Silent but deadly.',
+        stats: { speed: 13, jump: 22, damage: 15 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        skill: { name: 'SHADOW STRIKE', type: 'projectile' }
+    },
+    {
+        id: 'dino',
+        name: 'Dinosaurus',
+        asset: 'dinosaurus.png',
+        description: 'Prehistoric Chonk.',
+        stats: { speed: 5, jump: 10, damage: 35 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        skill: { name: 'JURASSIC ROAR', type: 'buff' }
     }
 ];
 
 export const BACKGROUNDS = [
-    { id: 'meme_arena', asset: 'background.png', name: 'Meme Arena' },
-    { id: 'this_is_fine', asset: 'pepe_bg.png', name: 'This Is Fine' }
+    { id: 'custom_bg', asset: 'background.png', name: 'Custom Arena' }
 ];
 
 export const MEME_WORDS = [

@@ -42,7 +42,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center overflow-hidden">
+    <div className="w-screen h-screen bg-neutral-950 flex flex-col items-center justify-center overflow-hidden">
       <AnimatePresence mode="wait">
         {screen === 'menu' && (
           <motion.div

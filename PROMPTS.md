@@ -44,3 +44,6 @@ Use these prompts to generate sprite sheets that match the high-quality standard
 
 ### 🐾 Capybara
 > "High-quality 2D pixel art sprite sheet of **Chill Capybara**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Run, Jump, Fall, Punch/Kick, Chill Vibes Aura Skill, Hit, KO. White background."
+
+### ⚔️ Samurai Doge
+> "High-quality 2D pixel art sprite sheet of **Samurai Shiba Inu in Armor**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle (Hand on katana), Run, Jump, Fall, Katana Slash Attack, Ultimate Strike Skill, Hit, KO. White background."

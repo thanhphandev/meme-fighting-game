@@ -25,8 +25,6 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         const p2 = new Fighter(ctx, 720, cpuChar, true)
         const ai = new AI(p2)
 
-        const backgroundImg = new Image()
-        backgroundImg.src = `/assets/${background.asset}`
 
         let lastTime = 0
         let animationId
@@ -63,7 +61,6 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             ctx.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
             // Draw background
-            ctx.drawImage(backgroundImg, 0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
             // Update fighters
             if (!p1.isDead) p1.handleInput(input.getPlayerInput())
@@ -101,7 +98,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 if (img.complete) return Promise.resolve()
                 return new Promise(r => img.onload = r)
             }
-            await Promise.all([loadImg(p1.image), loadImg(p2.image), loadImg(backgroundImg)])
+            await Promise.all([loadImg(p1.image), loadImg(p2.image)])
             animationId = requestAnimationFrame(gameLoop)
         }
 
@@ -114,7 +111,14 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
     }, [playerChar, cpuChar, background])
 
     return (
-        <div className="relative border-[10px] border-white/10 rounded-[40px] shadow-2xl overflow-hidden bg-black">
+        <div
+            className="relative w-full h-full bg-black overflow-hidden"
+            style={{
+                backgroundImage: `url(/assets/${background.asset})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            }}
+        >
             {/* HUD React Layer */}
             <div className="absolute top-0 w-full p-8 flex justify-between z-10 pointer-events-none">
                 <div className="w-[350px]">
@@ -154,7 +158,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 ref={canvasRef}
                 width={CONFIG.canvasWidth}
                 height={CONFIG.canvasHeight}
-                className="block"
+                className="block w-full h-full"
             />
 
             {/* Meme Text Overlay */}
@@ -174,6 +178,21 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 <div><span className="text-orange-400 font-bold">SHIFT/K</span> DASH</div>
                 <div><span className="text-orange-400 font-bold">E/Q/U</span> SKILL</div>
             </div>
+            <button
+                onClick={() => {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        }
+                    }
+                }}
+                className="absolute top-4 right-4 z-50 p-2 bg-white/10 text-white rounded hover:bg-white/20"
+                title="Toggle Fullscreen"
+            >
+                ⛶
+            </button>
         </div>
     )
 }
