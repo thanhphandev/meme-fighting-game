@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700;900&family=Bangers&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-bangers: "Bangers", cursive;
+  --font-comic: "Comic Neue", cursive;
+
+  @keyframes meme-popup {
+    0% {
+      transform: scale(0) rotate(-20deg);
+      opacity: 0;
+    }
+
+    40% {
+      transform: scale(1.5) rotate(10deg);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1.1) translateY(-100px);
+      opacity: 0;
+    }
+  }
+}
+
+.animate-meme-popup {
+  animation: meme-popup 0.8s ease-out forwards;
+}
+
+.animate-special-meme {
+  animation: special-meme-pop 0.8s ease-out forwards, rainbow 0.5s linear infinite;
+}
+
+@keyframes special-meme-pop {
+  0% {
+    transform: scale(0) rotate(-40deg);
+    opacity: 0;
+  }
+
+  40% {
+    transform: scale(2) rotate(20deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5) translateY(-150px);
+    opacity: 0;
+  }
+}
+
+@keyframes rainbow {
+  from {
+    filter: hue-rotate(0deg);
+  }
+
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #fff;
+  margin: 0;
+  overflow: hidden;
+  user-select: none;
+}
+
+canvas {
+  image-rendering: pixelated;
+}
