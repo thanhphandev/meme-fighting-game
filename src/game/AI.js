@@ -23,7 +23,7 @@ export class AI {
         if (opponent.isDead) return;
 
         // Defensive Logic (Block if opponent attacking)
-        if (opponent.state === 'attack' && dist < 250 && Math.random() < 0.7) {
+        if (opponent.state === 'attack' && dist < 250 && Math.random() < 0.25) { // Nerfed block chance 0.7 -> 0.25
             // Block by moving away
             if (dx > 0) this.input.left = true;
             else this.input.right = true;
@@ -36,12 +36,12 @@ export class AI {
             else this.input.left = true;
 
             // Long range skill
-            if (dist > 300 && Math.random() < 0.05) this.input.skill = true;
+            if (dist > 300 && Math.random() < 0.02) this.input.skill = true; // Nerfed skill freq
         } else {
             // Melee
-            if (Math.random() < 0.6) this.input.attack = true;
-            else if (Math.random() < 0.1) this.input.skill = true;
-            else if (Math.random() < 0.1) this.input.roll = true;
+            if (Math.random() < 0.25) this.input.attack = true; // Nerfed aggression 0.6 -> 0.25
+            else if (Math.random() < 0.05) this.input.skill = true;
+            else if (Math.random() < 0.05) this.input.roll = true;
             else if (dx > 0) this.input.right = true; // Face opponent
             else this.input.left = true;
         }

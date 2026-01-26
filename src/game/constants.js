@@ -3,7 +3,7 @@ export const CONFIG = {
     canvasHeight: 500,
     gravity: 0.8,
     groundY: 60,
-    fps: 48,
+    fps: 60,
     baseHp: 500, // Revert to reasonable HP for longer fights
     baseDamage: 20, // Increased base damage
 
@@ -95,11 +95,21 @@ export const CHARACTERS = [
         stats: { speed: 5, jump: 10, damage: 35 },
         rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
         skill: { name: 'JURASSIC ROAR', type: 'buff' }
+    },
+    {
+        id: 'chicken',
+        name: 'Silly Chicken',
+        asset: 'silly_chicken.png',
+        description: 'Why did it cross the road? To fight.',
+        stats: { speed: 11, jump: 22, damage: 14 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        skill: { name: 'EGG BOMB', type: 'projectile' }
     }
 ];
 
 export const BACKGROUNDS = [
-    { id: 'custom_bg', asset: 'background.png', name: 'Custom Arena' }
+    { id: 'custom_bg', asset: 'background.png', name: 'Custom Arena' },
+    { id: 'pepe_bg', asset: 'pepe_bg.png', name: 'Pepe World' },
 ];
 
 export const MEME_WORDS = [

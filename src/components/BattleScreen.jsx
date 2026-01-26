@@ -14,6 +14,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         p2Stamina: 100
     })
     const [memeTexts, setMemeTexts] = useState([])
+    const isFinishedRef = useRef(false)
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -28,7 +29,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
         let lastTime = 0
         let animationId
-        let isFinished = false
+        let isMounted = true
 
         // Particle System
         let particles = []
@@ -55,6 +56,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         }
 
         const gameLoop = (timeStamp) => {
+            if (!isMounted) return
             const deltaTime = timeStamp - lastTime
             lastTime = timeStamp
 
@@ -85,9 +87,11 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             p1.draw()
             p2.draw()
 
-            if ((p1.isDead || p2.isDead) && !isFinished) {
-                isFinished = true
-                setTimeout(() => onGameOver(p1.isDead ? 'cpu' : 'p1'), 3000)
+            if ((p1.isDead || p2.isDead) && !isFinishedRef.current) {
+                isFinishedRef.current = true
+                setTimeout(() => {
+                    if (isMounted) onGameOver(p1.isDead ? 'cpu' : 'p1')
+                }, 2000)
             }
 
             animationId = requestAnimationFrame(gameLoop)
@@ -99,16 +103,18 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 return new Promise(r => img.onload = r)
             }
             await Promise.all([loadImg(p1.image), loadImg(p2.image)])
-            animationId = requestAnimationFrame(gameLoop)
+            if (isMounted) animationId = requestAnimationFrame(gameLoop)
         }
 
         init()
 
         return () => {
+            isMounted = false
             cancelAnimationFrame(animationId)
             input.destroy()
+            isFinishedRef.current = false
         }
-    }, [playerChar, cpuChar, background])
+    }, [playerChar, cpuChar, background, onGameOver])
 
     return (
         <div
@@ -158,7 +164,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 ref={canvasRef}
                 width={CONFIG.canvasWidth}
                 height={CONFIG.canvasHeight}
-                className="block w-full h-full"
+                className="block w-full h-full object-cover"
             />
 
             {/* Meme Text Overlay */}
