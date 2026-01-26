@@ -1,7 +1,7 @@
 import { CONFIG, CHARACTERS } from './constants';
 
 export class Fighter {
-    constructor(ctx, x, characterId, isAI = false) {
+    constructor(ctx, x, characterId, isAI = false, image = null) {
         this.ctx = ctx;
         this.characterId = characterId;
         this.charData = CHARACTERS.find(c => c.id === characterId);
@@ -12,19 +12,22 @@ export class Fighter {
         this.y = CONFIG.canvasHeight - this.height - CONFIG.groundY;
         this.isAI = isAI;
 
-        this.image = new Image();
-        this.image.src = `/assets/${this.charData.asset}`;
+        // Use preloaded image if available, else fallback (legacy support)
+        if (image) {
+            this.image = image;
+            this.spriteWidth = this.image.width / 6; // Assume 6 cols
+            this.spriteHeight = this.image.height / 8; // Assume 8 rows
+        } else {
+            this.image = new Image();
+            this.image.src = `/assets/${this.charData.asset}`;
+            this.image.onload = () => {
+                this.spriteWidth = this.image.width / 6;
+                this.spriteHeight = this.image.height / 8;
+            };
+        }
 
-        this.spriteWidth = 0;
-        this.spriteHeight = 0;
-        // Assume 6x8 layout as per standard
         this.cols = 6;
         this.rows = 8;
-
-        this.image.onload = () => {
-            this.spriteWidth = this.image.width / this.cols;
-            this.spriteHeight = this.image.height / this.rows;
-        };
 
         this.frameX = 0;
         this.frameY = 0;
@@ -40,14 +43,17 @@ export class Fighter {
         this.stamina = 100;
         this.isDead = false;
         this.state = 'idle';
+        this.maxFrames = 6; // Initial default
 
         // Dynamic Hitbox centered in 256 frame
-        const hbW = 70;
-        const hbH = 110;
+        const hbConfig = this.charData.hitbox || CONFIG.defaultHitbox;
+        const hbW = hbConfig.width;
+        const hbH = hbConfig.height;
         this.hitbox = { width: hbW, height: hbH, x: 0, y: 0 }; // x,y updated in update()
 
         // Attack box wider
-        this.attackBox = { x: 0, y: 0, width: 140, height: 80 };
+        const abConfig = this.charData.attackBox || CONFIG.defaultAttackBox;
+        this.attackBox = { x: 0, y: 0, width: abConfig.width, height: abConfig.height };
         this.input = { left: false, right: false, up: false, attack: false, roll: false, skill: false };
 
         this.skillCooldown = 0;
@@ -61,6 +67,13 @@ export class Fighter {
         this.state = stateName;
         this.frameY = this.charData.rows[stateName] || 0;
         this.frameX = 0;
+        this.maxFrames = this.charData.frameCounts ? (this.charData.frameCounts[stateName] || 6) : 6;
+    }
+
+    setVictory() {
+        // Use 'skill' frame for victory pose as it usually looks cool/action-oriented
+        this.setState('skill');
+        this.isInvincible = true;
     }
 
     handleInput(input) {
@@ -68,7 +81,7 @@ export class Fighter {
         this.input = input;
     }
 
-    update(deltaTime, opponent, onHit, spawnParticle) {
+    update(deltaTime, opponent, onHit, spawnParticle, spawnProjectile) {
         this.hitStunTimer = Math.max(0, this.hitStunTimer - deltaTime);
 
         // Update Blocking Status
@@ -138,7 +151,7 @@ export class Fighter {
             this.velocityX = this.facingRight ? speed * 3 : -speed * 3;
         } else {
             if (this.input.skill && this.stamina >= CONFIG.skillCost && this.skillCooldown <= 0) {
-                this.useSkill(onHit);
+                this.useSkill(onHit, spawnProjectile);
             } else if (this.input.attack && this.stamina >= CONFIG.attackCost) {
                 this.setState('attack');
                 this.stamina -= CONFIG.attackCost;
@@ -166,9 +179,11 @@ export class Fighter {
         if (this.stamina < 100) this.stamina += 0.8;
         if (this.skillCooldown > 0) this.skillCooldown -= deltaTime;
         if (this.skillActiveTimer > 0) this.skillActiveTimer -= deltaTime;
-        else {
-            this.isInvincible = false;
+
+        // Remove Buffs when timer ends
+        if (this.skillActiveTimer <= 0 && this.state !== 'skill') {
             this.scale = 1;
+            this.isInvincible = false;
         }
 
         if (this.x < 0) this.x = 0;
@@ -236,52 +251,113 @@ export class Fighter {
         }
     }
 
-    useSkill(onHit) {
+    useSkill(onHit, spawnProjectile) {
         this.stamina -= CONFIG.skillCost;
         this.skillCooldown = CONFIG.skillCooldown;
         this.setState('skill');
 
-        const skillType = this.charData.skill.type;
-        if (skillType === 'buff') {
-            this.skillActiveTimer = 2000;
-            this.velocityX = this.facingRight ? 25 : -25;
-        } else if (skillType === 'slam') {
-            this.skillActiveTimer = 500;
-            this.velocityY = 20;
-        } else if (skillType === 'projectile' || skillType === 'dash') {
+        const skill = this.charData.skill;
+        const config = skill.data || {};
+
+        if (skill.type === 'projectile') {
+            // Spawn project at offset
+            const spawnX = this.x + (this.facingRight ? this.width * 0.8 : this.width * 0.2);
+            const spawnY = this.y + this.height * 0.5;
+            if (spawnProjectile) {
+                spawnProjectile(spawnX, spawnY, this.facingRight, this.characterId, config);
+            }
+            this.skillActiveTimer = 300; // Casting lock
+        }
+        else if (skill.type === 'buff') {
+            this.skillActiveTimer = config.duration || 500;
+            onHit(this.x + this.width / 2, this.y, true, skill.name);
+        }
+        else if (skill.type === 'aoe') {
+            this.skillActiveTimer = config.duration || 100;
+            onHit(this.x + this.width / 2, this.y, true, skill.name);
+        }
+        else if (skill.type === 'dash') {
+            this.skillActiveTimer = 300;
+            this.isInvincible = config.invuln || false;
+            this.velocityX = this.facingRight ? (config.speed || 30) : -(config.speed || 30);
+        }
+        else {
+            // Fallback for generic or unknown
             this.skillActiveTimer = 800;
             this.isInvincible = true;
+            onHit(this.x + this.width / 2, this.y, true, skill.name);
         }
-
-        // Visual feedback
-        onHit(this.x + this.width / 2, this.y, true); // True means special meme text
     }
 
     handleSkillUpdate(deltaTime, opponent, onHit) {
-        const skillType = this.charData.skill.type;
-        if (skillType === 'buff') {
-            this.scale = 1 + Math.sin(Date.now() / 50) * 0.3;
-            this.velocityX *= 1.1;
-            this.checkAttackCollision(opponent, onHit);
-        } else if (skillType === 'slam') {
-            if (this.onGround) {
-                this.checkAttackCollision(opponent, onHit);
-                this.scale = 1.5;
+        const skill = this.charData.skill;
+        const config = skill.data || {};
+
+        if (skill.type === 'buff') {
+            // Example general buffs
+            if (config.scale) this.scale = 1 + (config.scale - 1) * Math.sin(Date.now() / 100);
+        }
+        else if (skill.type === 'aoe') {
+            // Tick damage
+            if (this.skillActiveTimer % (config.interval || 20) < 15) {
+                const range = config.range || 200;
+                const dist = Math.abs((this.x + this.width / 2) - (opponent.x + opponent.width / 2));
+                if (dist < range) {
+                    opponent.takeDamage(config.damage || 1, this.facingRight ? 1 : -1, null);
+                }
             }
-        } else if (skillType === 'dash' || skillType === 'projectile') {
-            this.velocityX = this.facingRight ? 30 : -30;
+            if (config.visual === 'shake' || config.visual === 'water' || config.visual === 'ripple') {
+                this.x += (Math.random() - 0.5) * 5;
+            }
+        }
+        else if (skill.type === 'dash') {
             this.checkAttackCollision(opponent, onHit);
         }
     }
 
     updateAnimation(deltaTime, stopAtEnd = false) {
         let cycleCompleted = false;
-        // Hardcoded 24 FPS for animation consistency (approx 41ms per frame)
-        // regardless of game logic FPS
-        const animInterval = 1000 / 24;
+        // Frame counts per row (default to 6 if not specified)
+        this.maxFrames = this.charData.frameCounts ? (this.charData.frameCounts[this.state] || 6) : 6;
+
+        // Dynamic FPS calculation for smoother feel
+        let fps = 10; // Default base
+
+        switch (this.state) {
+            case 'idle':
+                fps = 8; // Slower "breathing" feel
+                break;
+            case 'run':
+                // Sync animation capability with movement speed
+                // Base 10 + speed factor. Maximum ~20fps for running.
+                fps = 8 + Math.abs(this.velocityX);
+                break;
+            case 'jump':
+            case 'fall':
+                fps = 12;
+                break;
+            case 'attack':
+                fps = 20; // Snappy attacks
+                break;
+            case 'skill':
+                fps = 15; // Clearly visible casting
+                break;
+            case 'hit':
+                fps = 12;
+                break;
+            case 'roll':
+                fps = 24; // Fast roll
+                break;
+            case 'ko':
+                fps = 5;
+                stopAtEnd = true; // Ensure KO doesn't loop
+                break;
+        }
+
+        const animInterval = 1000 / fps;
 
         if (this.frameTimer > animInterval) {
-            if (this.frameX < 5) {
+            if (this.frameX < this.maxFrames - 1) {
                 this.frameX++;
             } else if (!stopAtEnd) {
                 this.frameX = 0;

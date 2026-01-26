@@ -2,30 +2,43 @@
 
 Use these prompts to generate sprite sheets that match the high-quality standard (Nyan Cat reference).
 
-## 🏆 The "Standard" Master Prompt
+## 🏆 The "Standard" Master Prompt (Optimized)
 **Copy this structure for any new character:**
 
 > **Prompt:**
 > "High-quality 2D pixel art sprite sheet of **[CHARACTER NAME]**.
 > **Format:** Uniform 6x8 grid (6 columns, 8 rows).
-> **Resolution:** 1014x1014 pixels (Aspect Ratio 3:4). Each cell is exactly 256x256 pixels.
+> **Resolution:** 1536x2048 pixels. Each cell is exactly 256x256 pixels.
 > **Style:** Crisp, vibrant modern pixel art. Clean distinct edges. Solid white background.
 >
 > **Animations (Top to Bottom):**
-> - Row 1: Idle (Breathing/Standing)
-> - Row 2: Run Cycle (Looping)
-> - Row 3: Jump (Rising Pose)
-> - Row 4: Fall (Dropping Pose)
-> - Row 5: Attack (Punch/Kick/Action)
-> - Row 6: Skill (Special Effect/Power)
-> - Row 7: Hit (Wince/Damage Frame)
-> - Row 8: KO (Defeated/Lying Down)
+> - Row 1: Idle (Breathing/Standing) - *Optimize: Can be 4 frames*
+> - Row 2: Run Cycle (Looping) - *Full 6 frames*
+> - Row 3: Jump (Rising Pose) - *4 frames*
+> - Row 4: Fall (Dropping Pose) - *4 frames*
+> - Row 5: Attack (Punch/Kick/Action) - *Action dependent*
+> - Row 6: Skill (Special Effect/Power) - *Visual spectacle*
+> - Row 7: Hit (Wince/Damage Frame) - *3 frames*
+> - Row 8: KO (Defeated/Lying Down) - *1 static frame*
 >
-> **Constraint:** Ensure perfect centering in each 256x256 cell. No overlapping."
+> **Constraint:** Ensure perfect centering in each 256x256 cell. No overlapping. Maintain consistent scale."
 
 ---
 
 ## 🚀 Character Specific Prompts
+
+### 🍌 Crying Banana Cat (New!)
+> "High-quality 2D pixel art sprite sheet of **Crying Banana Cat (Cat in Banana Peel Suit)**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art, meme style.
+> **Rows:**
+> 1. Idle: Standing, crying animation (tears flowing).
+> 2. Run: Rolling on side like a banana log.
+> 3. Jump: Popping upwards.
+> 4. Fall: Flailing downwards (peel flapping).
+> 5. Attack: Slaps with banana peel.
+> 6. Skill: **TEAR FLOOD** - massive tear splash effect.
+> 7. Hit: Squashed/Sad face wince.
+> 8. KO: Rotten brown banana lying flat.
+> White background."
 
 ### 🐕 Lil Doge
 > "High-quality 2D pixel art sprite sheet of **Lil Doge (Cute Shiba Inu)**. Uniform 6x8 grid. 1536x2048. Style: Crisp pixel art. Rows: Idle, Run, Jump, Fall, Bite, Much Wow Skill, Hit, KO. White background."

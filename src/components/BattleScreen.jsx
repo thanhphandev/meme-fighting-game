@@ -3,7 +3,9 @@ import { Fighter } from '../game/Fighter'
 import { AI } from '../game/AI'
 import { InputHandler } from '../game/InputHandler'
 import { Particle } from '../game/Particle'
-import { CONFIG, BACKGROUNDS, MEME_WORDS } from '../game/constants'
+import { CONFIG, BACKGROUNDS, MEME_WORDS, CHARACTERS } from '../game/constants'
+import { resources } from '../game/ResourceManager'
+import { Projectile } from '../game/Projectile'
 
 export default function BattleScreen({ playerChar, cpuChar, background, onGameOver }) {
     const canvasRef = useRef(null)
@@ -22,26 +24,58 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         const ctx = canvas.getContext('2d')
 
         const input = new InputHandler()
-        const p1 = new Fighter(ctx, 100, playerChar)
-        const p2 = new Fighter(ctx, 720, cpuChar, true)
-        const ai = new AI(p2)
-
-
-        let lastTime = 0
         let animationId
         let isMounted = true
 
-        // Particle System
+        // Core Game Objects
+        let p1, p2, ai
         let particles = []
+        let projectiles = []
+
+        const init = async () => {
+            // NEW: Preload images using ResourceManager
+            try {
+                // Determine assets to load
+                const p1Data = CHARACTERS.find(c => c.id === playerChar)
+                const p2Data = CHARACTERS.find(c => c.id === cpuChar)
+                const assetsToLoad = [
+                    { id: playerChar, src: p1Data.asset },
+                    { id: cpuChar, src: p2Data.asset }
+                ]
+                await resources.loadImages(assetsToLoad);
+
+                if (!isMounted) return;
+
+                const p1Img = resources.getImage(playerChar);
+                const p2Img = resources.getImage(cpuChar);
+
+                p1 = new Fighter(ctx, 100, playerChar, false, p1Img)
+                p2 = new Fighter(ctx, 720, cpuChar, true, p2Img)
+                ai = new AI(p2)
+
+                animationId = requestAnimationFrame(gameLoop)
+            } catch (err) {
+                console.error("Failed to initialize battle:", err);
+            }
+        }
+
+        let lastTime = 0
+
+        // Particle System
         const spawnParticle = (x, y, type) => {
             particles.push(new Particle(x, y, type))
         }
 
-        const spawnMeme = (x, y, isSpecial = false) => {
+        // Projectile System
+        const spawnProjectile = (x, y, facingRight, ownerId, config) => {
+            projectiles.push(new Projectile(x, y, facingRight, ownerId, config));
+        }
+
+        const spawnMeme = (x, y, isSpecial = false, textOverride = null) => {
             const words = isSpecial ?
                 ["MUCH WOW", "ABSOLUTE UNIT", "REEEEEEEEEEE", "CHAD ENERGY", "BASED!!!", "GIGACHAD VIBES"] :
                 MEME_WORDS;
-            const text = words[Math.floor(Math.random() * words.length)]
+            const text = textOverride || words[Math.floor(Math.random() * words.length)]
             const id = Date.now() + Math.random()
             setMemeTexts(prev => [...prev, { id, text, x: x + (Math.random() * 40 - 20), y: y + (Math.random() * 40 - 20), isSpecial }])
             setTimeout(() => {
@@ -55,6 +89,13 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             }
         }
 
+        const checkProjectileHit = (proj, fighter) => {
+            return (proj.x < fighter.hitbox.x + fighter.hitbox.width &&
+                proj.x + proj.width > fighter.hitbox.x &&
+                proj.y < fighter.hitbox.y + fighter.hitbox.height &&
+                proj.y + proj.height > fighter.hitbox.y);
+        }
+
         const gameLoop = (timeStamp) => {
             if (!isMounted) return
             const deltaTime = timeStamp - lastTime
@@ -62,19 +103,40 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
             ctx.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
-            // Draw background
+            if (!p1 || !p2) return; // Wait for load
 
             // Update fighters
             if (!p1.isDead) p1.handleInput(input.getPlayerInput())
             if (!p2.isDead) ai.update(deltaTime, p1)
 
-            p1.update(deltaTime, p2, spawnMeme, spawnParticle)
-            p2.update(deltaTime, p1, spawnMeme, spawnParticle)
+            p1.update(deltaTime, p2, spawnMeme, spawnParticle, spawnProjectile)
+            p2.update(deltaTime, p1, spawnMeme, spawnParticle, spawnProjectile)
 
             // Render Particles
             particles.forEach(p => p.update())
             particles = particles.filter(p => p.alive)
             particles.forEach(p => p.draw(ctx))
+
+            // Handle Projectiles
+            projectiles.forEach(proj => {
+                proj.update(deltaTime);
+                proj.draw(ctx);
+
+                // Check Collision
+                if (proj.ownerId !== p1.characterId && !p1.isDead) { // Hits P1
+                    if (checkProjectileHit(proj, p1)) {
+                        p1.takeDamage(proj.config.damage, proj.vx > 0 ? 1 : -1, spawnParticle);
+                        proj.alive = false;
+                    }
+                }
+                if (proj.ownerId !== p2.characterId && !p2.isDead) { // Hits P2
+                    if (checkProjectileHit(proj, p2)) {
+                        p2.takeDamage(proj.config.damage, proj.vx > 0 ? 1 : -1, spawnParticle);
+                        proj.alive = false;
+                    }
+                }
+            });
+            projectiles = projectiles.filter(p => p.alive);
 
             // Draw HUD overlay (abstracted to react but stats from objects)
             setHudData({
@@ -89,21 +151,16 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
             if ((p1.isDead || p2.isDead) && !isFinishedRef.current) {
                 isFinishedRef.current = true
+                // Set Victory Animation
+                if (p1.isDead) p2.setVictory();
+                else p1.setVictory();
+
                 setTimeout(() => {
                     if (isMounted) onGameOver(p1.isDead ? 'cpu' : 'p1')
                 }, 2000)
             }
 
             animationId = requestAnimationFrame(gameLoop)
-        }
-
-        const init = async () => {
-            const loadImg = (img) => {
-                if (img.complete) return Promise.resolve()
-                return new Promise(r => img.onload = r)
-            }
-            await Promise.all([loadImg(p1.image), loadImg(p2.image)])
-            if (isMounted) animationId = requestAnimationFrame(gameLoop)
         }
 
         init()

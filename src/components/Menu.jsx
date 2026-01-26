@@ -3,7 +3,7 @@ import { Play } from 'lucide-react'
 
 export default function Menu({ onStart }) {
     return (
-        <div className="flex flex-col items-center gap-12">
+        <div className="flex flex-col items-center gap-12 overflow-auto h-screen">
             <div className="relative">
                 <motion.h1
                     className="font-bangers text-[120px] text-white leading-none tracking-tighter text-center"
