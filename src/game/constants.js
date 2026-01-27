@@ -196,6 +196,23 @@ export const CHARACTERS = [
             type: 'aoe',
             data: { range: 250, damage: 2, interval: 15, duration: 180, visual: 'water' }
         }
+    },
+    {
+        id: 'zoro',
+        name: 'Zoro',
+        asset: 'zoro.png',
+        description: 'I\'m gonna be King of the Pirates!',
+        stats: { speed: 10, jump: 20, damage: 18 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
+        skill: {
+            name: 'GOMU PISTOL',
+            type: 'projectile',
+            data: {
+                speedX: 25, speedY: 0, damage: 30, width: 40, height: 30,
+                color: '#f00', shape: 'rect', life: 40, knockback: 25
+            }
+        }
     }
 ];
 

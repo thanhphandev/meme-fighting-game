@@ -6,17 +6,27 @@ import { Particle } from '../game/Particle'
 import { CONFIG, BACKGROUNDS, MEME_WORDS, CHARACTERS } from '../game/constants'
 import { resources } from '../game/ResourceManager'
 import { Projectile } from '../game/Projectile'
+import { MemeSystem } from '../game/MemeSystem'
+import PauseMenu from './PauseMenu'
+import { Pause, Maximize } from 'lucide-react'
 
-export default function BattleScreen({ playerChar, cpuChar, background, onGameOver }) {
+export default function BattleScreen({ playerChar, cpuChar, background, onGameOver, cpuDifficulty = 'medium', onQuit }) {
     const canvasRef = useRef(null)
     const [hudData, setHudData] = useState({
         p1Health: 100,
+        p1DelayedHealth: 100,
         p1Stamina: 100,
         p2Health: 100,
+        p2DelayedHealth: 100,
         p2Stamina: 100
     })
-    const [memeTexts, setMemeTexts] = useState([])
     const isFinishedRef = useRef(false)
+    const [isPaused, setIsPaused] = useState(false)
+    const isPausedRef = useRef(isPaused)
+
+    useEffect(() => {
+        isPausedRef.current = isPaused
+    }, [isPaused])
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -51,7 +61,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
                 p1 = new Fighter(ctx, 100, playerChar, false, p1Img)
                 p2 = new Fighter(ctx, 720, cpuChar, true, p2Img)
-                ai = new AI(p2)
+                ai = new AI(p2, cpuDifficulty)
 
                 animationId = requestAnimationFrame(gameLoop)
             } catch (err) {
@@ -71,21 +81,24 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             projectiles.push(new Projectile(x, y, facingRight, ownerId, config));
         }
 
+        // Meme System
+        const memeSystem = new MemeSystem();
+
+        // Screen Shake
+        let shakeIntensity = 0;
+        const addScreenShake = (amount) => {
+            shakeIntensity = amount;
+        };
+
         const spawnMeme = (x, y, isSpecial = false, textOverride = null) => {
             const words = isSpecial ?
                 ["MUCH WOW", "ABSOLUTE UNIT", "REEEEEEEEEEE", "CHAD ENERGY", "BASED!!!", "GIGACHAD VIBES"] :
                 MEME_WORDS;
-            const text = textOverride || words[Math.floor(Math.random() * words.length)]
-            const id = Date.now() + Math.random()
-            setMemeTexts(prev => [...prev, { id, text, x: x + (Math.random() * 40 - 20), y: y + (Math.random() * 40 - 20), isSpecial }])
-            setTimeout(() => {
-                setMemeTexts(prev => prev.filter(m => m.id !== id))
-            }, 800)
+            const text = textOverride || words[Math.floor(Math.random() * words.length)];
+            memeSystem.spawn(x, y, text, isSpecial);
 
             if (isSpecial) {
-                // Screen shake
-                canvas.classList.add('animate-bounce');
-                setTimeout(() => canvas.classList.remove('animate-bounce'), 500);
+                addScreenShake(20);
             }
         }
 
@@ -98,12 +111,32 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
         const gameLoop = (timeStamp) => {
             if (!isMounted) return
+
+            if (isPausedRef.current) {
+                lastTime = timeStamp
+                animationId = requestAnimationFrame(gameLoop)
+                return
+            }
+
             const deltaTime = timeStamp - lastTime
             lastTime = timeStamp
 
             ctx.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
-            if (!p1 || !p2) return; // Wait for load
+            // Apply Screen Shake
+            ctx.save();
+            if (shakeIntensity > 0) {
+                const dx = (Math.random() - 0.5) * shakeIntensity;
+                const dy = (Math.random() - 0.5) * shakeIntensity;
+                ctx.translate(dx, dy);
+                shakeIntensity *= 0.9; // Decay
+                if (shakeIntensity < 0.5) shakeIntensity = 0;
+            }
+
+            if (!p1 || !p2) {
+                ctx.restore();
+                return; // Wait for load
+            }
 
             // Update fighters
             if (!p1.isDead) p1.handleInput(input.getPlayerInput())
@@ -127,24 +160,41 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                     if (checkProjectileHit(proj, p1)) {
                         p1.takeDamage(proj.config.damage, proj.vx > 0 ? 1 : -1, spawnParticle);
                         proj.alive = false;
+                        spawnMeme(p1.x, p1.y, false, "OOF");
                     }
                 }
                 if (proj.ownerId !== p2.characterId && !p2.isDead) { // Hits P2
                     if (checkProjectileHit(proj, p2)) {
                         p2.takeDamage(proj.config.damage, proj.vx > 0 ? 1 : -1, spawnParticle);
                         proj.alive = false;
+                        spawnMeme(p2.x, p2.y, false, "BONK");
                     }
                 }
             });
             projectiles = projectiles.filter(p => p.alive);
 
+            // Draw Meme Texts
+            memeSystem.update(deltaTime);
+            memeSystem.draw(ctx);
+
+            p1.draw()
+            p2.draw()
+
+            ctx.restore(); // Restore transform from screen shake
+
             // Draw HUD overlay (abstracted to react but stats from objects)
-            setHudData({
+            setHudData(prev => ({
                 p1Health: (p1.health / CONFIG.baseHp) * 100,
+                p1DelayedHealth: prev.p1DelayedHealth > (p1.health / CONFIG.baseHp) * 100
+                    ? Math.max((p1.health / CONFIG.baseHp) * 100, prev.p1DelayedHealth - 0.3)
+                    : (p1.health / CONFIG.baseHp) * 100,
                 p1Stamina: p1.stamina,
                 p2Health: (p2.health / CONFIG.baseHp) * 100,
+                p2DelayedHealth: prev.p2DelayedHealth > (p2.health / CONFIG.baseHp) * 100
+                    ? Math.max((p2.health / CONFIG.baseHp) * 100, prev.p2DelayedHealth - 0.3)
+                    : (p2.health / CONFIG.baseHp) * 100,
                 p2Stamina: p2.stamina
-            })
+            }))
 
             p1.draw()
             p2.draw()
@@ -182,20 +232,38 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 backgroundPosition: 'center'
             }}
         >
+            {isPaused && (
+                <PauseMenu
+                    onResume={() => setIsPaused(false)}
+                    onRestart={() => onQuit()}
+                    onQuit={onQuit}
+                />
+            )}
+
             {/* HUD React Layer */}
             <div className="absolute top-0 w-full p-8 flex justify-between z-10 pointer-events-none">
                 <div className="w-[350px]">
                     <div className="flex justify-between items-end mb-1">
                         <span className="font-bangers text-3xl text-white drop-shadow-md">YOU</span>
-                        <span className="font-comic text-xs text-green-400">FEELS GREAT</span>
+                        <div className="flex flex-col items-end">
+                            <span className="font-comic text-xs text-green-400">FEELS GREAT</span>
+                        </div>
                     </div>
-                    <div className="h-8 bg-neutral-900 border-2 border-white rounded-xl overflow-hidden shadow-lg relative">
+                    {/* P1 Health Bar */}
+                    <div className="h-8 bg-neutral-900 border-2 border-white rounded-xl overflow-hidden shadow-lg relative transform skew-x-[-10deg]">
+                        {/* Delayed Bar (White/Red) */}
                         <div
-                            className="h-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500 transition-all duration-300"
+                            className="absolute top-0 left-0 h-full bg-red-600 transition-all duration-100 ease-linear"
+                            style={{ width: `${hudData.p1DelayedHealth}%` }}
+                        />
+                        {/* Main Bar */}
+                        <div
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500 transition-all duration-75"
                             style={{ width: `${hudData.p1Health}%` }}
                         />
                     </div>
-                    <div className="h-2 bg-neutral-900 mt-1 rounded-full overflow-hidden w-1/2 ml-auto">
+                    {/* Stamina */}
+                    <div className="h-3 bg-neutral-900 mt-2 rounded-full overflow-hidden w-2/3 ml-0 border border-white/30 transform skew-x-[-10deg]">
                         <div className="h-full bg-blue-400" style={{ width: `${hudData.p1Stamina}%` }} />
                     </div>
                 </div>
@@ -205,14 +273,22 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                         <span className="font-comic text-xs text-red-400">ABSOLUTE UNIT</span>
                         <span className="font-bangers text-3xl text-white drop-shadow-md">CPU</span>
                     </div>
-                    <div className="h-8 bg-neutral-900 border-2 border-white rounded-xl overflow-hidden shadow-lg relative">
+                    {/* P2 Health Bar */}
+                    <div className="h-8 bg-neutral-900 border-2 border-white rounded-xl overflow-hidden shadow-lg relative transform skew-x-[10deg]">
+                        {/* Delayed Bar */}
                         <div
-                            className="h-full bg-gradient-to-l from-red-600 to-orange-500 transition-all duration-300 ml-auto"
+                            className="absolute top-0 right-0 h-full bg-white transition-all duration-100 ease-linear"
+                            style={{ width: `${hudData.p2DelayedHealth}%` }}
+                        />
+                        {/* Main Bar */}
+                        <div
+                            className="absolute top-0 right-0 h-full bg-gradient-to-l from-red-600 to-orange-500 transition-all duration-75"
                             style={{ width: `${hudData.p2Health}%` }}
                         />
                     </div>
-                    <div className="h-2 bg-neutral-900 mt-1 rounded-full overflow-hidden w-1/2 mr-auto">
-                        <div className="h-full bg-blue-400 ml-auto" style={{ width: `${hudData.p2Stamina}%` }} />
+                    {/* Stamina */}
+                    <div className="h-3 bg-neutral-900 mt-2 rounded-full overflow-hidden w-2/3 ml-auto border border-white/30 transform skew-x-[10deg]">
+                        <div className="h-full bg-yellow-400 ml-auto" style={{ width: `${hudData.p2Stamina}%` }} />
                     </div>
                 </div>
             </div>
@@ -224,16 +300,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 className="block w-full h-full object-cover"
             />
 
-            {/* Meme Text Overlay */}
-            {memeTexts.map(m => (
-                <div
-                    key={m.id}
-                    className={`absolute font-comic font-black ${m.isSpecial ? 'text-6xl text-yellow-400 animate-special-meme' : 'text-4xl text-white animate-meme-popup'} pointer-events-none drop-shadow-[2px_2px_0_rgba(0,0,0,1)] uppercase`}
-                    style={{ left: m.x, top: m.y }}
-                >
-                    {m.text}
-                </div>
-            ))}
+            {/* Meme Text Overlay Removed - Handled by Canvas */}
             {/* Instructions */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-8 px-8 py-3 bg-black/60 backdrop-blur-md rounded-full border border-white/20 text-white font-comic text-sm">
                 <div><span className="text-orange-400 font-bold">WASD</span> MOVE</div>
@@ -241,21 +308,31 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 <div><span className="text-orange-400 font-bold">SHIFT/K</span> DASH</div>
                 <div><span className="text-orange-400 font-bold">E/Q/U</span> SKILL</div>
             </div>
-            <button
-                onClick={() => {
-                    if (!document.fullscreenElement) {
-                        document.documentElement.requestFullscreen();
-                    } else {
-                        if (document.exitFullscreen) {
-                            document.exitFullscreen();
+            {/* Controls */}
+            <div className="absolute top-4 right-4 z-50 flex gap-2">
+                <button
+                    onClick={() => setIsPaused(true)}
+                    className="p-2 bg-white/10 text-white rounded hover:bg-white/20 transition-all"
+                    title="Pause"
+                >
+                    <Pause className="w-6 h-6" />
+                </button>
+                <button
+                    onClick={() => {
+                        if (!document.fullscreenElement) {
+                            document.documentElement.requestFullscreen();
+                        } else {
+                            if (document.exitFullscreen) {
+                                document.exitFullscreen();
+                            }
                         }
-                    }
-                }}
-                className="absolute top-4 right-4 z-50 p-2 bg-white/10 text-white rounded hover:bg-white/20"
-                title="Toggle Fullscreen"
-            >
-                ⛶
-            </button>
+                    }}
+                    className="p-2 bg-white/10 text-white rounded hover:bg-white/20 transition-all"
+                    title="Toggle Fullscreen"
+                >
+                    <Maximize className="w-6 h-6" />
+                </button>
+            </div>
         </div>
     )
 }

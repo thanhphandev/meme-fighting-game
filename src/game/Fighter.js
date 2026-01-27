@@ -60,6 +60,14 @@ export class Fighter {
         this.skillActiveTimer = 0;
         this.isInvincible = false;
         this.scale = 1;
+
+        this.hitStunTimer = 0;
+        this.hasHit = false;
+
+        // Input Buffer
+        this.inputBuffer = null;
+        this.bufferTimer = 0;
+        this.bufferWindow = 150; // ms to buffer input
     }
 
     setState(stateName) {
@@ -68,6 +76,7 @@ export class Fighter {
         this.frameY = this.charData.rows[stateName] || 0;
         this.frameX = 0;
         this.maxFrames = this.charData.frameCounts ? (this.charData.frameCounts[stateName] || 6) : 6;
+        this.hasHit = false;
     }
 
     setVictory() {
@@ -77,12 +86,26 @@ export class Fighter {
     }
 
     handleInput(input) {
-        if (this.isDead || (this.state === 'hit' && this.frameX < 5)) return;
+        if (this.isDead) return;
+
+        // Always update holding inputs (move)
         this.input = input;
+
+        // Buffer trigger inputs (attack/roll/skill/jump)
+        if (input.attack || input.roll || input.skill || input.up) {
+            this.inputBuffer = { ...input };
+            this.bufferTimer = this.bufferWindow;
+        }
     }
 
     update(deltaTime, opponent, onHit, spawnParticle, spawnProjectile) {
-        this.hitStunTimer = Math.max(0, this.hitStunTimer - deltaTime);
+        // Update Buffer Timer
+        if (this.bufferTimer > 0) this.bufferTimer -= deltaTime;
+        if (this.bufferTimer <= 0) this.inputBuffer = null;
+
+        // Ensure timer is valid number
+        let currentStun = this.hitStunTimer || 0;
+        this.hitStunTimer = Math.max(0, currentStun - deltaTime);
 
         // Update Blocking Status
         this.isBlocking = false;
@@ -91,9 +114,8 @@ export class Fighter {
             else if (!this.facingRight && this.input.right) this.isBlocking = true;
         }
 
-        // Hit Stun Freeze
+        // Hit Stun Freeze... (keeping existing)
         if (this.hitStunTimer > 0) {
-            // Apply friction even during stun
             this.x += this.velocityX;
             this.y += this.velocityY;
             this.velocityX *= CONFIG.friction;
@@ -103,7 +125,6 @@ export class Fighter {
                 this.y = CONFIG.canvasHeight - this.height - CONFIG.groundY;
                 this.velocityY = 0;
             }
-            // Allow 'hit' animation update
             if (this.state === 'hit') this.updateAnimation(deltaTime, true);
             return;
         }
@@ -132,7 +153,12 @@ export class Fighter {
             this.onGround = true;
         }
 
-        this.velocityX *= CONFIG.friction;
+        // Friction / Air Resistance
+        if (this.onGround) {
+            this.velocityX *= CONFIG.friction;
+        } else {
+            this.velocityX *= CONFIG.airResistance; // slightly more slippery in air (0.98 vs 0.85)
+        }
 
         // Update Hitbox Position
         this.hitbox.x = this.x + (this.width - this.hitbox.width) / 2;
@@ -143,26 +169,49 @@ export class Fighter {
         this.attackBox.x = this.facingRight ? centerX : centerX - this.attackBox.width;
         this.attackBox.y = this.hitbox.y + 20;
 
-        // State Machine
+        // State Machine & Input Consumption
+        // Helper to consume buffer
+        const tryAction = () => {
+            // Prefer buffer, else current held input
+            const activeInput = this.inputBuffer || this.input;
+
+            if (activeInput.skill && this.stamina >= CONFIG.skillCost && this.skillCooldown <= 0) {
+                this.useSkill(onHit, spawnProjectile);
+                this.inputBuffer = null;
+                return true;
+            } else if (activeInput.attack && this.stamina >= CONFIG.attackCost) {
+                this.setState('attack');
+                this.stamina -= CONFIG.attackCost;
+                this.inputBuffer = null;
+                return true;
+            } else if (activeInput.roll && this.stamina >= CONFIG.dashCost) {
+                this.setState('roll');
+                this.stamina -= CONFIG.dashCost;
+                this.inputBuffer = null;
+                return true;
+            } else if (activeInput.up && this.onGround) {
+                this.velocityY = -this.charData.stats.jump;
+                this.setState('jump');
+                this.inputBuffer = null; // Consume jump
+                return true;
+            }
+            return false;
+        };
+
         if (this.state === 'hit' || this.state === 'attack' || this.state === 'skill') {
-            // Busy
+            // Busy - do nothing, input is buffered
         } else if (this.state === 'roll') {
             const speed = this.charData.stats.speed;
             this.velocityX = this.facingRight ? speed * 3 : -speed * 3;
         } else {
-            if (this.input.skill && this.stamina >= CONFIG.skillCost && this.skillCooldown <= 0) {
-                this.useSkill(onHit, spawnProjectile);
-            } else if (this.input.attack && this.stamina >= CONFIG.attackCost) {
-                this.setState('attack');
-                this.stamina -= CONFIG.attackCost;
-            } else if (this.input.roll && this.stamina >= CONFIG.dashCost) {
-                this.setState('roll');
-                this.stamina -= CONFIG.dashCost;
-            } else if (this.input.up && this.onGround) {
-                this.velocityY = -this.charData.stats.jump;
-                this.setState('jump');
+            // Idle/Run/Jump/Fall - Can act inside here
+            if (tryAction()) {
+                // Action taken
             } else if (!this.onGround) {
                 this.setState(this.velocityY > 0 ? 'fall' : 'jump');
+                // Air control (nerfed)
+                if (this.input.right) this.velocityX += 0.5;
+                if (this.input.left) this.velocityX -= 0.5;
             } else if (this.input.right) {
                 this.velocityX = this.charData.stats.speed;
                 this.facingRight = true;
@@ -208,7 +257,7 @@ export class Fighter {
     }
 
     checkAttackCollision(opponent, onHit, spawnParticle) {
-        if (opponent.isDead || opponent.state === 'roll') return;
+        if (opponent.isDead || opponent.state === 'roll' || this.hasHit) return;
 
         if (this.attackBox.x < opponent.hitbox.x + opponent.hitbox.width &&
             this.attackBox.x + this.attackBox.width > opponent.hitbox.x &&
@@ -218,6 +267,7 @@ export class Fighter {
             // Calculate impact direction
             const direction = this.facingRight ? 1 : -1;
             opponent.takeDamage(this.charData.stats.damage, direction, spawnParticle);
+            this.hasHit = true;
             onHit(opponent.x + opponent.width / 2, opponent.y);
         }
     }
@@ -330,7 +380,7 @@ export class Fighter {
             case 'run':
                 // Sync animation capability with movement speed
                 // Base 10 + speed factor. Maximum ~20fps for running.
-                fps = 8 + Math.abs(this.velocityX);
+                fps = 10 + Math.abs(this.velocityX);
                 break;
             case 'jump':
             case 'fall':

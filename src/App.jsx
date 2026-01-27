@@ -12,6 +12,7 @@ function App() {
   const [cpuChar, setCpuChar] = useState(null)
   const [background, setBackground] = useState(null)
   const [winner, setWinner] = useState(null)
+  const [difficulty, setDifficulty] = useState('medium') // New State
 
   const startGame = () => {
     setScreen('selection')
@@ -52,7 +53,11 @@ function App() {
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.5 }}
           >
-            <Menu onStart={startGame} />
+            <Menu
+              onStart={startGame}
+              difficulty={difficulty}
+              onSelectDifficulty={setDifficulty}
+            />
           </motion.div>
         )}
 
@@ -79,6 +84,8 @@ function App() {
               cpuChar={cpuChar}
               background={background}
               onGameOver={onGameOver}
+              cpuDifficulty={difficulty}
+              onQuit={resetGame}
             />
           </motion.div>
         )}
@@ -96,12 +103,28 @@ function App() {
             <p className="text-2xl text-orange-400 mb-8 font-comic">
               {winner === 'p1' ? 'FEELS GOOD MAN' : 'COPE & SEETHE'}
             </p>
-            <button
-              onClick={resetGame}
-              className="px-10 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bangers text-3xl rounded-full transition-transform hover:scale-110 active:scale-95 shadow-lg"
-            >
-              GO AGAIN BRUH
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={() => {
+                  // Quick restart same chars
+                  setScreen('battle') // This might need a reset effect if not unmounted
+                  // Actually, since we unmount BattleScreen, re-mounting it should restart it.
+                  // But we need to ensure state is clear.
+                  // The easiest way is to re-set screen.
+                  setWinner(null)
+                  // If we just set screen to battle, it re-renders.
+                }}
+                className="px-10 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bangers text-3xl rounded-full transition-transform hover:scale-110 active:scale-95 shadow-lg"
+              >
+                REMATCH
+              </button>
+              <button
+                onClick={resetGame}
+                className="px-10 py-4 bg-neutral-700 hover:bg-neutral-600 text-white font-bangers text-3xl rounded-full transition-transform hover:scale-110 active:scale-95 shadow-lg border-2 border-neutral-500"
+              >
+                MENU
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -25,6 +25,20 @@ export default function Menu({ onStart }) {
                 START BONKING
             </motion.button>
 
+            {/* Difficulty Selector */}
+            <div className="flex gap-4">
+                {['easy', 'medium', 'hard'].map(diff => (
+                    <button
+                        key={diff}
+                        onClick={() => console.log('Set diff logic needed in App')} // Placeholder - need to lift state
+                        className={`px-6 py-2 rounded-xl font-bangers text-xl uppercase transition-all ${'medium' === diff ? 'bg-orange-500 text-white scale-110 shadow-lg' : 'bg-neutral-800 text-neutral-500 hover:bg-neutral-700'
+                            }`}
+                    >
+                        {diff}
+                    </button>
+                ))}
+            </div>
+
             <div className="flex gap-6 mt-10 flex-wrap justify-center max-w-2xl">
                 {['DOGE', 'PEPE', 'NYAN', 'CAPY', 'SAMURAI', 'NINJA', 'DINO', 'CHICKEN'].map((m) => (
                     <span key={m} className="px-4 py-2 bg-neutral-800 rounded-lg text-neutral-400 font-comic text-sm border border-neutral-700">
