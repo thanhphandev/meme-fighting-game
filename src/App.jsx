@@ -14,24 +14,42 @@ function App() {
   const [winner, setWinner] = useState(null)
   const [difficulty, setDifficulty] = useState('medium') // New State
 
-  const startGame = () => {
+  const [gameMode, setGameMode] = useState('pve') // 'pve', 'pvp'
+  const [selectionPhase, setSelectionPhase] = useState('p1') // 'p1', 'p2'
+
+  const startGame = (mode) => {
+    setGameMode(mode)
+    setSelectionPhase('p1')
     setScreen('selection')
   }
 
   const selectCharacter = (char) => {
-    setPlayerChar(char)
-    // Random CPU char and Random BG
-    const otherChars = CHARACTERS.map(c => c.id).filter(id => id !== char)
-    const randomCpu = otherChars[Math.floor(Math.random() * otherChars.length)]
-    const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)]
-
-    setCpuChar(randomCpu)
-    setBackground(randomBg)
-    setScreen('battle')
+    if (selectionPhase === 'p1') {
+      setPlayerChar(char)
+      if (gameMode === 'pve') {
+        // Random CPU char and Random BG
+        const otherChars = CHARACTERS.map(c => c.id).filter(id => id !== char)
+        const randomCpu = otherChars[Math.floor(Math.random() * otherChars.length)]
+        const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)]
+        setCpuChar(randomCpu)
+        setBackground(randomBg)
+        setScreen('battle')
+      } else {
+        // PvP - P2 Select
+        setSelectionPhase('p2')
+        // Don't change screen, just stay on selection for P2
+      }
+    } else {
+      // P2 Select
+      setCpuChar(char) // Reuse cpuChar state for P2
+      const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)]
+      setBackground(randomBg)
+      setScreen('battle')
+    }
   }
 
   const onGameOver = (winStatus) => {
-    setWinner(winStatus) // 'p1' or 'cpu'
+    setWinner(winStatus) // 'p1' or 'cpu' (cpu is p2)
     setScreen('gameover')
   }
 
@@ -40,6 +58,7 @@ function App() {
     setPlayerChar(null)
     setCpuChar(null)
     setWinner(null)
+    setSelectionPhase('p1')
   }
 
   return (
@@ -68,7 +87,10 @@ function App() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -100 }}
           >
-            <SelectionScreen onSelect={selectCharacter} />
+            <SelectionScreen
+              onSelect={selectCharacter}
+              title={selectionPhase === 'p1' ? "PLAYER 1: CHOOSE!" : "PLAYER 2: CHOOSE!"}
+            />
           </motion.div>
         )}
 
@@ -85,6 +107,7 @@ function App() {
               background={background}
               onGameOver={onGameOver}
               cpuDifficulty={difficulty}
+              gameMode={gameMode}
               onQuit={resetGame}
             />
           </motion.div>

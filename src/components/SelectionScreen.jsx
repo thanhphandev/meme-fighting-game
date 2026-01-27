@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 import { CHARACTERS } from '../game/constants'
 
-export default function SelectionScreen({ onSelect }) {
+export default function SelectionScreen({ onSelect, title = "SELECT YOUR MEME" }) {
     return (
         <div className="flex flex-col items-center gap-8 w-full max-w-6xl">
-            <h2 className="font-bangers text-6xl text-white">SELECT YOUR MEME</h2>
+            <h2 className="font-bangers text-6xl text-white">{title}</h2>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {CHARACTERS.map((char) => (

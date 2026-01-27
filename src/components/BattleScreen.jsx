@@ -10,7 +10,7 @@ import { MemeSystem } from '../game/MemeSystem'
 import PauseMenu from './PauseMenu'
 import { Pause, Maximize } from 'lucide-react'
 
-export default function BattleScreen({ playerChar, cpuChar, background, onGameOver, cpuDifficulty = 'medium', onQuit }) {
+export default function BattleScreen({ playerChar, cpuChar, background, onGameOver, cpuDifficulty = 'medium', onQuit, gameMode = 'pve' }) {
     const canvasRef = useRef(null)
     const [hudData, setHudData] = useState({
         p1Health: 100,
@@ -18,7 +18,8 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         p1Stamina: 100,
         p2Health: 100,
         p2DelayedHealth: 100,
-        p2Stamina: 100
+        p2Stamina: 100,
+        p2Name: gameMode === 'pvp' ? 'PLAYER 2' : 'CPU'
     })
     const isFinishedRef = useRef(false)
     const [isPaused, setIsPaused] = useState(false)
@@ -33,7 +34,34 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         if (!canvas) return
         const ctx = canvas.getContext('2d')
 
-        const input = new InputHandler()
+        // INPUT SETUP
+        let inputP1, inputP2;
+
+        // P1 Controls (WASD + Space/Shift/E)
+        const p1Keys = {
+            left: ['a'], right: ['d'], up: ['w'],
+            attack: [' '], roll: ['shift'], skill: ['e']
+        };
+        inputP1 = new InputHandler(p1Keys);
+
+        if (gameMode === 'pvp') {
+            // P2 Controls (Arrows + Numpad/Alt)
+            // Using safe layout: Arrows, Enter(Atk), RightShift(Roll), Del(Skill)
+            const p2Keys = {
+                left: ['arrowleft'], right: ['arrowright'], up: ['arrowup'],
+                attack: ['enter'], roll: ['control'], skill: ['delete', 'backspace']
+            };
+            inputP2 = new InputHandler(p2Keys);
+        } else {
+            // In PvE, P1 can technically use Arrows too if they want, but let's stick to P1Keys
+            // Or we could merge them for better UX in single player
+            const mergedKeys = {
+                left: ['a', 'arrowleft'], right: ['d', 'arrowright'], up: ['w', 'arrowup'],
+                attack: [' ', 'enter'], roll: ['shift', 'control'], skill: ['e', 'delete']
+            };
+            inputP1 = new InputHandler(mergedKeys); // Re-init with legacy support
+        }
+
         let animationId
         let isMounted = true
 
@@ -59,9 +87,17 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 const p1Img = resources.getImage(playerChar);
                 const p2Img = resources.getImage(cpuChar);
 
-                p1 = new Fighter(ctx, 100, playerChar, false, p1Img)
-                p2 = new Fighter(ctx, 720, cpuChar, true, p2Img)
-                ai = new AI(p2, cpuDifficulty)
+                // Initialize Fighters
+                // P1: Left side, facing right
+                p1 = new Fighter(ctx, 100, playerChar, false, p1Img, true)
+
+                // P2: Right side, facing left. IsAI depends on mode.
+                const isP2AI = gameMode === 'pve';
+                p2 = new Fighter(ctx, 720, cpuChar, isP2AI, p2Img, false) // Explicit facing left
+
+                if (isP2AI) {
+                    ai = new AI(p2, cpuDifficulty)
+                }
 
                 animationId = requestAnimationFrame(gameLoop)
             } catch (err) {
@@ -138,9 +174,14 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 return; // Wait for load
             }
 
-            // Update fighters
-            if (!p1.isDead) p1.handleInput(input.getPlayerInput())
-            if (!p2.isDead) ai.update(deltaTime, p1)
+            // Update fighters inputs
+            if (!p1.isDead) p1.handleInput(inputP1.getPlayerInput())
+
+            if (gameMode === 'pve') {
+                if (!p2.isDead && ai) ai.update(deltaTime, p1)
+            } else {
+                if (!p2.isDead) p2.handleInput(inputP2.getPlayerInput())
+            }
 
             p1.update(deltaTime, p2, spawnMeme, spawnParticle, spawnProjectile)
             p2.update(deltaTime, p1, spawnMeme, spawnParticle, spawnProjectile)
@@ -218,10 +259,11 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         return () => {
             isMounted = false
             cancelAnimationFrame(animationId)
-            input.destroy()
+            if (inputP1) inputP1.destroy()
+            if (inputP2) inputP2.destroy()
             isFinishedRef.current = false
         }
-    }, [playerChar, cpuChar, background, onGameOver])
+    }, [playerChar, cpuChar, background, onGameOver, gameMode])
 
     return (
         <div
@@ -271,7 +313,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 <div className="w-[350px] text-right">
                     <div className="flex justify-between items-end mb-1">
                         <span className="font-comic text-xs text-red-400">ABSOLUTE UNIT</span>
-                        <span className="font-bangers text-3xl text-white drop-shadow-md">CPU</span>
+                        <span className="font-bangers text-3xl text-white drop-shadow-md">{hudData.p2Name}</span>
                     </div>
                     {/* P2 Health Bar */}
                     <div className="h-8 bg-neutral-900 border-2 border-white rounded-xl overflow-hidden shadow-lg relative transform skew-x-[10deg]">
@@ -300,13 +342,28 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 className="block w-full h-full object-cover"
             />
 
-            {/* Meme Text Overlay Removed - Handled by Canvas */}
             {/* Instructions */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-8 px-8 py-3 bg-black/60 backdrop-blur-md rounded-full border border-white/20 text-white font-comic text-sm">
-                <div><span className="text-orange-400 font-bold">WASD</span> MOVE</div>
-                <div><span className="text-orange-400 font-bold">SPACE/J</span> BONK</div>
-                <div><span className="text-orange-400 font-bold">SHIFT/K</span> DASH</div>
-                <div><span className="text-orange-400 font-bold">E/Q/U</span> SKILL</div>
+                <div className="text-center">
+                    <div className="text-green-400 font-bold mb-1">PLAYER 1</div>
+                    <div className="text-[10px] space-x-2">
+                        <span>WASD (Move)</span>
+                        <span>SPACE (Atk)</span>
+                        <span>SHIFT (Dash)</span>
+                        <span>E (Skill)</span>
+                    </div>
+                </div>
+                {gameMode === 'pvp' && (
+                    <div className="text-center border-l border-white/20 pl-8">
+                        <div className="text-orange-400 font-bold mb-1">PLAYER 2</div>
+                        <div className="text-[10px] space-x-2">
+                            <span>ARROWS (Move)</span>
+                            <span>ENTER (Atk)</span>
+                            <span>CTRL (Dash)</span>
+                            <span>DEL (Skill)</span>
+                        </div>
+                    </div>
+                )}
             </div>
             {/* Controls */}
             <div className="absolute top-4 right-4 z-50 flex gap-2">

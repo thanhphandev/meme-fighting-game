@@ -1,7 +1,26 @@
 export class InputHandler {
-    constructor() {
+    constructor(keyMap) {
         this.keys = new Set();
-        this.handleKeyDown = (e) => this.keys.add(e.key.toLowerCase());
+        this.keyMap = keyMap || {
+            left: ['a', 'arrowleft'],
+            right: ['d', 'arrowright'],
+            up: ['w', 'arrowup'],
+            attack: [' ', 'j', 'f'],
+            roll: ['shift', 'k', 'l'],
+            skill: ['e', 'q', 'u']
+        };
+
+        this.handleKeyDown = (e) => {
+            const key = e.key.toLowerCase();
+            // Check if key is used in any map
+            const isGameKey = Object.values(this.keyMap).some(keys => keys.includes(key));
+            if (isGameKey) {
+                // Allow F5 (refresh) or F12 (dev) if accidentally mapped, but usually safe
+                // prevent defaults for space, arrows, backspace, etc.
+                if (!['f5', 'f12'].includes(key)) e.preventDefault();
+            }
+            this.keys.add(key);
+        };
         this.handleKeyUp = (e) => this.keys.delete(e.key.toLowerCase());
 
         window.addEventListener('keydown', this.handleKeyDown);
@@ -9,14 +28,16 @@ export class InputHandler {
     }
 
     getPlayerInput() {
-        return {
-            left: this.keys.has('a') || this.keys.has('arrowleft'),
-            right: this.keys.has('d') || this.keys.has('arrowright'),
-            up: this.keys.has('w') || this.keys.has('arrowup'),
-            attack: this.keys.has(' ') || this.keys.has('j') || this.keys.has('f'),
-            roll: this.keys.has('shift') || this.keys.has('k') || this.keys.has('l'),
-            skill: this.keys.has('e') || this.keys.has('q') || this.keys.has('u')
+        const input = {
+            left: false, right: false, up: false, attack: false, roll: false, skill: false
         };
+
+        for (const [action, keys] of Object.entries(this.keyMap)) {
+            if (keys.some(k => this.keys.has(k.toLowerCase()))) {
+                input[action] = true;
+            }
+        }
+        return input;
     }
 
     destroy() {

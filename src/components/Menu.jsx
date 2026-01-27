@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Play } from 'lucide-react'
 
-export default function Menu({ onStart }) {
+export default function Menu({ onStart, difficulty = 'medium', onSelectDifficulty }) {
     return (
         <div className="flex flex-col items-center gap-12 overflow-auto h-screen">
             <div className="relative">
@@ -15,23 +15,35 @@ export default function Menu({ onStart }) {
                 </motion.h1>
             </div>
 
-            <motion.button
-                onClick={onStart}
-                whileHover={{ scale: 1.1, rotate: 2 }}
-                whileTap={{ scale: 0.9 }}
-                className="group relative flex items-center gap-4 px-12 py-6 bg-white text-black font-bangers text-4xl rounded-2xl shadow-[0_10px_0_#999] hover:shadow-[0_5px_0_#999] hover:translate-y-[5px] transition-all"
-            >
-                <Play className="fill-black w-10 h-10 group-hover:animate-ping" />
-                START BONKING
-            </motion.button>
+            <div className="flex gap-6">
+                <motion.button
+                    onClick={() => onStart('pve')}
+                    whileHover={{ scale: 1.1, rotate: 2 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="group relative flex items-center gap-4 px-12 py-6 bg-white text-black font-bangers text-4xl rounded-2xl shadow-[0_10px_0_#999] hover:shadow-[0_5px_0_#999] hover:translate-y-[5px] transition-all"
+                >
+                    <Play className="fill-black w-10 h-10 group-hover:animate-ping" />
+                    VS CPU
+                </motion.button>
+
+                <motion.button
+                    onClick={() => onStart('pvp')}
+                    whileHover={{ scale: 1.1, rotate: -2 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="group relative flex items-center gap-4 px-12 py-6 bg-orange-500 text-white font-bangers text-4xl rounded-2xl shadow-[0_10px_0_#b45309] hover:shadow-[0_5px_0_#b45309] hover:translate-y-[5px] transition-all"
+                >
+                    <Play className="fill-white w-10 h-10 group-hover:animate-ping" />
+                    VS PLAYER
+                </motion.button>
+            </div>
 
             {/* Difficulty Selector */}
             <div className="flex gap-4">
                 {['easy', 'medium', 'hard'].map(diff => (
                     <button
                         key={diff}
-                        onClick={() => console.log('Set diff logic needed in App')} // Placeholder - need to lift state
-                        className={`px-6 py-2 rounded-xl font-bangers text-xl uppercase transition-all ${'medium' === diff ? 'bg-orange-500 text-white scale-110 shadow-lg' : 'bg-neutral-800 text-neutral-500 hover:bg-neutral-700'
+                        onClick={() => onSelectDifficulty && onSelectDifficulty(diff)}
+                        className={`px-6 py-2 rounded-xl font-bangers text-xl uppercase transition-all ${difficulty === diff ? 'bg-orange-500 text-white scale-110 shadow-lg' : 'bg-neutral-800 text-neutral-500 hover:bg-neutral-700'
                             }`}
                     >
                         {diff}

@@ -1,7 +1,7 @@
 import { CONFIG, CHARACTERS } from './constants';
 
 export class Fighter {
-    constructor(ctx, x, characterId, isAI = false, image = null) {
+    constructor(ctx, x, characterId, isAI = false, image = null, facingRight = true) {
         this.ctx = ctx;
         this.characterId = characterId;
         this.charData = CHARACTERS.find(c => c.id === characterId);
@@ -37,7 +37,7 @@ export class Fighter {
         this.velocityX = 0;
         this.velocityY = 0;
         this.onGround = true;
-        this.facingRight = !isAI;
+        this.facingRight = (typeof facingRight !== 'undefined') ? facingRight : !isAI;
 
         this.health = CONFIG.baseHp;
         this.stamina = 100;
