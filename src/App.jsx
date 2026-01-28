@@ -1,29 +1,28 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Menu from './components/Menu'
 import SelectionScreen from './components/SelectionScreen'
 import BattleScreen from './components/BattleScreen'
 import { BACKGROUNDS, CHARACTERS } from './game/constants'
 import { SoundManager } from './game/SoundManager'
+import { Trophy, Skull, RotateCcw, Users, Home, Zap } from 'lucide-react'
 import './index.css'
 
 // Vietnamese GenZ victory/defeat messages
 const VICTORY_MESSAGES = [
-  { title: 'EZ CLAP! 👏', subtitle: 'Quá dễ, như chơi game mobile vậy 😎' },
-  { title: 'GG EZ! 🏆', subtitle: 'Skill issue detected ở đối thủ 💀' },
-  { title: 'GIGACHAD! 💪', subtitle: 'Sẵn sàng húp phát nữa chưa?' },
-  { title: 'FEELS GOOD! 🐸', subtitle: 'Thắng ngọt như chocolate 🍫' },
-  { title: 'ABSOLUTE WIN! 🔥', subtitle: 'Đối thủ đã bị bonk!' },
-  { title: 'BASED! ⚡', subtitle: 'Chiến thần đã thức tỉnh!' },
+  { title: 'EZ CLAP!', subtitle: 'Quá dễ, như chơi game mobile vậy 😎', emoji: '👏' },
+  { title: 'GG EZ!', subtitle: 'Skill issue detected ở đối thủ', emoji: '🏆' },
+  { title: 'GIGACHAD!', subtitle: 'Sẵn sàng húp phát nữa chưa?', emoji: '💪' },
+  { title: 'BASED!', subtitle: 'Chiến thần đã thức tỉnh!', emoji: '⚡' },
+  { title: 'FLAWLESS!', subtitle: 'Đối thủ đã bị bonk!', emoji: '🔥' },
 ]
 
 const DEFEAT_MESSAGES = [
-  { title: 'SKILL ISSUE! 💀', subtitle: 'Tập luyện thêm rồi quay lại nhé~' },
-  { title: 'COPE & SEETHE! 😭', subtitle: 'Đừng buồn, ai cũng có ngày xui mà!' },
-  { title: 'BONKED! 🔨', subtitle: 'Bị húp mất rồi huhu...' },
-  { title: 'SADGE... 😢', subtitle: 'Thử lại đi, bạn làm được mà!' },
-  { title: 'NOT STONKS 📉', subtitle: 'F in chat cho bạn...' },
-  { title: 'OOF! 💔', subtitle: 'Lần sau sẽ khác thôi!' },
+  { title: 'SKILL ISSUE!', subtitle: 'Tập luyện thêm rồi quay lại nhé~', emoji: '💀' },
+  { title: 'BONKED!', subtitle: 'Bị húp mất rồi huhu...', emoji: '🔨' },
+  { title: 'SADGE...', subtitle: 'Thử lại đi, bạn làm được mà!', emoji: '😢' },
+  { title: 'NOT STONKS', subtitle: 'F in chat cho bạn...', emoji: '📉' },
+  { title: 'REKT!', subtitle: 'Lần sau sẽ khác thôi!', emoji: '💔' },
 ]
 
 function App() {
@@ -69,15 +68,10 @@ function App() {
 
   const onGameOver = (winStatus) => {
     setWinner(winStatus)
-
-    // Pick random message
     const messages = winStatus === 'p1' ? VICTORY_MESSAGES : DEFEAT_MESSAGES
     const randomMessage = messages[Math.floor(Math.random() * messages.length)]
     setEndMessage(randomMessage)
-
-    // Play victory/defeat sound
     SoundManager.playBgm('bgm_victory', false)
-
     setScreen('gameover')
   }
 
@@ -98,21 +92,21 @@ function App() {
     setSelectionPhase('p1')
   }
 
-  // Get character data for display
   const getCharacterName = (charId) => {
     return CHARACTERS.find(c => c.id === charId)?.name || 'Unknown'
   }
 
   return (
-    <div className="w-screen h-screen bg-neutral-950 flex flex-col items-center justify-center overflow-hidden">
+    <div className="w-screen h-screen bg-[#0a0a0f] flex flex-col items-center justify-center overflow-hidden">
       <AnimatePresence mode="wait">
         {screen === 'menu' && (
           <motion.div
             key="menu"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.4 }}
+            className="w-full h-full"
           >
             <Menu
               onStart={startGame}
@@ -125,13 +119,15 @@ function App() {
         {screen === 'selection' && (
           <motion.div
             key="selection"
-            initial={{ opacity: 0, x: 100 }}
+            initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+            className="w-full h-full flex items-center justify-center"
           >
             <SelectionScreen
               onSelect={selectCharacter}
-              title={selectionPhase === 'p1' ? "🎮 PLAYER 1: CHỌN ĐI NÀO!" : "🎮 PLAYER 2: TỚI LƯỢT BẠN!"}
+              title={selectionPhase === 'p1' ? "PLAYER 1 — CHỌN ĐI!" : "PLAYER 2 — TỚI LƯỢT!"}
             />
           </motion.div>
         )}
@@ -159,91 +155,118 @@ function App() {
         {screen === 'gameover' && (
           <motion.div
             key="gameover"
-            initial={{ scale: 0, rotate: -10 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', bounce: 0.5 }}
-            className="flex flex-col items-center text-center p-8 md:p-12 bg-gradient-to-br from-neutral-900 to-neutral-950 border-4 border-orange-500 rounded-3xl shadow-[0_0_60px_rgba(255,165,0,0.6)] z-50 mx-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="relative w-full h-full flex items-center justify-center"
           >
-            {/* Winner indicator */}
+            {/* Background with blur */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-neutral-900/90 to-black/90 backdrop-blur-sm" />
+            <div className="bg-pattern opacity-50" />
+
+            {/* Content */}
             <motion.div
-              className={`text-6xl mb-4 ${winner === 'p1' ? 'animate-bounce' : 'animate-pulse'}`}
+              initial={{ scale: 0.8, y: 30 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 200 }}
+              className="relative z-10 flex flex-col items-center text-center px-4 max-w-lg"
             >
-              {winner === 'p1' ? '🏆' : '💀'}
-            </motion.div>
-
-            {/* Main title */}
-            <motion.h1
-              className={`font-bangers text-5xl md:text-8xl mb-4 ${winner === 'p1'
-                  ? 'text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500'
-                  : 'text-red-500'
-                }`}
-              animate={winner === 'p1' ? { scale: [1, 1.05, 1] } : {}}
-              transition={{ repeat: Infinity, duration: 1 }}
-            >
-              {endMessage?.title || (winner === 'p1' ? 'VICTORY!' : 'DEFEAT...')}
-            </motion.h1>
-
-            {/* Subtitle */}
-            <p className="text-lg md:text-2xl text-orange-300 mb-6 font-comic max-w-md">
-              {endMessage?.subtitle}
-            </p>
-
-            {/* Winner/Loser characters */}
-            <div className="flex gap-4 mb-6 text-white/70 font-comic text-sm">
-              <span className={winner === 'p1' ? 'text-green-400' : 'text-red-400'}>
-                {winner === 'p1' ? '👑' : '💔'} {getCharacterName(playerChar)}
-              </span>
-              <span>VS</span>
-              <span className={winner !== 'p1' ? 'text-green-400' : 'text-red-400'}>
-                {winner !== 'p1' ? '👑' : '💔'} {getCharacterName(cpuChar)}
-              </span>
-            </div>
-
-            {/* Action buttons */}
-            <div className="flex flex-col md:flex-row gap-3 md:gap-4">
-              <motion.button
-                onClick={handleRematch}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 md:px-10 py-3 md:py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-bangers text-2xl md:text-3xl rounded-full transition-all shadow-lg hover:shadow-orange-500/50"
-              >
-                🔄 REMATCH
-              </motion.button>
-
-              <motion.button
-                onClick={() => {
-                  SoundManager.playSfx('sfx_select')
-                  setWinner(null)
-                  setEndMessage(null)
-                  setSelectionPhase('p1')
-                  setScreen('selection')
+              {/* Icon */}
+              <motion.div
+                animate={winner === 'p1' ? {
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 10, -10, 0]
+                } : {
+                  y: [0, -10, 0]
                 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 md:px-10 py-3 md:py-4 bg-neutral-700 hover:bg-neutral-600 text-white font-bangers text-2xl md:text-3xl rounded-full transition-all shadow-lg border-2 border-neutral-500"
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="text-7xl md:text-8xl mb-6"
               >
-                🎭 ĐỔI NHÂN VẬT
-              </motion.button>
+                {endMessage?.emoji || (winner === 'p1' ? '🏆' : '💀')}
+              </motion.div>
 
-              <motion.button
-                onClick={resetGame}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 md:px-10 py-3 md:py-4 bg-neutral-800 hover:bg-neutral-700 text-white font-bangers text-2xl md:text-3xl rounded-full transition-all shadow-lg border-2 border-neutral-600"
+              {/* Title */}
+              <motion.h1
+                className={`text-game text-4xl md:text-6xl tracking-wider mb-4 ${winner === 'p1' ? 'text-gradient-cyan glow-cyan' : 'text-gradient-pink glow-pink'
+                  }`}
               >
-                🏠 MENU
-              </motion.button>
-            </div>
+                {endMessage?.title || (winner === 'p1' ? 'VICTORY!' : 'DEFEAT...')}
+              </motion.h1>
 
-            {/* Pro tip */}
-            <motion.p
-              className="mt-6 text-white/40 font-comic text-xs md:text-sm max-w-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-            >
-              💡 Pro tip: Học combo skill + attack để tăng damage!
-            </motion.p>
+              {/* Subtitle */}
+              <p className="text-display text-lg md:text-xl text-white/70 mb-6">
+                {endMessage?.subtitle}
+              </p>
+
+              {/* Character Results */}
+              <div className="flex items-center gap-4 mb-8 text-display text-sm">
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${winner === 'p1' ? 'bg-cyan-500/20 border border-cyan-500/30' : 'bg-red-500/20 border border-red-500/30'
+                  }`}>
+                  {winner === 'p1' ? <Trophy className="w-4 h-4 text-cyan-400" /> : <Skull className="w-4 h-4 text-red-400" />}
+                  <span className={winner === 'p1' ? 'text-cyan-400' : 'text-red-400'}>
+                    {getCharacterName(playerChar)}
+                  </span>
+                </div>
+                <span className="text-white/30">VS</span>
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${winner !== 'p1' ? 'bg-cyan-500/20 border border-cyan-500/30' : 'bg-red-500/20 border border-red-500/30'
+                  }`}>
+                  {winner !== 'p1' ? <Trophy className="w-4 h-4 text-cyan-400" /> : <Skull className="w-4 h-4 text-red-400" />}
+                  <span className={winner !== 'p1' ? 'text-cyan-400' : 'text-red-400'}>
+                    {getCharacterName(cpuChar)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col md:flex-row gap-3 w-full max-w-md">
+                <motion.button
+                  onClick={handleRematch}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-game text-lg text-black font-bold hover:from-cyan-400 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/30"
+                >
+                  <RotateCcw className="w-5 h-5" />
+                  REMATCH
+                </motion.button>
+
+                <motion.button
+                  onClick={() => {
+                    SoundManager.playSfx('sfx_select')
+                    setWinner(null)
+                    setEndMessage(null)
+                    setSelectionPhase('p1')
+                    setScreen('selection')
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl glass-card border border-white/20 text-game text-lg text-white hover:border-white/40 transition-all"
+                >
+                  <Users className="w-5 h-5" />
+                  ĐỔI CHAR
+                </motion.button>
+
+                <motion.button
+                  onClick={resetGame}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl glass-card border border-white/10 text-game text-lg text-white/60 hover:text-white hover:border-white/30 transition-all"
+                >
+                  <Home className="w-5 h-5" />
+                  MENU
+                </motion.button>
+              </div>
+
+              {/* Pro tip */}
+              <motion.p
+                className="mt-6 text-display text-xs text-white/30 flex items-center gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+              >
+                <Zap className="w-3 h-3" />
+                Pro tip: Combo skill + attack để tăng damage!
+                <Zap className="w-3 h-3" />
+              </motion.p>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Play, RotateCcw, Home, Sliders } from 'lucide-react';
+import { Play, RotateCcw, Home, Sliders, Volume2, Music } from 'lucide-react';
 import { useState } from 'react';
 import { SoundManager } from '../game/SoundManager';
 import SoundControl from './SoundControl';
@@ -35,124 +35,168 @@ export default function PauseMenu({ onResume, onRestart, onQuit }) {
     };
 
     return (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+        <div className="absolute inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop */}
             <motion.div
-                initial={{ scale: 0.8, opacity: 0, y: -20 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+
+            {/* Modal */}
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                transition={{ type: 'spring', bounce: 0.4 }}
-                className="flex flex-col gap-4 md:gap-6 p-6 md:p-10 bg-gradient-to-br from-neutral-900 to-neutral-950 border-4 border-orange-500 rounded-3xl text-center shadow-[0_0_60px_rgba(255,165,0,0.4)] mx-4"
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                className="relative glass-card border-gradient p-6 md:p-8 min-w-[320px] md:min-w-[400px] mx-4"
             >
                 {/* Header */}
-                <div className="flex items-center justify-center gap-3">
+                <div className="text-center mb-6">
                     <motion.div
-                        animate={{ rotate: [0, 10, -10, 0] }}
+                        animate={{ opacity: [0.5, 1, 0.5] }}
                         transition={{ repeat: Infinity, duration: 2 }}
-                        className="text-4xl"
+                        className="text-4xl mb-2"
                     >
                         ⏸️
                     </motion.div>
-                    <h2 className="font-bangers text-4xl md:text-6xl text-white">TẠM DỪNG</h2>
+                    <h2 className="text-game text-3xl md:text-4xl text-white tracking-wider">
+                        TẠM DỪNG
+                    </h2>
                 </div>
 
-                {/* Settings Toggle */}
                 {!showSettings ? (
-                    <>
-                        {/* Main Buttons */}
+                    <div className="flex flex-col gap-3">
+                        {/* Resume Button */}
                         <motion.button
                             onClick={handleResume}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="flex items-center justify-center gap-3 px-8 py-3 md:py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bangers text-xl md:text-2xl rounded-full hover:from-green-400 hover:to-emerald-500 transition-all shadow-lg"
+                            whileHover={{ scale: 1.02, x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-cyan-500/20 to-cyan-600/10 border border-cyan-500/30 hover:border-cyan-400 transition-all"
                         >
-                            <Play className="w-5 h-5 md:w-6 md:h-6 fill-white" />
-                            TIẾP TỤC
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                                <Play className="w-5 h-5 text-black fill-current" />
+                            </div>
+                            <span className="text-game text-lg text-white group-hover:text-cyan-400 transition-colors">
+                                TIẾP TỤC
+                            </span>
                         </motion.button>
 
+                        {/* Restart Button */}
                         <motion.button
                             onClick={handleRestart}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="flex items-center justify-center gap-3 px-8 py-3 md:py-4 bg-neutral-800 text-white font-bangers text-xl md:text-2xl rounded-full hover:bg-neutral-700 transition-all border-2 border-neutral-600"
+                            whileHover={{ scale: 1.02, x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="group flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 transition-all"
                         >
-                            <RotateCcw className="w-5 h-5 md:w-6 md:h-6" />
-                            CHƠI LẠI
+                            <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                                <RotateCcw className="w-5 h-5 text-white/70" />
+                            </div>
+                            <span className="text-game text-lg text-white/70 group-hover:text-white transition-colors">
+                                CHƠI LẠI
+                            </span>
                         </motion.button>
 
+                        {/* Settings Button */}
                         <motion.button
                             onClick={() => setShowSettings(true)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="flex items-center justify-center gap-3 px-8 py-3 md:py-4 bg-neutral-800 text-white font-bangers text-xl md:text-2xl rounded-full hover:bg-neutral-700 transition-all border-2 border-neutral-600"
+                            whileHover={{ scale: 1.02, x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="group flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 transition-all"
                         >
-                            <Sliders className="w-5 h-5 md:w-6 md:h-6" />
-                            CÀI ĐẶT ÂM THANH
+                            <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                                <Sliders className="w-5 h-5 text-white/70" />
+                            </div>
+                            <span className="text-game text-lg text-white/70 group-hover:text-white transition-colors">
+                                CÀI ĐẶT
+                            </span>
                         </motion.button>
 
+                        {/* Quit Button */}
                         <motion.button
                             onClick={handleQuit}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="flex items-center justify-center gap-3 px-8 py-3 md:py-4 bg-gradient-to-r from-red-600 to-rose-700 text-white font-bangers text-xl md:text-2xl rounded-full hover:from-red-500 hover:to-rose-600 transition-all shadow-lg"
+                            whileHover={{ scale: 1.02, x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="group flex items-center gap-4 p-4 rounded-xl bg-red-500/10 border border-red-500/30 hover:border-red-400 transition-all"
                         >
-                            <Home className="w-5 h-5 md:w-6 md:h-6" />
-                            THOÁT VỀ MENU
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/30">
+                                <Home className="w-5 h-5 text-white" />
+                            </div>
+                            <span className="text-game text-lg text-white/70 group-hover:text-red-400 transition-colors flex-1 text-left">
+                                THOÁT
+                            </span>
                         </motion.button>
-                    </>
+                    </div>
                 ) : (
-                    <>
-                        {/* Sound Settings */}
-                        <div className="flex flex-col gap-4 p-4 bg-black/30 rounded-xl">
-                            <h3 className="font-bangers text-xl text-orange-400">🔊 Cài đặt âm thanh</h3>
+                    <div className="flex flex-col gap-4">
+                        {/* Settings Panel */}
+                        <div className="space-y-4">
+                            <h3 className="text-game text-lg text-cyan-400 flex items-center gap-2">
+                                <Volume2 className="w-5 h-5" />
+                                Âm thanh
+                            </h3>
 
-                            {/* Quick Mute Controls */}
+                            {/* Quick Mute */}
                             <div className="flex justify-center">
                                 <SoundControl />
                             </div>
 
                             {/* BGM Volume */}
-                            <div className="flex flex-col gap-2">
-                                <label className="font-comic text-sm text-white/70 text-left">
-                                    🎵 Nhạc nền: {Math.round(bgmVolume)}%
-                                </label>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-display text-sm text-white/60 flex items-center gap-2">
+                                        <Music className="w-4 h-4" />
+                                        Nhạc nền
+                                    </label>
+                                    <span className="text-game text-sm text-cyan-400">
+                                        {Math.round(bgmVolume)}%
+                                    </span>
+                                </div>
                                 <input
                                     type="range"
                                     min="0"
                                     max="100"
                                     value={bgmVolume}
                                     onChange={(e) => handleBgmVolumeChange(Number(e.target.value))}
-                                    className="w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer slider-orange"
+                                    className="w-full slider-cyan"
                                 />
                             </div>
 
                             {/* SFX Volume */}
-                            <div className="flex flex-col gap-2">
-                                <label className="font-comic text-sm text-white/70 text-left">
-                                    🔈 Hiệu ứng: {Math.round(sfxVolume)}%
-                                </label>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-display text-sm text-white/60 flex items-center gap-2">
+                                        <Volume2 className="w-4 h-4" />
+                                        Hiệu ứng
+                                    </label>
+                                    <span className="text-game text-sm text-cyan-400">
+                                        {Math.round(sfxVolume)}%
+                                    </span>
+                                </div>
                                 <input
                                     type="range"
                                     min="0"
                                     max="100"
                                     value={sfxVolume}
                                     onChange={(e) => handleSfxVolumeChange(Number(e.target.value))}
-                                    className="w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer slider-orange"
+                                    className="w-full slider-cyan"
                                 />
                             </div>
                         </div>
 
+                        {/* Back Button */}
                         <motion.button
                             onClick={() => setShowSettings(false)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="px-8 py-3 bg-orange-500 text-white font-bangers text-xl rounded-full hover:bg-orange-400 transition-all"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="mt-2 p-3 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-game text-base text-black font-bold hover:from-cyan-400 hover:to-cyan-500 transition-all"
                         >
                             ← QUAY LẠI
                         </motion.button>
-                    </>
+                    </div>
                 )}
 
-                {/* Keyboard hint */}
-                <p className="text-white/40 font-comic text-xs mt-2">
+                {/* Footer hint */}
+                <p className="text-display text-[11px] text-white/30 text-center mt-4">
                     Nhấn ESC để tiếp tục
                 </p>
             </motion.div>

@@ -1,13 +1,12 @@
-import { motion } from 'framer-motion'
-import { Play, Settings, Gamepad2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Gamepad2, Users, Zap, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { SoundManager } from '../game/SoundManager'
 import SoundControl from './SoundControl'
 
 export default function Menu({ onStart, difficulty = 'medium', onSelectDifficulty }) {
-    const [showSettings, setShowSettings] = useState(false)
+    const [hoveredButton, setHoveredButton] = useState(null)
 
-    // Play menu BGM on mount
     useEffect(() => {
         SoundManager.playBgm('bgm_menu')
         return () => {
@@ -26,129 +25,222 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
     }
 
     return (
-        <div className="flex flex-col items-center gap-8 md:gap-12 overflow-auto h-screen py-8 px-4">
-            {/* Title */}
-            <div className="relative">
-                <motion.h1
-                    className="font-bangers text-6xl md:text-[120px] text-white leading-none tracking-tighter text-center"
-                    animate={{ scale: [1, 1.05, 1], rotate: [-1, 1, -1] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                >
-                    MEME BATTLE<br />
-                    <span className="text-orange-500 drop-shadow-[0_0_30px_rgba(249,115,22,0.8)]">
-                        JS EDITION
-                    </span>
-                </motion.h1>
+        <div className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden">
+            {/* Animated Background */}
+            <div className="bg-pattern" />
+            <div className="bg-grid" />
 
-                {/* Vietnamese tagline */}
-                <motion.p
-                    className="text-center text-white/60 font-comic text-sm md:text-lg mt-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+            {/* Floating Particles */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {[...Array(20)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute w-1 h-1 bg-cyan-400/30 rounded-full"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                        }}
+                        animate={{
+                            y: [0, -100, 0],
+                            opacity: [0, 1, 0],
+                        }}
+                        transition={{
+                            duration: 3 + Math.random() * 2,
+                            repeat: Infinity,
+                            delay: Math.random() * 2,
+                        }}
+                    />
+                ))}
+            </div>
+
+            {/* Content Container */}
+            <div className="relative z-10 flex flex-col items-center gap-8 md:gap-12 px-4 py-8">
+
+                {/* Logo / Title */}
+                <motion.div
+                    className="text-center"
+                    initial={{ opacity: 0, y: -30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                >
+                    {/* Main Title */}
+                    <motion.h1
+                        className="text-game text-5xl md:text-7xl lg:text-8xl font-black tracking-wider"
+                        animate={{
+                            textShadow: [
+                                "0 0 20px rgba(0, 240, 255, 0.5)",
+                                "0 0 40px rgba(0, 240, 255, 0.8)",
+                                "0 0 20px rgba(0, 240, 255, 0.5)"
+                            ]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    >
+                        <span className="text-gradient-cyan">MEME</span>
+                        <span className="text-white mx-2">BATTLE</span>
+                    </motion.h1>
+
+                    {/* Subtitle */}
+                    <motion.div
+                        className="mt-2 flex items-center justify-center gap-3"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <div className="h-px w-12 bg-gradient-to-r from-transparent to-cyan-500" />
+                        <span className="text-game text-lg md:text-xl text-cyan-400 tracking-[0.3em]">
+                            ARENA
+                        </span>
+                        <div className="h-px w-12 bg-gradient-to-l from-transparent to-cyan-500" />
+                    </motion.div>
+
+                    {/* Tagline */}
+                    <motion.p
+                        className="text-display text-sm md:text-base text-white/50 mt-4 tracking-wide"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                    >
+                        ⚡ Game đối kháng meme cực đỉnh ⚡
+                    </motion.p>
+                </motion.div>
+
+                {/* Main Action Buttons */}
+                <motion.div
+                    className="flex flex-col md:flex-row gap-4 md:gap-6 w-full max-w-xl px-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                >
+                    {/* VS CPU Button */}
+                    <motion.button
+                        onClick={() => handleButtonClick('pve')}
+                        onHoverStart={() => setHoveredButton('pve')}
+                        onHoverEnd={() => setHoveredButton(null)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group relative flex-1 glass-card glass-card-hover p-6 cursor-pointer overflow-hidden"
+                    >
+                        {/* Glow Effect */}
+                        <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        />
+
+                        <div className="relative flex items-center gap-4">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                                <Gamepad2 className="w-7 h-7 text-black" />
+                            </div>
+                            <div className="flex-1 text-left">
+                                <h3 className="text-game text-xl md:text-2xl text-white group-hover:text-cyan-400 transition-colors">
+                                    VS CPU
+                                </h3>
+                                <p className="text-display text-sm text-white/50">
+                                    Đối đầu với AI
+                                </p>
+                            </div>
+                            <ChevronRight className="w-6 h-6 text-white/30 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+                        </div>
+                    </motion.button>
+
+                    {/* VS Player Button */}
+                    <motion.button
+                        onClick={() => handleButtonClick('pvp')}
+                        onHoverStart={() => setHoveredButton('pvp')}
+                        onHoverEnd={() => setHoveredButton(null)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group relative flex-1 glass-card glass-card-hover p-6 cursor-pointer overflow-hidden"
+                    >
+                        {/* Glow Effect */}
+                        <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        />
+
+                        <div className="relative flex items-center gap-4">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center shadow-lg shadow-pink-500/30">
+                                <Users className="w-7 h-7 text-white" />
+                            </div>
+                            <div className="flex-1 text-left">
+                                <h3 className="text-game text-xl md:text-2xl text-white group-hover:text-pink-400 transition-colors">
+                                    VS PLAYER
+                                </h3>
+                                <p className="text-display text-sm text-white/50">
+                                    2 người chơi
+                                </p>
+                            </div>
+                            <ChevronRight className="w-6 h-6 text-white/30 group-hover:text-pink-400 group-hover:translate-x-1 transition-all" />
+                        </div>
+                    </motion.button>
+                </motion.div>
+
+                {/* Difficulty Selector */}
+                <motion.div
+                    className="flex flex-col items-center gap-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                 >
-                    ✨ Game đối kháng meme đỉnh nhất! ✨
-                </motion.p>
-            </div>
+                    <span className="text-display text-sm text-white/40 uppercase tracking-widest">
+                        Độ khó CPU
+                    </span>
+                    <div className="flex gap-2 p-1 bg-black/30 rounded-xl backdrop-blur-sm">
+                        {[
+                            { key: 'easy', label: 'DỄ', color: 'from-green-400 to-emerald-500', icon: '😊' },
+                            { key: 'medium', label: 'VỪA', color: 'from-yellow-400 to-orange-500', icon: '😤' },
+                            { key: 'hard', label: 'KHÓ', color: 'from-red-400 to-rose-500', icon: '💀' }
+                        ].map(diff => (
+                            <motion.button
+                                key={diff.key}
+                                onClick={() => handleDifficultyChange(diff.key)}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`relative px-5 md:px-6 py-2.5 md:py-3 rounded-lg text-game text-sm md:text-base font-bold transition-all duration-300 ${difficulty === diff.key
+                                        ? `bg-gradient-to-r ${diff.color} text-black shadow-lg`
+                                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                                    }`}
+                            >
+                                <span className="mr-1.5">{diff.icon}</span>
+                                {diff.label}
 
-            {/* Main Buttons */}
-            <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-                <motion.button
-                    onClick={() => handleButtonClick('pve')}
-                    whileHover={{ scale: 1.1, rotate: 2 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="group relative flex items-center gap-4 px-8 md:px-12 py-4 md:py-6 bg-white text-black font-bangers text-2xl md:text-4xl rounded-2xl shadow-[0_10px_0_#999] hover:shadow-[0_5px_0_#999] hover:translate-y-[5px] transition-all"
-                >
-                    <Gamepad2 className="w-8 h-8 md:w-10 md:h-10 group-hover:animate-bounce" />
-                    <div className="flex flex-col items-start">
-                        <span>VS CPU</span>
-                        <span className="text-xs md:text-sm font-comic text-neutral-500">Đấu với máy</span>
+                                {/* Active indicator */}
+                                {difficulty === diff.key && (
+                                    <motion.div
+                                        layoutId="difficultyIndicator"
+                                        className="absolute -bottom-1 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2"
+                                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                    />
+                                )}
+                            </motion.button>
+                        ))}
                     </div>
-                </motion.button>
+                </motion.div>
 
-                <motion.button
-                    onClick={() => handleButtonClick('pvp')}
-                    whileHover={{ scale: 1.1, rotate: -2 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="group relative flex items-center gap-4 px-8 md:px-12 py-4 md:py-6 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bangers text-2xl md:text-4xl rounded-2xl shadow-[0_10px_0_#b45309] hover:shadow-[0_5px_0_#b45309] hover:translate-y-[5px] transition-all"
+                {/* Sound Controls */}
+                <motion.div
+                    className="flex flex-col items-center gap-3"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
                 >
-                    <Play className="fill-white w-8 h-8 md:w-10 md:h-10 group-hover:animate-ping" />
-                    <div className="flex flex-col items-start">
-                        <span>VS PLAYER</span>
-                        <span className="text-xs md:text-sm font-comic text-white/70">2 người chơi</span>
+                    <span className="text-display text-xs text-white/30 uppercase tracking-widest">
+                        Âm thanh
+                    </span>
+                    <SoundControl />
+                </motion.div>
+
+                {/* Footer */}
+                <motion.div
+                    className="flex flex-col items-center gap-2 mt-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                >
+                    <div className="flex items-center gap-2 text-white/20 text-xs">
+                        <Zap className="w-3 h-3" />
+                        <span className="text-display tracking-wider">Phan Văn Thành</span>
+                        <Zap className="w-3 h-3" />
                     </div>
-                </motion.button>
+                </motion.div>
             </div>
-
-            {/* Difficulty Selector */}
-            <div className="flex flex-col items-center gap-3">
-                <span className="text-white/60 font-comic text-sm">Độ khó CPU:</span>
-                <div className="flex gap-2 md:gap-4">
-                    {[
-                        { key: 'easy', label: 'DỄ', emoji: '😊', color: 'from-green-500 to-emerald-600' },
-                        { key: 'medium', label: 'VỪA', emoji: '😤', color: 'from-yellow-500 to-orange-500' },
-                        { key: 'hard', label: 'KHÓ', emoji: '💀', color: 'from-red-500 to-rose-600' }
-                    ].map(diff => (
-                        <motion.button
-                            key={diff.key}
-                            onClick={() => handleDifficultyChange(diff.key)}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`px-4 md:px-6 py-2 md:py-3 rounded-xl font-bangers text-lg md:text-xl uppercase transition-all ${difficulty === diff.key
-                                    ? `bg-gradient-to-r ${diff.color} text-white scale-110 shadow-lg ring-2 ring-white/50`
-                                    : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
-                                }`}
-                        >
-                            <span className="mr-1">{diff.emoji}</span>
-                            {diff.label}
-                        </motion.button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Sound Controls */}
-            <div className="flex flex-col items-center gap-2">
-                <span className="text-white/60 font-comic text-sm">🔊 Âm thanh:</span>
-                <SoundControl />
-            </div>
-
-            {/* Character Tags */}
-            <motion.div
-                className="flex gap-3 md:gap-6 flex-wrap justify-center max-w-3xl"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-            >
-                {[
-                    { name: 'DOGE', emoji: '🐕' },
-                    { name: 'PEPE', emoji: '🐸' },
-                    { name: 'NYAN', emoji: '🌈' },
-                    { name: 'CAPY', emoji: '🧘' },
-                    { name: 'SAMURAI', emoji: '⚔️' },
-                    { name: 'NINJA', emoji: '🌑' },
-                    { name: 'DINO', emoji: '🦖' },
-                    { name: 'LUFFY', emoji: '🏴‍☠️' },
-                    { name: 'ZORO', emoji: '🗡️' },
-                ].map((m) => (
-                    <motion.span
-                        key={m.name}
-                        whileHover={{ scale: 1.1, rotate: Math.random() * 10 - 5 }}
-                        className="px-3 md:px-4 py-1.5 md:py-2 bg-neutral-800/80 rounded-lg text-neutral-300 font-comic text-xs md:text-sm border border-neutral-700 cursor-default hover:border-orange-500/50 transition-colors backdrop-blur-sm"
-                    >
-                        {m.emoji} #{m.name}
-                    </motion.span>
-                ))}
-            </motion.div>
-
-            {/* Footer Credits */}
-            <motion.div
-                className="text-center text-white/30 font-comic text-xs mt-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-            >
-                Made with 💖 | Vietnamese GenZ Edition
-            </motion.div>
         </div>
     )
 }
