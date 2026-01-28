@@ -28,20 +28,6 @@ export const CONFIG = {
 
 export const CHARACTERS = [
     {
-        id: 'doge',
-        name: 'Lil Doge',
-        asset: 'doge.png',
-        description: 'Much speed. Wow.',
-        stats: { speed: 9, jump: 18, damage: 12 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
-        skill: {
-            name: 'MUCH SPEED',
-            type: 'buff',
-            data: { speedMult: 1.5, duration: 200 } // Frames 
-        }
-    },
-    {
         id: 'buff_doge',
         name: 'Muscular Doge',
         asset: 'buff_doge.png',
@@ -69,23 +55,6 @@ export const CHARACTERS = [
             data: {
                 speedX: 12, speedY: 0, damage: 20, width: 40, height: 40,
                 color: '#00ff00', shape: 'rect', life: 60, knockback: 10
-            }
-        }
-    },
-    {
-        id: 'nyan_cat',
-        name: 'Nyan Cat',
-        asset: 'nyan_cat.png',
-        description: 'The Standard Bearer.',
-        stats: { speed: 12, jump: 25, damage: 10 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        frameCounts: { idle: 6, run: 6, jump: 6, fall: 6, attack: 6, skill: 6, hit: 4, ko: 1, roll: 6 },
-        skill: {
-            name: 'RAINBOW BLAST',
-            type: 'projectile',
-            data: {
-                speedX: 15, speedY: 0, damage: 15, width: 100, height: 30,
-                color: '#ff00ff', shape: 'rect', life: 50, knockback: 20
             }
         }
     },
@@ -149,23 +118,6 @@ export const CHARACTERS = [
         }
     },
     {
-        id: 'luffy',
-        name: 'Straw Hat',
-        asset: 'luffy.png',
-        description: 'I\'m gonna be King of the Pirates!',
-        stats: { speed: 10, jump: 20, damage: 18 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
-        skill: {
-            name: 'GOMU PISTOL',
-            type: 'projectile',
-            data: {
-                speedX: 25, speedY: 0, damage: 30, width: 40, height: 30,
-                color: '#f00', shape: 'rect', life: 40, knockback: 25
-            }
-        }
-    },
-    {
         id: 'chicken',
         name: 'Silly Chicken',
         asset: 'silly_chicken.png',
@@ -179,22 +131,6 @@ export const CHARACTERS = [
                 speedX: 10, speedY: -10, gravity: 0.6, damage: 25, width: 20, height: 25,
                 color: '#fff', shape: 'circle', onGround: 'bounce', life: 120
             }
-        }
-    },
-    {
-        id: 'banana_cat',
-        name: 'Crying Banana Cat',
-        asset: 'banana_cat.png',
-        description: 'Sad but appealing.',
-        stats: { speed: 7, jump: 14, damage: 16 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        // Optimized frame counts
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
-        hitbox: { width: 60, height: 90 },
-        skill: {
-            name: 'TEAR FLOOD',
-            type: 'aoe',
-            data: { range: 250, damage: 2, interval: 15, duration: 180, visual: 'water' }
         }
     },
     {
@@ -220,9 +156,8 @@ export const CHARACTERS = [
         asset: 'hamster.png',
         description: 'Small but hungry.',
         stats: { speed: 8, jump: 16, damage: 14 },
-        rowCount: 10, // Custom row count for this sprite sheet
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 9, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, win: 4, roll: 6 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
         skill: {
             name: 'SEED SNACK',
             type: 'buff',
@@ -235,13 +170,133 @@ export const CHARACTERS = [
         asset: 'cutecat.png',
         description: 'So cute it hurts.',
         stats: { speed: 9, jump: 18, damage: 10 },
-        rowCount: 9,
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 5, hit: 3, ko: 1, win: 5, roll: 6 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
         skill: {
             name: 'CUTE OVERLOAD',
             type: 'aoe',
             data: { range: 400, damage: 5, stun: 180, interval: 30, duration: 150, visual: 'shake' }
+        }
+    },
+    {
+        id: 'cell_perfect',
+        name: 'Cell Perfect',
+        asset: 'cell-perfect.png',
+        description: 'Perfection at its finest.',
+        stats: { speed: 11, jump: 22, damage: 22 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
+        skill: {
+            name: 'SOLAR KAMEHAMEHA',
+            type: 'projectile',
+            data: {
+                speedX: 22, speedY: 0, damage: 35, width: 50, height: 50,
+                color: '#0f0', shape: 'circle', life: 60, knockback: 30
+            }
+        }
+    },
+    {
+        id: 'white_bread',
+        name: 'White Bread',
+        asset: 'white-bread.png',
+        description: 'The staple of life.',
+        stats: { speed: 7, jump: 15, damage: 16 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, win: 4, roll: 6 },
+        skill: {
+            name: 'CARB OVERLOAD',
+            type: 'buff',
+            data: { scale: 1.1, damageMult: 1.3, duration: 180 }
+        }
+    },
+    {
+        id: 'luffy_nikka',
+        name: 'Gear 5 Luffy',
+        asset: 'luffy_nikka.png',
+        description: 'The Warrior of Liberation.',
+        stats: { speed: 12, jump: 25, damage: 25 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, win: 4, roll: 6 },
+        skill: {
+            name: 'BAJRANG GUN',
+            type: 'projectile',
+            data: {
+                speedX: 20, speedY: 0, damage: 40, width: 80, height: 80,
+                color: '#fff', shape: 'circle', life: 50, knockback: 35
+            }
+        }
+    },
+    {
+        id: 'tieu_yeu_heo',
+        name: 'Tiểu Yêu Heo',
+        asset: 'tieu_yeu_heo.png',
+        description: 'Chỉ muốn về ngủ thôi...',
+        stats: { speed: 7, jump: 12, damage: 15 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 5, hit: 3, ko: 1, win: 4, roll: 6 },
+        skill: {
+            name: 'HÚC ĐẦU',
+            type: 'dash',
+            data: { speed: 20, damage: 20, range: 150, invuln: false }
+        }
+    },
+    {
+        id: 'tieu_yeu_ech',
+        name: 'Tiểu Yêu Ếch',
+        asset: 'tieu_yeu_ech.png',
+        description: 'Ếch ộp tuần núi.',
+        stats: { speed: 10, jump: 20, damage: 12 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 5, hit: 3, ko: 1, win: 4, roll: 6 },
+        skill: {
+            name: 'LƯỠI KÍCH',
+            type: 'projectile',
+            data: {
+                speedX: 20, speedY: 0, damage: 15, width: 40, height: 15,
+                color: '#0f0', shape: 'rect', life: 40, knockback: 15
+            }
+        }
+    },
+    {
+        id: 'crocodile',
+        name: 'Cá Sấu',
+        asset: 'crocodile.png',
+        description: 'Sông nước miền Tây.',
+        stats: { speed: 8, jump: 15, damage: 18 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 7, ko: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, roll: 6 },
+        skill: {
+            name: 'DEATH ROLL',
+            type: 'aoe',
+            data: { range: 200, damage: 25, interval: 10, duration: 60, visual: 'spin' }
+        }
+    },
+    {
+        id: 'tieu_yeu_chon',
+        name: 'Tiểu Yêu Chồn',
+        asset: 'tieu_yeu_chon.png',
+        description: 'Thợ đào hố chuyên nghiệp.',
+        stats: { speed: 9, jump: 16, damage: 14 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 6, hit: 7, ko: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, roll: 6 },
+        skill: {
+            name: 'TORNADO SPADE',
+            type: 'aoe',
+            data: { range: 180, damage: 20, interval: 8, duration: 80, visual: 'spin' }
+        }
+    },
+    {
+        id: 'tieu_yeu_vuon',
+        name: 'Tiểu Yêu Vượn',
+        asset: 'tieu_yeu_vuon.png',
+        description: 'Sức mạnh hoang dã.',
+        stats: { speed: 7, jump: 14, damage: 20 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, roll: 6 },
+        skill: {
+            name: 'PRIMAL SCREAM',
+            type: 'aoe',
+            data: { range: 250, damage: 10, stun: 100, interval: 20, duration: 40, visual: 'shockwave' }
         }
     }
 ];

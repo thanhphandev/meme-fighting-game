@@ -4,51 +4,6 @@
  */
 
 export const CHARACTER_DIALOGUES = {
-    // Doge - Meme lord cổ điển
-    doge: {
-        intro: [
-            "Much battle, very war 🐕",
-            "Wow, đấu đi bestie!",
-            "Such ready, many fight!",
-        ],
-        attack: [
-            "BONK!",
-            "Wow!",
-            "Much hurt!",
-        ],
-        skill: [
-            "SUCH SPEED! 💨",
-            "Wow pro chưa!",
-            "Much zoom zoom!",
-        ],
-        hit: [
-            "Ối giời ơi 😭",
-            "Đau vcl...",
-            "So pain, much cry",
-        ],
-        block: [
-            "Nope! 🛡️",
-            "Try harder bro",
-            "Ez block",
-        ],
-        win: [
-            "EZ CLAP! Such victory 🏆",
-            "GG EZ, skill issue bạn nhé!",
-            "Much win, very pro, WOW!",
-        ],
-        lose: [
-            "Such sad... 😢",
-            "Á đù thua r...",
-            "Wow... cope",
-        ],
-        taunt: [
-            "Yếu thế bro? 🤭",
-            "Much skill issue detected",
-            "Sao yếu thế bạn ơi~",
-        ],
-    },
-
-    // Buff Doge - Absolute Unit
     buff_doge: {
         intro: [
             "Time to BONK! 💪",
@@ -133,50 +88,6 @@ export const CHARACTER_DIALOGUES = {
             "Smug Pepe face 😏",
             "Skill issue detected!",
             "KEKW máu đấy~",
-        ],
-    },
-
-    // Nyan Cat - Rainbow cat
-    nyan_cat: {
-        intro: [
-            "Nyan nyan nyan~ 🌈",
-            "Rainbow power!",
-            "Mèo cầu vồng đến đây!",
-        ],
-        attack: [
-            "Nyan! 🌈",
-            "Meow slap!",
-            "Purrr-nch!",
-        ],
-        skill: [
-            "RAINBOW BLASTTT! 🌈✨",
-            "7 màu cho bạn luôn!",
-            "NYAAAAN BEAMMM!",
-        ],
-        hit: [
-            "Ow nyan... 😿",
-            "No bulli pls...",
-            "Mèo đau rồi 😢",
-        ],
-        block: [
-            "Pop-tart shield!",
-            "Rainbow guard!",
-            "Nope nyan~",
-        ],
-        win: [
-            "Nyan nyan VICTORY! 🎊",
-            "Rainbow always wins!",
-            "Mèo mlem chiến thắng!",
-        ],
-        lose: [
-            "Nyan... 😿💔",
-            "Rainbow faded...",
-            "Sad nyan noises",
-        ],
-        taunt: [
-            "Catch the rainbow~ 🌈",
-            "Too slow meow!",
-            "Mèo nhanh quá bạn ơi!",
         ],
     },
 
@@ -356,50 +267,6 @@ export const CHARACTER_DIALOGUES = {
         ],
     },
 
-    // Luffy - Straw Hat
-    luffy: {
-        intro: [
-            "Gomu Gomu no... FIGHT! 🏴‍☠️",
-            "Kaizoku Ou ni naru!",
-            "Tao sẽ làm Vua Hải Tặc!",
-        ],
-        attack: [
-            "Gomu! 👊",
-            "Pistol!",
-            "Mũ rơm đấm!",
-        ],
-        skill: [
-            "GOMU GOMU NO PISTORUUU! 🔥",
-            "Gear Second!",
-            "ĐẤM CHO CHẾT!",
-        ],
-        hit: [
-            "Đau nhưng okay!",
-            "Shishishi!",
-            "Còn đứng được mà!",
-        ],
-        block: [
-            "Cao su dẻo! 🛡️",
-            "Won't work!",
-            "Đàn hồi nhé!",
-        ],
-        win: [
-            "Nakama power! 🏴‍☠️🎉",
-            "Vua Hải Tặc đây!",
-            "Thịt đâu? Thắng rồi!",
-        ],
-        lose: [
-            "One more time...!",
-            "Nakama... wait for me",
-            "Tao sẽ quay lại!",
-        ],
-        taunt: [
-            "Shishishi! Yếu thế! 😁",
-            "Còn lâu mới hạ được tao!",
-            "Tao là cao su đó!",
-        ],
-    },
-
     // Silly Chicken
     chicken: {
         intro: [
@@ -443,51 +310,6 @@ export const CHARACTER_DIALOGUES = {
             "Gà này pro lắm nhé!",
         ],
     },
-
-    // Crying Banana Cat
-    banana_cat: {
-        intro: [
-            "*khóc* Chiến thôi... 😭🍌",
-            "Banana Cat sad but ready",
-            "Mèo chuối buồn vào trận...",
-        ],
-        attack: [
-            "*khóc* Đánh! 😭",
-            "Sad punch...",
-            "Mèo buồn đấm...",
-        ],
-        skill: [
-            "TEAR FLOOOOD! 😭💧💧",
-            "*khóc như mưa*",
-            "Lũ nước mắt đêêê!",
-        ],
-        hit: [
-            "*KHÓC TO HƠN* 😭😭",
-            "Why always me?",
-            "Đau quá huhu...",
-        ],
-        block: [
-            "*khóc chặn* 😢",
-            "Blocked... sadly",
-            "Buồn nhưng vẫn block",
-        ],
-        win: [
-            "Happy tears! 😭🎉",
-            "Mèo chuối... thắng?!",
-            "*khóc vui* Ăn rồiii!",
-        ],
-        lose: [
-            "*FULL SAD MODE* 😭😭😭",
-            "Knew it...",
-            "Buồn x1000...",
-        ],
-        taunt: [
-            "*khóc nhìn* 😢",
-            "Đánh người buồn à...",
-            "Sao lại thế...",
-        ],
-    },
-
     // Zoro
     zoro: {
         intro: [
@@ -617,6 +439,358 @@ export const CHARACTER_DIALOGUES = {
             "Too cute 4 u! 💕",
             "Meow? Can't hit this!",
             "Bạn ơi yếu quá~",
+        ],
+    },
+
+    // Cell Perfect
+    cell_perfect: {
+        intro: [
+            "Ta là hoàn hảo! 🦟",
+            "Mọi thứ đều nằm trong tính toán!",
+            "Chuẩn bị run sợ trước sự hoàn mỹ!",
+        ],
+        attack: [
+            "Chậm quá!",
+            "Hết sức chưa?",
+            "Vô dụng thôi!",
+        ],
+        skill: [
+            "SOLAR KAMEHAMEHA! ☀️🔥",
+            "Hủy diệt tất cả!",
+            "Ta là số 1 vĩ trụ!",
+        ],
+        hit: [
+            "Không thể nào...",
+            "Ngươi dám làm xước...",
+            "Không hoàn hảo rồi!",
+        ],
+        block: [
+            "Quá chậm! ✋",
+            "Nhìn rõ hết!",
+            "Không chạm được đâu!",
+        ],
+        win: [
+            "Sự hoàn hảo tuyệt đối! 🏆",
+            "Không ai sánh bằng ta!",
+            "Game dễ quá nhỉ?",
+        ],
+        lose: [
+            "Khônggggg! Ta là hoàn hảo mà! 😱",
+            "Bug game rồi!",
+            "Không thể thua lũ sâu bọ...",
+        ],
+        taunt: [
+            "Ngươi chỉ đến thế thôi à? 😏",
+            "Làm ta thất vọng quá!",
+            "Run sợ đi sâu bọ!",
+        ],
+    },
+
+    // White Bread
+    white_bread: {
+        intro: [
+            "Bánh mì đây! 🍞",
+            "Giòn rụm vào trận!",
+            "Ăn sáng chưa bạn?",
+        ],
+        attack: [
+            "Bốp! 🍞",
+            "Vụn bánh mì!",
+            "Xực!",
+        ],
+        skill: [
+            "CARB OVERLOAD! 🥖✨",
+            "Ngấy chưa cưng?",
+            "Bánh mì ngàn lớp!",
+        ],
+        hit: [
+            "Rơi vụn rồi... 😢",
+            "Đừng ép bẹp tui!",
+            "Mềm nhũn...",
+        ],
+        block: [
+            "Vỏ bánh cứng! 🛡️",
+            "Không cắn được đâu!",
+            "Chặn bằng bột mì!",
+        ],
+        win: [
+            "Bánh mì muôn năm! 🍞👑",
+            "Giòn tan chiến thắng!",
+            "Thực phẩm thiết yếu win!",
+        ],
+        lose: [
+            "Mốc meo rồi... 🍄",
+            "Thành bánh mì nướng...",
+            "Bị ăn mất rồi...",
+        ],
+        taunt: [
+            "Đói không bạn? 🤤",
+            "Nhìn ngon không?",
+            "Bánh mì > Cơm!",
+        ],
+    },
+
+    // Luffy Nikka - Gear 5
+    luffy_nikka: {
+        intro: [
+            "Ahyahyahya! ☀️",
+            "This is my peak!",
+            "Tim tao đang nhảy múa!",
+        ],
+        attack: [
+            "Cao su! 👊",
+            "Toon logic!",
+            "Bốp!",
+        ],
+        skill: [
+            "BAJRANG GUN! 🤜☀️",
+            "Drums of Liberation!",
+            "Ahyahyahya!",
+        ],
+        hit: [
+            "Vui quá! 😂",
+            "Sao lại đau thế nhỉ?",
+            "Mắt lòi ra rồi 👀",
+        ],
+        block: [
+            "Biến hình! 🛡️",
+            "Dẻo lắm!",
+            "Nope!",
+        ],
+        win: [
+            "Tự do nhất biển cả! 🏴‍☠️☀️",
+            "Ăn tiệc đê!",
+            "Ahyahyahya!",
+        ],
+        lose: [
+            "Hết mana... 😴",
+            "Cần thịt...",
+            "Ngủ tí đã...",
+        ],
+        taunt: [
+            "Sao mặt căng thế? 😂",
+            "Cười lên nào!",
+            "Chơi vui mà!",
+        ],
+    },
+
+    // Little Pig Demon
+    tieu_yeu_heo: {
+        intro: [
+            "Lại phải đi tuần à... 🐷",
+            "Đại vương gọi...",
+            "Buồn ngủ quá...",
+        ],
+        attack: [
+            "Húc! 🐷",
+            "Tránh ra!",
+            "Đừng làm phiền!",
+        ],
+        skill: [
+            "Cút ra cho tao ngủ! 💤",
+            "Húc bay màu!",
+            "Chạy đâu!",
+        ],
+        hit: [
+            "Oéc oéc! 😭",
+            "Đại vương cứu!",
+            "Đau quá...",
+        ],
+        block: [
+            "Bụng mỡ đỡ đòn! 🛡️",
+            "Mỡ dày lắm!",
+            "Không xi nhê!",
+        ],
+        win: [
+            "Giờ đi ngủ được chưa? 💤",
+            "May quá xong rồi...",
+            "Đại vương sẽ thưởng...",
+        ],
+        lose: [
+            "Thôi nằm đây luôn... 😴",
+            "Mệt quá...",
+            "Đói...",
+        ],
+        taunt: [
+            "Ngáp... 🥱",
+            "Chán thế...",
+            "Nhanh lên hộ cái...",
+        ],
+    },
+
+    // Little Frog Demon
+    tieu_yeu_ech: {
+        intro: [
+            "Ếch ộp! 🐸",
+            "Tuần tra tuần tra!",
+            "Ai làm gì đấy?",
+        ],
+        attack: [
+            "Liếm! 👅",
+            "Quật!",
+            "Ộp!",
+        ],
+        skill: [
+            "Lưỡi thần chưởng! 🐸💢",
+            "Dính này!",
+            "Chạy đâu con sâu!",
+        ],
+        hit: [
+            "Ộp ộp! 😢",
+            "Bị bắt nạt...",
+            "Đau!",
+        ],
+        block: [
+            "Nhảy tránh! 🛡️",
+            "Trơn tuột!",
+            "Không trúng!",
+        ],
+        win: [
+            "Về báo công thôi! 🐸🏆",
+            "Ếch vô địch!",
+            "Thấy ghê chưa!",
+        ],
+        lose: [
+            "Về mách đại vương... 😭",
+            "Bị đánh...",
+            "Ộp ộp...",
+        ],
+        taunt: [
+            "Blè lưỡi! 👅",
+            "Bắt được ta không?",
+            "Lêu lêu!",
+        ],
+    },
+
+    // Crocodile
+    crocodile: {
+        intro: [
+            "Thấy hàm răng này không? 🐊",
+            "Cá sấu lên bờ!",
+            "Sông nước miền Tây!",
+        ],
+        attack: [
+            "Cạp! 🐊",
+            "Xoay!",
+            "Bốp!",
+        ],
+        skill: [
+            "Cú xoay tử thần! 🌪️",
+            "Chóng mặt chưa?",
+            "Về với nước đi!",
+        ],
+        hit: [
+            "Da dày lắm! 🛡️",
+            "Không xi nhê!",
+            "Đau nha...",
+        ],
+        block: [
+            "Cứng như đá! 🗿",
+            "Gãy răng giờ!",
+            "Chặn!",
+        ],
+        win: [
+            "Vua đầm lầy! 👑",
+            "Tắm nắng thôi.",
+            "Ez game.",
+        ],
+        lose: [
+            "Thành túi xách rồi... 👜",
+            "Về ao...",
+            "Da cá sấu...",
+        ],
+        taunt: [
+            "Xuống nước chơi không? 🌊",
+            "Nhìn gì mà nhìn?",
+            "Sợ chưa?",
+        ],
+    },
+
+    // Little Weasel Demon
+    tieu_yeu_chon: {
+        intro: [
+            "Đào hố chôn nè! 🦦",
+            "Có xẻng là có tất cả!",
+            "Chồn lùi!",
+        ],
+        attack: [
+            "Bổ! 🔨",
+            "Xẻng nè!",
+            "Đào!",
+        ],
+        skill: [
+            "Lốc xoáy xẻng! 🌪️",
+            "Xoay chóng mặt luôn!",
+            "Fan of Spade!",
+        ],
+        hit: [
+            "Á ui! 😿",
+            "Mẻ xẻng rồi!",
+            "Đau cái mình...",
+        ],
+        block: [
+            "Đỡ bằng xẻng! 🛡️",
+            "Keng!",
+            "Không trúng!",
+        ],
+        win: [
+            "Lấp hố xong! 🦦🏆",
+            "Đào mồ chôn nó!",
+            "Chồn win!",
+        ],
+        lose: [
+            "Bị chôn rồi... ⚰️",
+            "Hết sức đào...",
+            "Xỉu...",
+        ],
+        taunt: [
+            "Muốn nằm lỗ nào? 🕳️",
+            "Xẻng vào mặt giờ!",
+            "Lại đây con!",
+        ],
+    },
+
+    // Little Ape Demon
+    tieu_yeu_vuon: {
+        intro: [
+            "Uga Uga! 🦍",
+            "Rừng xanh vẫy gọi!",
+            "Đấm phát chết luôn!",
+        ],
+        attack: [
+            "Bụp! 👊",
+            "Uga!",
+            "Đấm!",
+        ],
+        skill: [
+            "PRIMAL ROAR! 🗣️🔊",
+            "Hét banh xác!",
+            "Điếc tai chưa!",
+        ],
+        hit: [
+            "Đau đấy... 🦍",
+            "Grừ...",
+            "Thù này phải trả!",
+        ],
+        block: [
+            "Tay to đỡ hết! 🛡️",
+            "Cứng!",
+            "Muỗi!",
+        ],
+        win: [
+            "Vỗ ngực! Bụp bụp! 🦍🏆",
+            "Vua rừng xanh!",
+            "Yếu đuối quá!",
+        ],
+        lose: [
+            "Hoa mắt... 😵",
+            "Cần chuối...",
+            "Ngất...",
+        ],
+        taunt: [
+            "Sợ chưa con? 🦍",
+            "Nhìn cái cơ bắp này!",
+            "Uga buga!",
         ],
     },
 };

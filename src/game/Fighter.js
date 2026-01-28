@@ -377,7 +377,7 @@ export class Fighter {
                     this.lastTickTime = now;
                 }
             }
-            if (config.visual === 'shake' || config.visual === 'water' || config.visual === 'ripple') {
+            if (config.visual === 'shake' || config.visual === 'water' || config.visual === 'ripple' || config.visual === 'spin') {
                 this.x += (Math.random() - 0.5) * 5;
             }
         }
