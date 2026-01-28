@@ -8,6 +8,7 @@ export class Fighter {
 
         this.width = 256;
         this.height = 256;
+        this.isWinner = false; // Logic animation trigger
         this.x = x;
         this.y = CONFIG.canvasHeight - this.height - CONFIG.groundY;
         this.isAI = isAI;
@@ -62,6 +63,7 @@ export class Fighter {
         this.scale = 1;
 
         this.hitStunTimer = 0;
+        this.invulnTimer = 0; // i-frames after being hit
         this.hasHit = false;
 
         // Input Buffer
@@ -80,8 +82,14 @@ export class Fighter {
     }
 
     setVictory() {
-        // Use 'skill' frame for victory pose as it usually looks cool/action-oriented
-        this.setState('skill');
+        this.isWinner = true;
+        // Check if character has a specific 'win' animation state
+        if (this.charData.rows.win !== undefined) {
+            this.setState('win');
+        } else {
+            // Fallback: Use 'skill' frame for victory pose
+            this.setState('skill');
+        }
         this.isInvincible = true;
     }
 
@@ -106,6 +114,10 @@ export class Fighter {
         // Ensure timer is valid number
         let currentStun = this.hitStunTimer || 0;
         this.hitStunTimer = Math.max(0, currentStun - deltaTime);
+
+        if (this.invulnTimer > 0) {
+            this.invulnTimer -= deltaTime;
+        }
 
         // Update Blocking Status
         this.isBlocking = false;
@@ -272,19 +284,21 @@ export class Fighter {
         }
     }
 
-    takeDamage(amount, direction, spawnParticle) {
-        if (this.isInvincible || this.state === 'roll') return;
+    takeDamage(amount, direction, spawnParticle, stunDuration = null) {
+        if (this.isInvincible || this.state === 'roll' || this.invulnTimer > 0) return;
 
         if (this.isBlocking) {
             // Blocked hit
             this.health -= amount * (1 - CONFIG.blockReduction);
             this.velocityX = direction * CONFIG.knockbackForce * 0.5; // Pushback on block
             this.hitStunTimer = 100; // Short stun on block
+            this.invulnTimer = 200; // Short i-frames on block to prevent chip death spam
             if (spawnParticle) spawnParticle(this.hitbox.x + this.hitbox.width / 2, this.hitbox.y + 20, 'spark');
         } else {
             // Clean hit
             this.health -= amount;
-            this.hitStunTimer = CONFIG.hitStun;
+            this.hitStunTimer = stunDuration || CONFIG.hitStun;
+            this.invulnTimer = 500; // Standard i-frames (0.5s)
             this.velocityX = direction * CONFIG.knockbackForce;
 
             if (this.health <= 0) {
@@ -292,7 +306,6 @@ export class Fighter {
                 this.isDead = true;
             } else {
                 this.setState('hit');
-                // this.scale is handled by breathe effect mostly, maybe skip shake here?
             }
             if (spawnParticle) {
                 // Spawn multiple blood particles
@@ -305,6 +318,7 @@ export class Fighter {
         this.stamina -= CONFIG.skillCost;
         this.skillCooldown = CONFIG.skillCooldown;
         this.setState('skill');
+        this.hasHit = false; // Reset for multi-hit or new hit check
 
         const skill = this.charData.skill;
         const config = skill.data || {};
@@ -348,12 +362,19 @@ export class Fighter {
             if (config.scale) this.scale = 1 + (config.scale - 1) * Math.sin(Date.now() / 100);
         }
         else if (skill.type === 'aoe') {
-            // Tick damage
-            if (this.skillActiveTimer % (config.interval || 20) < 15) {
+            // Tick damage logic
+            // Only damage every 'interval' frames
+            const now = Date.now();
+            if (!this.lastTickTime) this.lastTickTime = 0;
+
+            if (now - this.lastTickTime > (config.interval * 16 || 200)) {
                 const range = config.range || 200;
                 const dist = Math.abs((this.x + this.width / 2) - (opponent.x + opponent.width / 2));
+
+                // For AoE, we ignore hasHit (it hits over time) or check timer
                 if (dist < range) {
-                    opponent.takeDamage(config.damage || 1, this.facingRight ? 1 : -1, null);
+                    opponent.takeDamage(config.damage || 1, this.facingRight ? 1 : -1, null, config.stun);
+                    this.lastTickTime = now;
                 }
             }
             if (config.visual === 'shake' || config.visual === 'water' || config.visual === 'ripple') {
@@ -361,7 +382,10 @@ export class Fighter {
             }
         }
         else if (skill.type === 'dash') {
-            this.checkAttackCollision(opponent, onHit);
+            // Dash attack should hit once
+            if (!this.hasHit) {
+                this.checkAttackCollision(opponent, onHit);
+            }
         }
     }
 
@@ -402,6 +426,9 @@ export class Fighter {
                 fps = 5;
                 stopAtEnd = true; // Ensure KO doesn't loop
                 break;
+            case 'win':
+                fps = 8;
+                break;
         }
 
         const animInterval = 1000 / fps;
@@ -424,6 +451,12 @@ export class Fighter {
         if (this.spriteWidth === 0 || this.spriteHeight === 0) return;
 
         this.ctx.save();
+
+        // Blink if invulnerable
+        if (this.invulnTimer > 0 && Math.floor(Date.now() / 50) % 2 === 0) {
+            this.ctx.globalAlpha = 0.5;
+        }
+
         // Shadow
         this.ctx.fillStyle = 'rgba(0,0,0,0.3)';
         this.ctx.beginPath();

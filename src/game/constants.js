@@ -213,6 +213,36 @@ export const CHARACTERS = [
                 color: '#f00', shape: 'rect', life: 40, knockback: 25
             }
         }
+    },
+    {
+        id: 'hamster',
+        name: 'Hamster',
+        asset: 'hamster.png',
+        description: 'Small but hungry.',
+        stats: { speed: 8, jump: 16, damage: 14 },
+        rowCount: 10, // Custom row count for this sprite sheet
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 9, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, win: 4, roll: 6 },
+        skill: {
+            name: 'SEED SNACK',
+            type: 'buff',
+            data: { scale: 1.2, damageMult: 1.2, duration: 150 }
+        }
+    },
+    {
+        id: 'cutecat',
+        name: 'Cute Cat',
+        asset: 'cutecat.png',
+        description: 'So cute it hurts.',
+        stats: { speed: 9, jump: 18, damage: 10 },
+        rowCount: 9,
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 5, hit: 3, ko: 1, win: 5, roll: 6 },
+        skill: {
+            name: 'CUTE OVERLOAD',
+            type: 'aoe',
+            data: { range: 400, damage: 5, stun: 180, interval: 30, duration: 150, visual: 'shake' }
+        }
     }
 ];
 

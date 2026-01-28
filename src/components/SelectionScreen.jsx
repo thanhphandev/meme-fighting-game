@@ -6,7 +6,7 @@ export default function SelectionScreen({ onSelect, title = "SELECT YOUR MEME" }
         <div className="flex flex-col items-center gap-8 w-full max-w-6xl">
             <h2 className="font-bangers text-6xl text-white">{title}</h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-h-[65vh] overflow-y-auto p-4 custom-scrollbar">
                 {CHARACTERS.map((char) => (
                     <motion.div
                         key={char.id}
@@ -18,8 +18,8 @@ export default function SelectionScreen({ onSelect, title = "SELECT YOUR MEME" }
                             <div
                                 style={{
                                     backgroundImage: `url(/assets/${char.asset})`,
-                                    backgroundSize: '600% 800%',
-                                    backgroundPosition: `0% ${char.rows.idle * (100 / 7)}%`, // 100% / 7 = ~14.28% per row step
+                                    backgroundSize: `600% ${(char.rowCount || 8) * 100}%`,
+                                    backgroundPosition: `0% ${char.rows.idle * (100 / ((char.rowCount || 8) - 1))}%`,
                                     width: '100%',
                                     height: '100%'
                                 }}

@@ -20,7 +20,6 @@ Use these prompts to generate sprite sheets that match the high-quality standard
 > - Row 6: Skill (Special Effect/Power) - *Visual spectacle*
 > - Row 7: Hit (Wince/Damage Frame) - *3 frames*
 > - Row 8: KO (Defeated/Lying Down) - *1 static frame*
->
 > **Constraint:** Ensure perfect centering in each 256x256 cell. No overlapping. Maintain consistent scale."
 
 ---

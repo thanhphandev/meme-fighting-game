@@ -5,8 +5,8 @@ Use this optimized prompt to generate high-quality assets.
 > **Subject:** Game sprite sheet of **[CHARACTER NAME]**, **Side-view fighting game style**.
 >
 > **Format (Strict):**
-> *   **Layout:** Uniform 6x8 grid (6 columns, 8 rows).
-> *   **Resolution:** 1536x2048 pixels. Each cell must be exactly **256x256 pixels**.
+> *   **Layout:** Uniform 6x8 grid (6 columns, 9 rows).
+> *   **Resolution:** 1536x2304 pixels. Each cell must be exactly **256x256 pixels**.
 > *   **Background:** white
 >
 > **Style:** High-fidelity 16-bit pixel art, modern indie game style, dynamic anatomy, vibrant flat colors, **hard edges**, **distinct thick outlines**.
@@ -20,7 +20,6 @@ Use this optimized prompt to generate high-quality assets.
 > *   **Row 6:** Skill (Special power/magic release, 6 frames).
 > *   **Row 7:** Hit (Wince/Damage Frame, 3 frames).
 > *   **Row 8:** KO (Defeated/Lying Down, 1 static frame).
->
 > **Constraint:** Ensure perfect centering in each 256x256 cell. No overlapping. Maintain consistent scale.
 >
 > **Quality Tags:** --no anti-aliasing, no blurry edges, no artifacts, no dither, no text, no border.
