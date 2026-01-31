@@ -8,7 +8,7 @@ Use these prompts to generate sprite sheets that match the high-quality standard
 > **Prompt:**
 > "High-quality 2D pixel art sprite sheet of **[CHARACTER NAME]**.
 > **Format:** Uniform 6x8 grid (6 columns, 8 rows).
-> **Resolution:** 1536x2048 pixels. Each cell is exactly 256x256 pixels.
+> **Resolution:** 1792x2400 pixels. Each cell is exactly 256x256 pixels.
 > **Style:** Crisp, vibrant modern pixel art. Clean distinct edges. Solid white background.
 >
 > **Animations (Top to Bottom):**

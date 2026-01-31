@@ -793,6 +793,182 @@ export const CHARACTER_DIALOGUES = {
             "Uga buga!",
         ],
     },
+
+    // Horse
+    horse: {
+        intro: [
+            "Híiiii! 🐴",
+            "Đua không bạn ơi?",
+            "Tốc độ ánh sáng!",
+        ],
+        attack: [
+            "Đá hậu! 🦶",
+            "Hí!",
+            "Cẩn thận móng ngựa!",
+        ],
+        skill: [
+            "NON STOP! 🐎💨",
+            "Cú đá ngàn cân!",
+            "Chạy đâu cho thoát!",
+        ],
+        hit: [
+            "Hí... đau!",
+            "Gãy chân rồi...",
+            "Được lắm!",
+        ],
+        block: [
+            "Móng sắt! 🛡️",
+            "Keng!",
+            "Không thủng!",
+        ],
+        win: [
+            "Về đích nhất! 🏁🏆",
+            "Quá chậm!",
+            "Dust in my face!",
+        ],
+        lose: [
+            " què rồi... 🏥",
+            "Mệt quá...",
+            "Không chạy nổi nữa...",
+        ],
+        taunt: [
+            "Chậm như rùa! 🐢",
+            "Hí hí hí! 😂",
+            "Đuổi theo đi!",
+        ],
+    },
+
+    // Shark
+    shark: {
+        intro: [
+            "Ngửi thấy mùi máu... 🦈",
+            "Shark Tank time!",
+            "Đến giờ ăn rồi!",
+        ],
+        attack: [
+            "Cạp! 🦷",
+            "Xé xác!",
+            "Chomp!",
+        ],
+        skill: [
+            "JAWS ATTACK! 🦈🩸",
+            "Hàm cá mập!",
+            "Thủy quái tấn công!",
+        ],
+        hit: [
+            "Rụng răng rồi...",
+            "Da nhám mà vẫn đau!",
+            "Máu...",
+        ],
+        block: [
+            "Cứng như đá! 🛡️",
+            "Baby shark doo doo!",
+            "Chặn!",
+        ],
+        win: [
+            "Bữa ăn ngon miệng! 🍖",
+            "Ông trùm đại dương!",
+            "No nê!",
+        ],
+        lose: [
+            "Thành súp vi cá... 🍲",
+            "Phơi bụng...",
+            "Bơi ngửa...",
+        ],
+        taunt: [
+            "Sợ nước không? 🌊",
+            "Lại đây mà bơi!",
+            "Răng tao sắc lắm!",
+        ],
+    },
+
+    // Bull
+    bull: {
+        intro: [
+            "Màu đỏ đâu? 🐂",
+            "Húc bay tất cả!",
+            "Sôi máu rồi!",
+        ],
+        attack: [
+            "Húc! 🐂",
+            "Móc sừng!",
+            "Tránh ra!",
+        ],
+        skill: [
+            "RAGING BULL! 😤🔥",
+            "Càn quét!",
+            "Đừng cản đường tao!",
+        ],
+        hit: [
+            "Moo... đau!",
+            "Dày da mà vẫn thốn!",
+            "Cáu rồi nha!",
+        ],
+        block: [
+            "Sừng cản phá! 🛡️",
+            "Cứng!",
+            "Vô ích!",
+        ],
+        win: [
+            "Bò tót vô địch! 🐂🏆",
+            "Ai cản được tao?",
+            "Mạnh nhất!",
+        ],
+        lose: [
+            "Thành bít tết... 🥩",
+            "Chóng mặt quá...",
+            "Gãy sừng...",
+        ],
+        taunt: [
+            "Mày là vải đỏ à? 🟥",
+            "Yếu nhớt!",
+            "Moo moo!",
+        ],
+    },
+
+    // Seadog
+    seadog: {
+        intro: [
+            "Ú òa! 🦭",
+            "Hải cẩu dễ thương!",
+            "Muốn chơi bóng không?",
+        ],
+        attack: [
+            "Vỗ tay! 👏",
+            "Tát yêu!",
+            "Bốp!",
+        ],
+        skill: [
+            "Bóng bay nè! 🏐",
+            "Đỡ bóng đi!",
+            "Siêu phẩm!",
+        ],
+        hit: [
+            "Oéc oéc! 😢",
+            "Đừng đánh bé!",
+            "Mỡ dập dềnh...",
+        ],
+        block: [
+            "Bụng mỡ! 🛡️",
+            "Hấp thụ lực!",
+            "Êm ái!",
+        ],
+        win: [
+            "Cho xin con cá! 🐟",
+            "Vỗ tay hoan hô! 👏",
+            "Thắng rồi vui quá!",
+        ],
+        lose: [
+            "Lăn long lóc... 😵",
+            "Dỗi rồi...",
+            "Về biển đây...",
+        ],
+        taunt: [
+            "Blè blè! 😛",
+            "Làm trò nè!",
+            "Bắt quả tang!",
+        ],
+    },
 };
 
 /**

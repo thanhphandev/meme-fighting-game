@@ -35,6 +35,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
     const [gameState, setGameState] = useState(GAME_STATES.LOADING)
     const [announcement, setAnnouncement] = useState(null)
     const [isFullscreen, setIsFullscreen] = useState(false)
+    const effectAssets = useRef({})
 
     useEffect(() => {
         isPausedRef.current = isPaused
@@ -110,6 +111,18 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 // Start battle BGM
                 SoundManager.playBgm('bgm_battle')
 
+                // Preload effects
+                const effectNames = ['impact', 'slash', 'fireball', 'shockwave', 'buff_aura', 'shuriken', 'egg_bomb', 'fist_giant', 'hearts', 'slime_shot', 'beach_ball', 'tornado', 'water_spin'];
+                const effectLoadPromises = effectNames.map(name => {
+                    return new Promise(resolve => {
+                        const img = new Image();
+                        img.src = `/assets/effects/${name}.png`;
+                        img.onload = () => { effectAssets.current[name] = img; resolve(); };
+                        img.onerror = () => { console.warn('Failed to load effect', name); resolve(); };
+                    });
+                });
+                await Promise.all(effectLoadPromises);
+
                 // Preload character images
                 const p1Data = CHARACTERS.find(c => c.id === playerChar)
                 const p2Data = CHARACTERS.find(c => c.id === cpuChar)
@@ -146,12 +159,14 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
         // Particle System
         const spawnParticle = (x, y, type) => {
-            particles.push(new Particle(x, y, type))
+            const image = effectAssets.current[type];
+            particles.push(new Particle(x, y, type, image))
         }
 
         // Projectile System
         const spawnProjectile = (x, y, facingRight, ownerId, config) => {
-            projectiles.push(new Projectile(x, y, facingRight, ownerId, config))
+            const image = config.effect ? effectAssets.current[config.effect] : null;
+            projectiles.push(new Projectile(x, y, facingRight, ownerId, config, image))
             SoundManager.playSfx('sfx_projectile')
         }
 
@@ -603,8 +618,8 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-30">
                     <div
                         className={`font-bangers drop-shadow-[0_0_30px_rgba(255,215,0,0.8)] animate-pulse ${announcement.type === 'fight' ? 'text-6xl md:text-8xl text-yellow-400' :
-                                announcement.type === 'ko' ? 'text-7xl md:text-9xl text-red-500' :
-                                    'text-4xl md:text-6xl text-white'
+                            announcement.type === 'ko' ? 'text-7xl md:text-9xl text-red-500' :
+                                'text-4xl md:text-6xl text-white'
                             }`}
                         style={{
                             textShadow: '4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000'
