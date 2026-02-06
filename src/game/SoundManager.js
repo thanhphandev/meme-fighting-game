@@ -14,6 +14,7 @@ class SoundManagerClass {
         this.isSfxMuted = false;
 
         // Sound definitions
+
         this.soundPaths = {
             // BGM
             bgm_menu: '/assets/sounds/bgm_menu.mp3',
@@ -39,12 +40,12 @@ class SoundManagerClass {
             sfx_cancel: '/assets/sounds/sfx_cancel.wav',
 
             // SFX - Announcer
-            announce_fight: '/assets/sounds/announce_fight.wav',
-            announce_ko: '/assets/sounds/announce_ko.wav',
-            announce_round1: '/assets/sounds/announce_round1.wav',
-            announce_round2: '/assets/sounds/announce_round2.wav',
-            announce_final: '/assets/sounds/announce_final.wav',
-            announce_ready: '/assets/sounds/announce_ready.wav',
+            announce_fight: '/assets/sounds/announce_fight.mp3',
+            announce_ko: '/assets/sounds/announce_ko.mp3',
+            announce_round1: '/assets/sounds/announce_round1.mp3',
+            announce_round2: '/assets/sounds/announce_round2.mp3',
+            announce_final: '/assets/sounds/announce_final.mp3',
+            announce_ready: '/assets/sounds/announce_ready.mp3',
         };
 
         // Preload commonly used sounds

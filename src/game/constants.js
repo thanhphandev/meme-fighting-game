@@ -224,20 +224,6 @@ export const CHARACTERS = [
         }
     },
     {
-        id: 'tieu_yeu_heo',
-        name: 'Tiểu Yêu Heo',
-        asset: 'characters/tieu_yeu_heo/spritesheet.png',
-        description: 'Chỉ muốn về ngủ thôi...',
-        stats: { speed: 7, jump: 12, damage: 15 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 5, hit: 3, ko: 1, win: 4, roll: 6 },
-        skill: {
-            name: 'HÚC ĐẦU',
-            type: 'dash',
-            data: { speed: 20, damage: 20, range: 150, invuln: false, effect: 'impact' }
-        }
-    },
-    {
         id: 'tieu_yeu_ech',
         name: 'Tiểu Yêu Ếch',
         asset: 'characters/tieu_yeu_ech/spritesheet.png',
@@ -279,7 +265,7 @@ export const CHARACTERS = [
         skill: {
             name: 'TORNADO SPADE',
             type: 'aoe',
-            data: { range: 180, damage: 20, interval: 8, duration: 80, visual: 'spin', effect: 'tornado' }
+            data: { speed: 20, damage: 20, range: 150, invuln: false, effect: 'impact' }
         }
     },
     {
@@ -357,11 +343,24 @@ export const CHARACTERS = [
                 color: '#f0f', shape: 'circle', onGround: 'bounce', life: 100, effect: 'beach_ball'
             }
         }
-    }
+    },
+    {
+        id: 'tieu_yeu_heo',
+        name: 'Tiểu Yêu Heo',
+        asset: 'characters/tieu_yeu_heo/spritesheet.png',
+        description: 'Chỉ muốn về ngủ thôi...',
+        stats: { speed: 7, jump: 12, damage: 20 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 5, hit: 3, ko: 1, win: 4, roll: 6 },
+        skill: {
+            name: 'HÚC ĐẦU',
+            type: 'dash',
+            data: { speed: 20, damage: 20, range: 150, invuln: false, effect: 'impact' }
+        }
+    },
 ];
 
 export const BACKGROUNDS = [
-    { id: 'custom_bg', asset: 'backgrounds/background_bg.png', name: 'Custom Arena' },
     { id: 'swamp', asset: 'backgrounds/swamp_jungle_bg.png', name: 'Đầm Lầy Ma Quái' },
     { id: 'beach', asset: 'backgrounds/sunny_beach_bg.png', name: 'Bãi Biển Thiên Đường' },
     { id: 'arena', asset: 'backgrounds/grand_arena_bg.png', name: 'Đấu Trường La Mã' },

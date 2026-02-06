@@ -58,23 +58,26 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         // INPUT SETUP
         let inputP1, inputP2
 
-        // P1 Controls (WASD + Space/Shift/E)
+        // P1 Controls (WASD + J/K/L) - Avoid Shift/Ctrl to prevent sticky keys
         const p1Keys = {
             left: ['a'], right: ['d'], up: ['w'],
-            attack: [' '], roll: ['shift'], skill: ['e']
+            attack: ['j', ' '], roll: ['k'], skill: ['l', 'u']
         }
         inputP1 = new InputHandler(p1Keys)
 
         if (gameMode === 'pvp') {
+            // P2 Controls (Arrows + NumPad)
             const p2Keys = {
                 left: ['arrowleft'], right: ['arrowright'], up: ['arrowup'],
-                attack: ['enter'], roll: ['control'], skill: ['delete', 'backspace']
+                attack: ['1', 'numpad1', '.'], // Num1 or Period
+                roll: ['2', 'numpad2', '/'],   // Num2 or Slash
+                skill: ['3', 'numpad3', ';']   // Num3 or Semicolon
             }
             inputP2 = new InputHandler(p2Keys)
         } else {
             const mergedKeys = {
                 left: ['a', 'arrowleft'], right: ['d', 'arrowright'], up: ['w', 'arrowup'],
-                attack: [' ', 'enter'], roll: ['shift', 'control'], skill: ['e', 'delete']
+                attack: ['j', ' ', 'enter'], roll: ['k', 'shift'], skill: ['l', 'u', 'e']
             }
             inputP1 = new InputHandler(mergedKeys)
         }
@@ -353,6 +356,78 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             memeSystem.update(deltaTime)
             memeSystem.draw(ctx)
 
+            // // Draw Distance Ruler & AI State Indicator
+            // const drawDistanceRuler = () => {
+            //     const p1Center = p1.x + p1.width / 2
+            //     const p2Center = p2.x + p2.width / 2
+            //     const distance = Math.abs(p2Center - p1Center)
+            //     const isChasing = distance > 150
+
+            //     // Draw ruler line between fighters
+            //     ctx.strokeStyle = isChasing ? 'rgba(100, 200, 255, 0.6)' : 'rgba(255, 100, 100, 0.6)'
+            //     ctx.lineWidth = 3
+            //     ctx.setLineDash([5, 5])
+            //     ctx.beginPath()
+            //     ctx.moveTo(p1Center, p1.y + p1.height / 2)
+            //     ctx.lineTo(p2Center, p2.y + p2.height / 2)
+            //     ctx.stroke()
+            //     ctx.setLineDash([])
+
+            //     // Draw distance markers
+            //     const midX = (p1Center + p2Center) / 2
+            //     const midY = (p1.y + p1.height / 2 + p2.y + p2.height / 2) / 2
+
+            //     // Draw threshold line at 150px
+            //     const thresholdX = p1Center + (p2Center > p1Center ? 150 : -150)
+            //     ctx.strokeStyle = 'rgba(255, 200, 0, 0.7)'
+            //     ctx.lineWidth = 2
+            //     ctx.setLineDash([3, 3])
+            //     ctx.beginPath()
+            //     ctx.moveTo(thresholdX, p1.y + p1.height / 2 - 20)
+            //     ctx.lineTo(thresholdX, p2.y + p2.height / 2 + 20)
+            //     ctx.stroke()
+            //     ctx.setLineDash([])
+
+            //     // Distance label
+            //     ctx.font = 'bold 16px Arial, sans-serif'
+            //     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'
+            //     ctx.textAlign = 'center'
+            //     ctx.fillText(`${Math.round(distance)}px`, midX, midY - 10)
+
+            //     // Draw state indicator bubble
+            //     const bubbleX = midX
+            //     const bubbleY = midY + 30
+            //     const bubbleRadius = 25
+                
+            //     // Bubble background
+            //     ctx.fillStyle = isChasing ? 'rgba(100, 150, 255, 0.8)' : 'rgba(255, 100, 100, 0.8)'
+            //     ctx.beginPath()
+            //     ctx.arc(bubbleX, bubbleY, bubbleRadius, 0, Math.PI * 2)
+            //     ctx.fill()
+
+            //     // Bubble border
+            //     ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'
+            //     ctx.lineWidth = 2
+            //     ctx.beginPath()
+            //     ctx.arc(bubbleX, bubbleY, bubbleRadius, 0, Math.PI * 2)
+            //     ctx.stroke()
+
+            //     // State text
+            //     ctx.font = 'bold 14px Arial, sans-serif'
+            //     ctx.fillStyle = 'rgba(255, 255, 255, 1)'
+            //     ctx.textAlign = 'center'
+            //     ctx.textBaseline = 'middle'
+            //     ctx.fillText(isChasing ? 'CHASE' : 'ATTACK', bubbleX, bubbleY)
+
+            //     // Draw threshold marker label
+            //     ctx.font = '12px Arial, sans-serif'
+            //     ctx.fillStyle = 'rgba(255, 200, 0, 0.8)'
+            //     ctx.textAlign = 'center'
+            //     ctx.fillText('150px', thresholdX, p1.y - 5)
+            // }
+
+            // drawDistanceRuler()
+
             p1.draw()
             p2.draw()
 
@@ -567,11 +642,11 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                     <div className="space-x-1 md:space-x-2">
                         <span>WASD</span>
                         <span className="hidden md:inline">|</span>
-                        <span>SPACE</span>
+                        <span>J (Hit)</span>
                         <span className="hidden md:inline">|</span>
-                        <span>SHIFT</span>
+                        <span>K (Dash)</span>
                         <span className="hidden md:inline">|</span>
-                        <span>E</span>
+                        <span>L (Skill)</span>
                     </div>
                 </div>
                 {gameMode === 'pvp' && (
@@ -580,11 +655,11 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                         <div className="space-x-1 md:space-x-2">
                             <span>ARROWS</span>
                             <span className="hidden md:inline">|</span>
-                            <span>ENTER</span>
+                            <span>Num 1 / .</span>
                             <span className="hidden md:inline">|</span>
-                            <span>CTRL</span>
+                            <span>Num 2 / /</span>
                             <span className="hidden md:inline">|</span>
-                            <span>DEL</span>
+                            <span>Num 3 / ;</span>
                         </div>
                     </div>
                 )}

@@ -5,7 +5,7 @@ Use this optimized prompt to generate high-quality assets.
 > **Subject:** Game sprite sheet of **[CHARACTER NAME]**, **Side-view fighting game style**.
 >
 > **Format (Strict):**
-> *   **Layout:** Uniform 6x8 grid (6 columns, 9 rows).
+> *   **Layout:** Uniform 6x8 grid (6 columns, 8 rows).
 > *   **Resolution:** 1536x2304 pixels. Each cell must be exactly **256x256 pixels**.
 > *   **Background:** white
 >

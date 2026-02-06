@@ -485,51 +485,48 @@ export const CHARACTER_DIALOGUES = {
             "Run sợ đi sâu bọ!",
         ],
     },
-
-    // White Bread
     white_bread: {
         intro: [
-            "Bánh mì đây! 🍞",
-            "Giòn rụm vào trận!",
-            "Ăn sáng chưa bạn?",
+            "Ta là Râu Trắng đây!",
+            "Ngươi muốn gia nhập gia đình của ta chứ, nhóc con?",
+            "Chuẩn bị tinh thần đi, vì ta chính là kẻ sẽ hủy diệt thời đại này!",
         ],
         attack: [
-            "Bốp! 🍞",
-            "Vụn bánh mì!",
-            "Xực!",
+            "CHẤN ĐỘNG! 👊",
+            "Tan nát đi!",
+            "Nhận lấy sức mạnh của biển cả đây!",
         ],
         skill: [
-            "CARB OVERLOAD! 🥖✨",
-            "Ngấy chưa cưng?",
-            "Bánh mì ngàn lớp!",
+            "GURA GURA NO MI! 🌊",
+            "TA CHÍNH LÀ THỜI ĐẠI NÀY!",
+            "THIÊN ĐỊA CHẤN!",
         ],
         hit: [
-            "Rơi vụn rồi... 😢",
-            "Đừng ép bẹp tui!",
-            "Mềm nhũn...",
+            "Hừ, chỉ là một vết xước...",
+            "Khá lắm, nhóc con!",
+            "Dù có bao nhiêu vết thương, ta cũng không bao giờ quay lưng chạy trốn!",
         ],
         block: [
-            "Vỏ bánh cứng! 🛡️",
-            "Không cắn được đâu!",
-            "Chặn bằng bột mì!",
+            "Vô dụng thôi! 🛡️",
+            "Ngươi nghĩ có thể làm rung chuyển ta sao?",
+            "Đứng sau lưng ta, các con của ta!",
         ],
         win: [
-            "Bánh mì muôn năm! 🍞👑",
-            "Giòn tan chiến thắng!",
-            "Thực phẩm thiết yếu win!",
+            "Thời đại này được gọi tên là Râu Trắng! 👑",
+            "Không có vùng biển nào mà ta không thể chinh phục.",
+            "Đó chính là câu trả lời của ta!",
         ],
         lose: [
-            "Mốc meo rồi... 🍄",
-            "Thành bánh mì nướng...",
-            "Bị ăn mất rồi...",
+            "Ngọn lửa của ý chí... sẽ không bao giờ tắt...",
+            "Dòng máu của ta vẫn sẽ tiếp tục chảy ở thời đại mới...",
+            "ONE PIECE LÀ CÓ THẬT! 🏴‍☠️",
         ],
         taunt: [
-            "Đói không bạn? 🤤",
-            "Nhìn ngon không?",
-            "Bánh mì > Cơm!",
+            "Ngươi định làm gì với cái sức mạnh nhỏ bé đó?",
+            "Chỉ có kẻ hèn nhát mới sợ hãi biển cả!",
+            "Hãy thử làm ta thấy thú vị hơn xem nào!",
         ],
     },
-
     // Luffy Nikka - Gear 5
     luffy_nikka: {
         intro: [
@@ -544,7 +541,7 @@ export const CHARACTER_DIALOGUES = {
         ],
         skill: [
             "BAJRANG GUN! 🤜☀️",
-            "Drums of Liberation!",
+            "Tiếng trống tự do!",
             "Ahyahyahya!",
         ],
         hit: [
@@ -571,50 +568,6 @@ export const CHARACTER_DIALOGUES = {
             "Sao mặt căng thế? 😂",
             "Cười lên nào!",
             "Chơi vui mà!",
-        ],
-    },
-
-    // Little Pig Demon
-    tieu_yeu_heo: {
-        intro: [
-            "Lại phải đi tuần à... 🐷",
-            "Đại vương gọi...",
-            "Buồn ngủ quá...",
-        ],
-        attack: [
-            "Húc! 🐷",
-            "Tránh ra!",
-            "Đừng làm phiền!",
-        ],
-        skill: [
-            "Cút ra cho tao ngủ! 💤",
-            "Húc bay màu!",
-            "Chạy đâu!",
-        ],
-        hit: [
-            "Oéc oéc! 😭",
-            "Đại vương cứu!",
-            "Đau quá...",
-        ],
-        block: [
-            "Bụng mỡ đỡ đòn! 🛡️",
-            "Mỡ dày lắm!",
-            "Không xi nhê!",
-        ],
-        win: [
-            "Giờ đi ngủ được chưa? 💤",
-            "May quá xong rồi...",
-            "Đại vương sẽ thưởng...",
-        ],
-        lose: [
-            "Thôi nằm đây luôn... 😴",
-            "Mệt quá...",
-            "Đói...",
-        ],
-        taunt: [
-            "Ngáp... 🥱",
-            "Chán thế...",
-            "Nhanh lên hộ cái...",
         ],
     },
 
@@ -967,6 +920,50 @@ export const CHARACTER_DIALOGUES = {
             "Blè blè! 😛",
             "Làm trò nè!",
             "Bắt quả tang!",
+        ],
+    },
+
+    // Little Pig Demon
+    tieu_yeu_heo: {
+        intro: [
+            "Lại phải đi tuần à... 🐷",
+            "Đại vương gọi...",
+            "Buồn ngủ quá...",
+        ],
+        attack: [
+            "Húc! 🐷",
+            "Tránh ra!",
+            "Đừng làm phiền!",
+        ],
+        skill: [
+            "Cút ra cho tao ngủ! 💤",
+            "Húc bay màu!",
+            "Chạy đâu!",
+        ],
+        hit: [
+            "Oéc oéc! 😭",
+            "Đại vương cứu!",
+            "Đau quá...",
+        ],
+        block: [
+            "Bụng mỡ đỡ đòn! 🛡️",
+            "Mỡ dày lắm!",
+            "Không xi nhê!",
+        ],
+        win: [
+            "Giờ đi ngủ được chưa? 💤",
+            "May quá xong rồi...",
+            "Đại vương sẽ thưởng...",
+        ],
+        lose: [
+            "Thôi nằm đây luôn... 😴",
+            "Mệt quá...",
+            "Đói...",
+        ],
+        taunt: [
+            "Làm yêu quái mà không có ước mơ thì làm heo quay cho rồi!",
+            "Nhìn cái nồi của ta đi, nó sắp nấu ngươi đó! 🍲",
+            "Ngươi có thấy Tề Thiên Đại Thánh không? cho ta xin chữ ký với"
         ],
     },
 };

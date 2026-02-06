@@ -22,9 +22,11 @@ export class InputHandler {
             this.keys.add(key);
         };
         this.handleKeyUp = (e) => this.keys.delete(e.key.toLowerCase());
+        this.handleBlur = () => this.keys.clear(); // Reset inputs on focus loss
 
         window.addEventListener('keydown', this.handleKeyDown);
         window.addEventListener('keyup', this.handleKeyUp);
+        window.addEventListener('blur', this.handleBlur);
     }
 
     getPlayerInput() {
@@ -43,5 +45,6 @@ export class InputHandler {
     destroy() {
         window.removeEventListener('keydown', this.handleKeyDown);
         window.removeEventListener('keyup', this.handleKeyUp);
+        window.removeEventListener('blur', this.handleBlur);
     }
 }

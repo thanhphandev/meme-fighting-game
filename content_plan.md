@@ -23,9 +23,39 @@ Dưới đây là ý tưởng cho chuỗi video ngắn (30-60s) để xây dựn
 *   **Key Tech**: Nhắc đến công cụ AI (Midjourney/Stable Diffusion) + Photoshop/GIMP để tách nền.
 
 ### Video 3: Từ ảnh tĩnh thành động (Sprite Animation)
-*   **Visual**: Show tấm ảnh Sprite Sheet của `Luffy Gear 5` hoặc `Zoro`. Zoom vào từng hàng (Row) hành động: Chạy, Nhảy, Đánh.
-*   **Nội dung**: "Làm sao để nhân vật cử động? Mình chia ảnh thành các ô nhỏ. Dòng 1 là đứng yên, dòng 2 là chạy. Code chỉ cần đổi dòng là xong."
-*   **Code**: Show dòng `frameCounts` trong `constants.js` và giải thích `image.src`.
+
+**Visual:**
+1.  **Intro (0:00-0:05):** Quay màn hình game đang chơi character `Luffy Gear 5` (hoặc Zoro). Nhân vật đang đứng thở (Idle), sau đó chạy (Run) và đánh thường (Attack).
+2.  **Sprite Sheet Reveal (0:05-0:15):** Hiển thị tấm ảnh gốc `spritesheet.png` của Luffy.
+    *   *Effect:* Zoom vào hàng đầu tiên (Row 0). Text overlay: "Row 0: Đứng yên (Idle)".
+    *   *Effect:* Kéo xuống hàng thứ hai (Row 1). Text overlay: "Row 1: Chạy (Run)".
+    *   *Effect:* Kéo xuống hàng tấn công (Row 4). Text overlay: "Row 4: Đánh (Attack)".
+    *   *AI Prompt (nếu cần):* "A magnifying glass scanning across a pixel art sprite sheet, highlighting different rows."
+3.  **Concept Animation (0:15-0:25):** Minh hoạ cơ chế "Cắt ô".
+    *   Một khung hình chữ nhật (Frame) di chạy trên tấm ảnh lớn. Mỗi lần khung di chuyển sang phải, nhân vật cử động tiếp theo.
+    *   Khi đổi hành động (ví dụ từ đứng sang chạy), khung hình nhảy xuống dòng dưới.
+4.  **Code Walkthrough (0:25-0:45):** Quay màn hình VS Code.
+    *   **Shot 1:** File `src/game/constants.js`. Highlight đoạn config của `luffy_nikka` (dòng 210+).
+        *   Focus vào object `rows` và `frameCounts`.
+    *   **Shot 2:** File `src/game/Fighter.js`.
+        *   Highlight dòng `this.image.src = ...` (dòng 22).
+        *   Highlight hàm `setState` (dòng 74) chỗ `this.frameY = this.charData.rows[stateName]`.
+    *   **Shot 3 (Optional):** Hàm `draw()` (dòng 449) chỗ `ctx.drawImage`. Chỉ vào `srcX`, `srcY`.
+
+**Audio / Kịch bản (Thoại):**
+
+*   **(0:00)** "Nhìn Luffy múa may quay cuồng thế này, nhưng thực ra nó là... ảo ảnh đấy!"
+*   **(0:05)** "Bản chất nhân vật chỉ là một tấm ảnh tĩnh khổng lồ gọi là Sprite Sheet. Nhìn kỹ nhé!"
+*   **(0:10)** "Mình chia tấm ảnh này thành các ô lưới (Grid). Dòng đầu tiên là hình đứng yên. Dòng thứ hai là hình đang chạy. Mỗi hành động là một dòng riêng biệt."
+*   **(0:20)** "Để nhân vật cử động, code chỉ cần 'chiếu' từng ô một liên tục, giống như lật sách vậy."
+*   **(0:25)** "Vào code xem thử nha. Trong file `constants.js`, mình khai báo sẵn: Đứng là dòng 0, có 4 hình. Chạy là dòng 1, có 6 hình."
+*   **(0:35)** "Khi các bạn bấm nút chạy, code trong `Fighter.js` sẽ đổi `frameY` xuống dòng 1. Hàm vẽ `drawImage` sẽ tự động cắt đúng phần hình đó để hiển thị."
+*   **(0:45)** "Đơn giản vậy thôi mà nhìn mượt phết!"
+
+**Tài nguyên cần thiết:**
+*   Source code: `src/game/constants.js`, `src/game/Fighter.js`.
+*   Asset: Ảnh `characters/luffy_nikka/spritesheet.png` (Cần mở ảnh này lên bằng Image Viewer để quay).
+*   Gameplay footage: Quay cảnh Luffy thực hiện các hành động tương ứng với Row đã giới thiệu.
 
 ### Video 4: Lập trình di chuyển cơ bản (Physic & Gravity)
 *   **Visual**: Nhân vật nhảy lên và rơi xuống. Show đoạn code `gravity` trong `CONFIG`.
@@ -113,23 +143,33 @@ Dưới đây là ý tưởng cho chuỗi video ngắn (30-60s) để xây dựn
     ```
 
 ### Video 10: AI đơn giản (Code cho máy tự đánh)
-*   **Visual**: Player đứng im cho AI (Pepe) đánh túi bụi. Sau đó AI tự nhảy tránh đòn.
-*   **Kiến thức**: Simple AI Logic / Randomness.
-*   **Nội dung**: "Làm sao máy biết đánh lại? AI của mình check khoảng cách. Gần thì đấm, xa thì chạy lại, bị đánh thì Random 50% tỉ lệ đỡ đòn."
-*   **Code**: Trích xuất từ `src/game/AI.js`:
-    ```javascript
-    // AI.js: makeDecision
-    const dist = Math.abs(opponent.x - this.fighter.x);
-    
-    if (dist > 150) {
-        // Xa quá thì chạy lại gần
-        if (dx > 0) this.input.right = true;
-    } else {
-        // Gần thì đấm hoặc dùng skill ngẫu nhiên
-        if (Math.random() < this.aggression) this.input.attack = true;
-        else if (Math.random() < this.skillChance) this.input.skill = true;
-    }
-    ```
+
+**Visual:**
+1.  **Intro (0:00-0:10):** Cảnh Player (ví dụ: `Chicken`) đứng im. AI (ví dụ: `Ninja` hoặc `Samurai`) từ xa chạy lại, nhảy lên chém, rồi lùi ra.
+2.  **Logic Visualization (0:10-0:20):**
+    *   Vẽ một đường thẳng nối giữa 2 nhân vật. Hiển thị text dynamic: `Distance: 400` (giảm dần khi chạy lại).
+    *   Khi `Distance > 150`: Hiện text **"CHASE (Đuổi theo)"**.
+    *   Khi `Distance < 150`: Hiện text **"ATTACK MODE"** + icon Nắm đấm.
+3.  **Code Walkthrough (0:20-0:35):** Quay file `src/game/AI.js`.
+    *   Highlight dòng tính khoảng cách: `const dist = Math.abs(dx);`.
+    *   Highlight logic di chuyển: `if (dist > 150) ...`.
+    *   Highlight logic tấn công: `Math.random() < this.aggression`.
+4.  **Funny Moment (0:35-0:45):** Chỉnh độ khó lên `Hard`. AI đỡ đòn liên tục hoặc Roll né skill như hack. Zoom vào mặt meme nhân vật kiểu "What???".
+
+**Audio / Kịch bản (Thoại):**
+
+*   **(0:00)** "Nhiều bạn hỏi làm sao máy biết đánh lại? Trí tuệ nhân tạo có thông minh không?"
+*   **(0:05)** "Thực ra con AI này đơn giản hơn bạn nghĩ, nó chỉ biết làm toán lớp 1 thôi."
+*   **(0:10)** "Đầu tiên, nó tính khoảng cách (Distance) đến mình. Nếu xa quá 150 pixel, nó sẽ tự giữ nút đi tới."
+*   **(0:15)** "Khi đã áp sát, nó bắt đầu... lắc xí ngầu. Tỷ lệ 30% là đấm, 5% là tung skill. Hoàn toàn hên xui!"
+*   **(0:25)** "Nhưng ở chế độ Khó, mình code thêm cho nó khả năng 'hack map'. Cứ thấy mình bấm nút đánh là nó tự động đỡ (Block) hoặc lộn nhào (Roll) bỏ chạy."
+*   **(0:35)** "Code có mấy dòng thôi mà đánh khó chịu phết đấy!"
+
+**Tài nguyên cần thiết:**
+*   Source code: `src/game/AI.js`.
+*   Gameplay: Cảnh đấu với AI mode Easy (đứng im cho đánh) và Hard (đánh trả gắt).
+*   Overlay Effect: Cần edit video thêm text "Distance" và mũi tên chỉ hướng.
+
 
 ### Video 11: Particle System (Hiệu ứng cháy nổ)
 *   **Visual**: Skill `SOLAR KAMEHAMEHA` nổ đùng đùng, các hạt pixel (particle) bay tứ tung.

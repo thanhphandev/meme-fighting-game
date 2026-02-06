@@ -34,6 +34,7 @@ export class MemeSystem {
     }
 
     draw(ctx) {
+        t
         ctx.save();
         this.texts.forEach(text => {
             ctx.globalAlpha = Math.max(0, text.life);
