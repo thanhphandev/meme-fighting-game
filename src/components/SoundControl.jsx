@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Volume2, VolumeX, Music, Music2 } from 'lucide-react';
-import { SoundManager } from '../game/SoundManager';
+import { SoundManager } from '../engine/systems/SoundManager';
 
 export default function SoundControl({ className = '' }) {
     const [muteStates, setMuteStates] = useState(SoundManager.getMuteStates());

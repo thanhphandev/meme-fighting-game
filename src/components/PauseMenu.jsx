@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Play, RotateCcw, Home, Sliders, Volume2, Music } from 'lucide-react';
 import { useState } from 'react';
-import { SoundManager } from '../game/SoundManager';
+import { SoundManager } from '../engine/systems/SoundManager';
 import SoundControl from './SoundControl';
 
 export default function PauseMenu({ onResume, onRestart, onQuit }) {

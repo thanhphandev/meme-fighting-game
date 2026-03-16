@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gamepad2, Users, Zap, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { SoundManager } from '../game/SoundManager'
+import { SoundManager } from '../engine/systems/SoundManager'
 import SoundControl from './SoundControl'
 
 export default function Menu({ onStart, difficulty = 'medium', onSelectDifficulty }) {

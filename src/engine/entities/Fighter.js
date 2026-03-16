@@ -1,4 +1,4 @@
-import { CONFIG, CHARACTERS } from './constants';
+import { CONFIG, CHARACTERS } from '../data/constants';
 
 export class Fighter {
     constructor(ctx, x, characterId, isAI = false, image = null, facingRight = true) {
@@ -16,8 +16,18 @@ export class Fighter {
         // Use preloaded image if available, else fallback (legacy support)
         if (image) {
             this.image = image;
-            this.spriteWidth = this.image.width / 6; // Assume 6 cols
-            this.spriteHeight = this.image.height / 8; // Assume 8 rows
+            if (image.complete && image.width > 0) {
+                this.spriteWidth = this.image.width / 6;
+                this.spriteHeight = this.image.height / 8;
+            } else {
+                // Image not loaded yet, set up onload handler
+                this.spriteWidth = 0;
+                this.spriteHeight = 0;
+                image.onload = () => {
+                    this.spriteWidth = this.image.width / 6;
+                    this.spriteHeight = this.image.height / 8;
+                };
+            }
         } else {
             this.image = new Image();
             this.image.src = `/assets/${this.charData.asset}`;
@@ -432,6 +442,7 @@ export class Fighter {
         }
 
         const animInterval = 1000 / fps;
+        const fixedDelta = 16.67; // Fixed timestep cho animation mượt
 
         if (this.frameTimer > animInterval) {
             if (this.frameX < this.maxFrames - 1) {
@@ -442,7 +453,7 @@ export class Fighter {
             }
             this.frameTimer = 0;
         } else {
-            this.frameTimer += deltaTime;
+            this.frameTimer += fixedDelta;
         }
         return cycleCompleted;
     }

@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Menu from './components/Menu'
-import SelectionScreen from './components/SelectionScreen'
-import BattleScreen from './components/BattleScreen'
-import { BACKGROUNDS, CHARACTERS } from './game/constants'
-import { SoundManager } from './game/SoundManager'
+import { BACKGROUNDS, CHARACTERS } from './engine/data/constants'
+import { SoundManager } from './engine/systems/SoundManager'
 import { Trophy, Skull, RotateCcw, Users, Home, Zap } from 'lucide-react'
 import './index.css'
+
+// Lazy load heavy components for code splitting
+const SelectionScreen = lazy(() => import('./components/SelectionScreen'))
+const BattleScreen = lazy(() => import('./components/BattleScreen'))
 
 // Vietnamese GenZ victory/defeat messages
 const VICTORY_MESSAGES = [
@@ -125,10 +127,17 @@ function App() {
             transition={{ duration: 0.3 }}
             className="w-full h-full flex items-center justify-center"
           >
-            <SelectionScreen
-              onSelect={selectCharacter}
-              title={selectionPhase === 'p1' ? "PLAYER 1 — CHỌN ĐI!" : "PLAYER 2 — TỚI LƯỢT!"}
-            />
+            <Suspense fallback={
+              <div className="flex flex-col items-center justify-center text-white">
+                <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                <p className="mt-4 text-game">Loading...</p>
+              </div>
+            }>
+              <SelectionScreen
+                onSelect={selectCharacter}
+                title={selectionPhase === 'p1' ? "PLAYER 1 — CHỌN ĐI!" : "PLAYER 2 — TỚI LƯỢT!"}
+              />
+            </Suspense>
           </motion.div>
         )}
 
@@ -140,15 +149,22 @@ function App() {
             exit={{ opacity: 0 }}
             className="w-full h-full"
           >
-            <BattleScreen
-              playerChar={playerChar}
-              cpuChar={cpuChar}
-              background={background}
-              onGameOver={onGameOver}
-              cpuDifficulty={difficulty}
-              gameMode={gameMode}
-              onQuit={resetGame}
-            />
+            <Suspense fallback={
+              <div className="w-full h-full flex flex-col items-center justify-center bg-black">
+                <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                <p className="mt-4 text-game text-xl text-orange-400">Loading Battle...</p>
+              </div>
+            }>
+              <BattleScreen
+                playerChar={playerChar}
+                cpuChar={cpuChar}
+                background={background}
+                onGameOver={onGameOver}
+                cpuDifficulty={difficulty}
+                gameMode={gameMode}
+                onQuit={resetGame}
+              />
+            </Suspense>
           </motion.div>
         )}
 

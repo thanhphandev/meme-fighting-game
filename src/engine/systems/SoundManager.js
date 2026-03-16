@@ -22,22 +22,22 @@ class SoundManagerClass {
             bgm_victory: '/assets/sounds/bgm_victory.mp3',
 
             // SFX - Combat
-            sfx_hit: '/assets/sounds/sfx_hit.wav',
-            sfx_hit_heavy: '/assets/sounds/sfx_hit_heavy.wav',
-            sfx_block: '/assets/sounds/sfx_block.wav',
-            sfx_whiff: '/assets/sounds/sfx_whiff.wav',
-            sfx_dash: '/assets/sounds/sfx_dash.wav',
-            sfx_jump: '/assets/sounds/sfx_jump.wav',
-            sfx_land: '/assets/sounds/sfx_land.wav',
+            sfx_hit: '/assets/sounds/sfx_hit.mp3',
+            sfx_hit_heavy: '/assets/sounds/sfx_hit_heavy.mp3',
+            sfx_block: '/assets/sounds/sfx_block.mp3',
+            sfx_whiff: '/assets/sounds/sfx_whiff.mp3',
+            sfx_dash: '/assets/sounds/sfx_dash.mp3',
+            sfx_jump: '/assets/sounds/sfx_jump.mp3',
+            sfx_land: '/assets/sounds/sfx_land.mp3',
 
             // SFX - Skills
-            sfx_skill_activate: '/assets/sounds/sfx_skill.wav',
-            sfx_projectile: '/assets/sounds/sfx_projectile.wav',
+            sfx_skill_activate: '/assets/sounds/sfx_skill.mp3',
+            sfx_projectile: '/assets/sounds/sfx_projectile.mp3',
 
             // SFX - UI
-            sfx_select: '/assets/sounds/sfx_select.wav',
-            sfx_confirm: '/assets/sounds/sfx_confirm.wav',
-            sfx_cancel: '/assets/sounds/sfx_cancel.wav',
+            sfx_select: '/assets/sounds/sfx_select.mp3',
+            sfx_confirm: '/assets/sounds/sfx_confirm.mp3',
+            sfx_cancel: '/assets/sounds/sfx_cancel.mp3',
 
             // SFX - Announcer
             announce_fight: '/assets/sounds/announce_fight.mp3',
@@ -53,6 +53,10 @@ class SoundManagerClass {
             'sfx_hit', 'sfx_block', 'sfx_skill_activate',
             'sfx_select', 'sfx_confirm'
         ];
+
+        // Audio pool for SFX to limit concurrent playback
+        this.activeSfxCount = 0;
+        this.maxConcurrentSfx = 5;
     }
 
     /**
@@ -86,19 +90,34 @@ class SoundManagerClass {
      */
     playSfx(key, volumeMultiplier = 1) {
         if (this.isMuted || this.isSfxMuted) return;
+        if (this.activeSfxCount >= this.maxConcurrentSfx) return;
 
-        // Create new audio instance for overlapping sounds
         const path = this.soundPaths[key];
         if (!path) {
             console.warn(`Sound not found: ${key}`);
             return;
         }
 
-        const audio = new Audio(path);
-        audio.volume = this.sfxVolume * volumeMultiplier;
-        audio.play().catch(() => {
+        // Use cached audio or create new one
+        let audio = this.sounds.get(key);
+        if (!audio) {
+            audio = new Audio(path);
+            this.sounds.set(key, audio);
+        }
+
+        // Clone for overlapping sounds but limit total
+        const clone = audio.cloneNode();
+        clone.volume = this.sfxVolume * volumeMultiplier;
+        this.activeSfxCount++;
+
+        clone.play().catch(() => {
             // Ignore autoplay restrictions
         });
+
+        // Clean up when done
+        clone.addEventListener('ended', () => {
+            this.activeSfxCount--;
+        }, { once: true });
     }
 
     /**

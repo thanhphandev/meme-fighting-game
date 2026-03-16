@@ -1,4 +1,4 @@
-import { CONFIG } from './constants';
+import { CONFIG } from '../data/constants';
 
 export class Projectile {
     constructor(x, y, facingRight, ownerId, config) {

@@ -3,8 +3,8 @@
  * Handles announcements, round management, countdown, and game states
  */
 
-import { SoundManager } from './SoundManager';
-import { getDialogue, DIALOGUE_EVENTS } from './CharacterDialogues';
+import { SoundManager } from '../systems/SoundManager';
+import { getDialogue, DIALOGUE_EVENTS } from '../data/CharacterDialogues';
 
 export const GAME_STATES = {
     LOADING: 'loading',

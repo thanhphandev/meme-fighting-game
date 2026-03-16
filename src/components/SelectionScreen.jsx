@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { CHARACTERS } from '../game/constants'
-import { SoundManager } from '../game/SoundManager'
+import { CHARACTERS } from '../engine/data/constants'
+import { SoundManager } from '../engine/systems/SoundManager'
 import { Swords, Wind, Zap, Flame, Shield } from 'lucide-react'
 
 // Skill type icons mapping
