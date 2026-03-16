@@ -119,11 +119,12 @@ export class GameEventSystem {
             isPlayer1,
         };
 
-        // Limit concurrent bubbles
-        this.dialogueBubbles = this.dialogueBubbles.filter(b => b.timer > 500);
-        if (this.dialogueBubbles.length < 4) {
-            this.dialogueBubbles.push(bubble);
+        // Limit concurrent bubbles - don't prematurely remove fading bubbles
+        if (this.dialogueBubbles.length >= 4) {
+            // Remove the oldest bubble to make room
+            this.dialogueBubbles.shift();
         }
+        this.dialogueBubbles.push(bubble);
     }
 
     /**

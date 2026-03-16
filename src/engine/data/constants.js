@@ -124,6 +124,7 @@ export const CHARACTERS = [
         description: 'Why did it cross the road? To fight.',
         stats: { speed: 11, jump: 22, damage: 14 },
         rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 5, skill: 6, hit: 3, ko: 1, roll: 6 },
         skill: {
             name: 'EGG BOMB',
             type: 'projectile',

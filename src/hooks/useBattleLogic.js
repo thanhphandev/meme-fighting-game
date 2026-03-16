@@ -138,6 +138,10 @@ export function useBattleLogic({
       inputP1 = new InputHandler(mergedKeys);
     }
 
+    // Lưu vào refs để dùng trong cleanup và đảm bảo tồn tại
+    gameRefs.current.inputP1 = inputP1;
+    gameRefs.current.inputP2 = inputP2;
+
     // Event system
     const eventSystem = new GameEventSystem({
       onStateChange: setGameState,
@@ -247,8 +251,8 @@ export function useBattleLogic({
       const { eventSystem } = gameRefs.current;
       eventSystem.update(deltaTime);
 
-      const { p1, p2, ai } = gameRefs.current;
-      if (!p1 || !p2) return;
+      const { p1, p2, ai, inputP1, inputP2 } = gameRefs.current;
+      if (!p1 || !p2 || !inputP1) return;
 
       // Game logic
       if (eventSystem.state === GAME_STATES.FIGHTING) {
@@ -327,6 +331,7 @@ export function useBattleLogic({
         if (gameRefs.current.shakeIntensity < 0.5) gameRefs.current.shakeIntensity = 0;
       }
 
+      // Check p1/p2 tồn tại trước khi vẽ
       if (!p1 || !p2) {
         ctx.restore();
         eventSystem.draw(ctx);
@@ -336,8 +341,14 @@ export function useBattleLogic({
       // Intro dialogues
       if (!gameRefs.current.introShown && eventSystem.state === GAME_STATES.FIGHTING) {
         gameRefs.current.introShown = true;
-        setTimeout(() => tryShowDialogue(playerChar, DIALOGUE_EVENTS.INTRO, p1.x + p1.width / 2, p1.y, true, true), 500);
-        setTimeout(() => tryShowDialogue(cpuChar, DIALOGUE_EVENTS.INTRO, p2.x + p2.width / 2, p2.y, false, true), 1000);
+        setTimeout(() => {
+          if (!gameRefs.current.isMounted) return;
+          tryShowDialogue(playerChar, DIALOGUE_EVENTS.INTRO, p1.x + p1.width / 2, p1.y, true, true);
+        }, 500);
+        setTimeout(() => {
+          if (!gameRefs.current.isMounted) return;
+          tryShowDialogue(cpuChar, DIALOGUE_EVENTS.INTRO, p2.x + p2.width / 2, p2.y, false, true);
+        }, 1000);
       }
 
       // Render particles
@@ -416,16 +427,24 @@ export function useBattleLogic({
             p2.setVictory();
             SoundManager.playSfx('announce_ko');
             setTimeout(() => {
+              if (!gameRefs.current.isMounted) return;
               tryShowDialogue(cpuChar, DIALOGUE_EVENTS.WIN, p2.x + p2.width / 2, p2.y, false, true);
-              tryShowDialogue(playerChar, DIALOGUE_EVENTS.LOSE, p1.x + p1.width / 2, p1.y, true, true);
             }, 800);
+            setTimeout(() => {
+              if (!gameRefs.current.isMounted) return;
+              tryShowDialogue(playerChar, DIALOGUE_EVENTS.LOSE, p1.x + p1.width / 2, p1.y, true, true);
+            }, 1400);
           } else {
             p1.setVictory();
             SoundManager.playSfx('announce_ko');
             setTimeout(() => {
+              if (!gameRefs.current.isMounted) return;
               tryShowDialogue(playerChar, DIALOGUE_EVENTS.WIN, p1.x + p1.width / 2, p1.y, true, true);
-              tryShowDialogue(cpuChar, DIALOGUE_EVENTS.LOSE, p2.x + p2.width / 2, p2.y, false, true);
             }, 800);
+            setTimeout(() => {
+              if (!gameRefs.current.isMounted) return;
+              tryShowDialogue(cpuChar, DIALOGUE_EVENTS.LOSE, p2.x + p2.width / 2, p2.y, false, true);
+            }, 1400);
           }
 
           SoundManager.fadeOutBgm(1500);
@@ -442,8 +461,8 @@ export function useBattleLogic({
       gameRefs.current.isMounted = false;
       gameRefs.current.initialized = false;
       cancelAnimationFrame(gameRefs.current.animationId);
-      inputP1.destroy();
-      if (inputP2) inputP2.destroy();
+      gameRefs.current.inputP1?.destroy();
+      gameRefs.current.inputP2?.destroy();
       isFinishedRef.current = false;
       SoundManager.stopBgm();
     };
