@@ -36,6 +36,56 @@
       opacity: 0;
     }
   }
+
+  @keyframes pulse-danger {
+
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes glitch {
+    0% {
+      transform: translate(0);
+    }
+
+    20% {
+      transform: translate(-2px, 2px);
+    }
+
+    40% {
+      transform: translate(-2px, -2px);
+    }
+
+    60% {
+      transform: translate(2px, 2px);
+    }
+
+    80% {
+      transform: translate(2px, -2px);
+    }
+
+    100% {
+      transform: translate(0);
+    }
+  }
+
+  @keyframes cinematic-intro {
+    from {
+      transform: scale(1.5) translateY(-50px);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
 }
 
 /* Reset & Base */
@@ -74,6 +124,33 @@ body {
   background-size: 50px 50px;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Scanline Effect Overlay */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.05) 1px,
+      rgba(0, 0, 0, 0.05) 2px);
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Vignette Effect */
+.vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+  z-index: 90;
+}
+
+.vignette-danger {
+  background: radial-gradient(circle, transparent 20%, rgba(255, 0, 0, 0.3) 100%);
+  animation: pulse-danger 1s infinite;
 }
 
 /* Canvas Styling */
@@ -211,46 +288,57 @@ canvas {
   box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4);
 }
 
-/* Health Bar Styles */
-.health-bar {
-  background: linear-gradient(to bottom, #1a1a25, #0a0a0f);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  overflow: hidden;
+/* Health Bar Styles - Segmented & Premium */
+.health-container {
   position: relative;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
-.health-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
-  pointer-events: none;
+.health-segment-mask {
+  mask-image: repeating-linear-gradient(90deg,
+      white,
+      white 18px,
+      transparent 18px,
+      transparent 20px);
 }
 
 .health-fill-p1 {
-  background: linear-gradient(90deg, #00ff88, #00cc66, #00ff88);
-  background-size: 200% 100%;
-  animation: shimmer 2s linear infinite;
+  background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .health-fill-p2 {
-  background: linear-gradient(90deg, #ff4444, #ff6666, #ff4444);
-  background-size: 200% 100%;
-  animation: shimmer 2s linear infinite;
+  background: linear-gradient(90deg, #ff0844 0%, #ffb199 100%);
+  box-shadow: 0 0 15px rgba(255, 8, 68, 0.5);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
+.health-damage-flash {
+  background: white;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+@keyframes flash-damage {
+  from {
+    opacity: 0.8;
   }
 
-  100% {
-    background-position: 200% 0;
+  to {
+    opacity: 0;
   }
+}
+
+.animate-flash {
+  animation: flash-damage 0.2s ease-out forwards;
 }
 
 /* Stamina Bar */

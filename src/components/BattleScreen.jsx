@@ -35,6 +35,10 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
     const [gameState, setGameState] = useState(GAME_STATES.LOADING)
     const [announcement, setAnnouncement] = useState(null)
     const [isFullscreen, setIsFullscreen] = useState(false)
+    const [showVsIntro, setShowVsIntro] = useState(true)
+    const [lowHealthWarning, setLowHealthWarning] = useState({ p1: false, p2: false })
+    const [hitFlash, setHitFlash] = useState({ p1: false, p2: false })
+    const [koFreeze, setKoFreeze] = useState(false)
     const effectAssets = useRef({})
 
     useEffect(() => {
@@ -149,8 +153,12 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                     ai = new AI(p2, cpuDifficulty)
                 }
 
-                // Start countdown
-                eventSystem.startCountdown()
+                // Start countdown after VS intro
+                setTimeout(() => {
+                    setShowVsIntro(false)
+                    eventSystem.startCountdown()
+                }, 3000)
+
                 animationId = requestAnimationFrame(gameLoop)
 
             } catch (err) {
@@ -195,9 +203,18 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         }
 
         // Enhanced hit handler with sound and dialogue
-        const handleHit = (x, y, isSpecial = false, textOverride = null) => {
+        const handleHit = (x, y, isSpecial = false, textOverride = null, isP1Target = false) => {
             spawnMeme(x, y, isSpecial, textOverride)
             SoundManager.playSfx(isSpecial ? 'sfx_hit_heavy' : 'sfx_hit')
+
+            // Trigger HUD flash
+            if (isP1Target) {
+                setHitFlash(prev => ({ ...prev, p1: true }))
+                setTimeout(() => setHitFlash(prev => ({ ...prev, p1: false })), 200)
+            } else {
+                setHitFlash(prev => ({ ...prev, p2: true }))
+                setTimeout(() => setHitFlash(prev => ({ ...prev, p2: false })), 200)
+            }
         }
 
         const checkProjectileHit = (proj, fighter) => {
@@ -321,8 +338,8 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                     SoundManager.playSfx('sfx_block')
                 }
 
-                p1.update(deltaTime, p2, handleHit, spawnParticle, spawnProjectile)
-                p2.update(deltaTime, p1, handleHit, spawnParticle, spawnProjectile)
+                p1.update(deltaTime, p2, (x, y, s, t) => handleHit(x, y, s, t, false), spawnParticle, spawnProjectile)
+                p2.update(deltaTime, p1, (x, y, s, t) => handleHit(x, y, s, t, true), spawnParticle, spawnProjectile)
             }
 
             // Render Particles
@@ -398,7 +415,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             //     const bubbleX = midX
             //     const bubbleY = midY + 30
             //     const bubbleRadius = 25
-                
+
             //     // Bubble background
             //     ctx.fillStyle = isChasing ? 'rgba(100, 150, 255, 0.8)' : 'rgba(255, 100, 100, 0.8)'
             //     ctx.beginPath()
@@ -437,16 +454,19 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             ctx.restore()
 
             // Update HUD
+            const p1HpPercent = (p1.health / CONFIG.baseHp) * 100
+            const p2HpPercent = (p2.health / CONFIG.baseHp) * 100
+
             setHudData(prev => ({
-                p1Health: (p1.health / CONFIG.baseHp) * 100,
-                p1DelayedHealth: prev.p1DelayedHealth > (p1.health / CONFIG.baseHp) * 100
-                    ? Math.max((p1.health / CONFIG.baseHp) * 100, prev.p1DelayedHealth - 0.3)
-                    : (p1.health / CONFIG.baseHp) * 100,
+                p1Health: p1HpPercent,
+                p1DelayedHealth: prev.p1DelayedHealth > p1HpPercent
+                    ? Math.max(p1HpPercent, prev.p1DelayedHealth - 0.3)
+                    : p1HpPercent,
                 p1Stamina: p1.stamina,
-                p2Health: (p2.health / CONFIG.baseHp) * 100,
-                p2DelayedHealth: prev.p2DelayedHealth > (p2.health / CONFIG.baseHp) * 100
-                    ? Math.max((p2.health / CONFIG.baseHp) * 100, prev.p2DelayedHealth - 0.3)
-                    : (p2.health / CONFIG.baseHp) * 100,
+                p2Health: p2HpPercent,
+                p2DelayedHealth: prev.p2DelayedHealth > p2HpPercent
+                    ? Math.max(p2HpPercent, prev.p2DelayedHealth - 0.3)
+                    : p2HpPercent,
                 p2Stamina: p2.stamina,
                 p1Name: prev.p1Name,
                 p2Name: prev.p2Name,
@@ -454,32 +474,42 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 cooldownP2: Math.max(0, p2.skillCooldown / CONFIG.skillCooldown * 100),
             }))
 
+            setLowHealthWarning({
+                p1: p1HpPercent < 25,
+                p2: p2HpPercent < 25
+            })
+
             // Game End
             if ((p1.isDead || p2.isDead) && !isFinishedRef.current) {
                 isFinishedRef.current = true
+                setKoFreeze(true) // Start freeze frame
 
-                // Show win/lose dialogues
-                if (p1.isDead) {
-                    p2.setVictory()
-                    SoundManager.playSfx('announce_ko')
-                    setTimeout(() => {
-                        tryShowDialogue(cpuChar, DIALOGUE_EVENTS.WIN, p2.x + p2.width / 2, p2.y, false, true)
-                        tryShowDialogue(playerChar, DIALOGUE_EVENTS.LOSE, p1.x + p1.width / 2, p1.y, true, true)
-                    }, 800)
-                } else {
-                    p1.setVictory()
-                    SoundManager.playSfx('announce_ko')
-                    setTimeout(() => {
-                        tryShowDialogue(playerChar, DIALOGUE_EVENTS.WIN, p1.x + p1.width / 2, p1.y, true, true)
-                        tryShowDialogue(cpuChar, DIALOGUE_EVENTS.LOSE, p2.x + p2.width / 2, p2.y, false, true)
-                    }, 800)
-                }
-
-                SoundManager.fadeOutBgm(1500)
-
+                // Slow down and desaturate
                 setTimeout(() => {
-                    if (isMounted) onGameOver(p1.isDead ? 'cpu' : 'p1')
-                }, 2500)
+                    setKoFreeze(false)
+                    // Show win/lose dialogues
+                    if (p1.isDead) {
+                        p2.setVictory()
+                        SoundManager.playSfx('announce_ko')
+                        setTimeout(() => {
+                            tryShowDialogue(cpuChar, DIALOGUE_EVENTS.WIN, p2.x + p2.width / 2, p2.y, false, true)
+                            tryShowDialogue(playerChar, DIALOGUE_EVENTS.LOSE, p1.x + p1.width / 2, p1.y, true, true)
+                        }, 800)
+                    } else {
+                        p1.setVictory()
+                        SoundManager.playSfx('announce_ko')
+                        setTimeout(() => {
+                            tryShowDialogue(playerChar, DIALOGUE_EVENTS.WIN, p1.x + p1.width / 2, p1.y, true, true)
+                            tryShowDialogue(cpuChar, DIALOGUE_EVENTS.LOSE, p2.x + p2.width / 2, p2.y, false, true)
+                        }, 800)
+                    }
+
+                    SoundManager.fadeOutBgm(1500)
+
+                    setTimeout(() => {
+                        if (isMounted) onGameOver(p1.isDead ? 'cpu' : 'p1')
+                    }, 2500)
+                }, 1000)
             }
 
             animationId = requestAnimationFrame(gameLoop)
@@ -516,6 +546,38 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 backgroundPosition: 'center'
             }}
         >
+            {/* Overlays */}
+            <div className="scanlines" />
+            <div className={`vignette ${lowHealthWarning.p1 ? 'vignette-danger' : ''}`} />
+
+            {/* VS Intro Cinematic */}
+            {showVsIntro && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm overflow-hidden">
+                    <div className="absolute inset-0 bg-grid opacity-20" />
+
+                    {/* Character Portraits Intro */}
+                    <div className="relative w-full h-full flex items-center justify-between px-20">
+                        <div className="flex flex-col items-center animate-[cinematic-intro_0.6s_ease-out_forwards]">
+                            <div className="w-64 h-64 rounded-2xl border-4 border-cyan-400 bg-cyan-900/20 overflow-hidden box-glow-cyan">
+                                <img src={`/assets/${CHARACTERS.find(c => c.id === playerChar)?.asset}`} className="w-full h-full object-contain scale-150 translate-y-4" alt="p1" />
+                            </div>
+                            <h2 className="text-game text-4xl mt-6 text-cyan-400 glow-cyan">{hudData.p1Name}</h2>
+                        </div>
+
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                            <h1 className="text-game text-9xl text-orange-500 animate-pulse italic skew-x-12 drop-shadow-[0_0_30px_rgba(255,165,0,0.8)]">VS</h1>
+                        </div>
+
+                        <div className="flex flex-col items-center animate-[cinematic-intro_0.6s_ease-out_0.2s_forwards] opacity-0">
+                            <div className="w-64 h-64 rounded-2xl border-4 border-pink-500 bg-pink-900/20 overflow-hidden box-glow-pink">
+                                <img src={`/assets/${CHARACTERS.find(c => c.id === cpuChar)?.asset}`} className="w-full h-full object-contain scale-150 translate-y-4 flip-horizontal" alt="p2" />
+                            </div>
+                            <h2 className="text-game text-4xl mt-6 text-pink-500 glow-pink">{hudData.p2Name}</h2>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {isPaused && (
                 <PauseMenu
                     onResume={() => setIsPaused(false)}
@@ -525,104 +587,106 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
             )}
 
             {/* HUD React Layer */}
-            <div className="absolute top-0 w-full p-4 md:p-8 flex justify-between z-10 pointer-events-none">
+            <div className="absolute top-0 w-full p-6 md:p-10 flex justify-between z-10 pointer-events-none">
                 {/* Player 1 HUD */}
-                <div className="w-[300px] md:w-[350px]">
-                    <div className="flex justify-between items-end mb-1">
-                        <span className="font-bangers text-2xl md:text-3xl text-white drop-shadow-md truncate max-w-[180px]">
-                            {hudData.p1Name}
-                        </span>
-                        <div className="flex flex-col items-end">
-                            <span className="font-comic text-[10px] md:text-xs text-green-400">
-                                {hudData.p1Health > 66 ? 'FEELS GREAT! 🔥' : hudData.p1Health > 33 ? 'STILL OK...' : 'NOT STONKS 📉'}
+                <div className={`w-[320px] md:w-[400px] transition-transform ${lowHealthWarning.p1 ? 'animate-[glitch_0.2s_infinite]' : ''}`}>
+                    <div className="flex justify-between items-end mb-2">
+                        <div className="flex flex-col">
+                            <span className={`text-xs font-game tracking-widest mb-1 ${lowHealthWarning.p1 ? 'text-red-500' : 'text-cyan-400'}`}>
+                                {lowHealthWarning.p1 ? 'WARNING! LOW HP' : 'PLAYER 1'}
+                            </span>
+                            <span className="font-game text-3xl text-white drop-shadow-md truncate max-w-[200px]">
+                                {hudData.p1Name}
                             </span>
                         </div>
                     </div>
-                    {/* P1 Health Bar */}
-                    <div className="h-6 md:h-8 bg-neutral-900 border-2 border-white rounded-xl overflow-hidden shadow-lg relative transform skew-x-[-10deg]">
+                    {/* P1 Health Bar Container */}
+                    <div className={`health-container transform skew-x-[-15deg] border-cyan-500/50 ${hitFlash.p1 ? 'brightness-150 scale-[1.02]' : ''}`}>
                         <div
-                            className="absolute top-0 left-0 h-full bg-red-600 transition-all duration-100 ease-linear"
+                            className="absolute top-0 left-0 h-full bg-red-600/50 transition-all duration-300"
                             style={{ width: `${hudData.p1DelayedHealth}%` }}
                         />
                         <div
-                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500 transition-all duration-75"
+                            className="absolute top-0 left-0 h-full health-fill-p1 health-segment-mask"
                             style={{ width: `${hudData.p1Health}%` }}
                         />
-                        {/* Health percentage */}
-                        <span className="absolute inset-0 flex items-center justify-center text-xs md:text-sm font-bold text-white drop-shadow-lg transform skew-x-[10deg]">
-                            {Math.ceil(hudData.p1Health)}%
-                        </span>
-                    </div>
-                    {/* Stamina */}
-                    <div className="flex gap-2 mt-2">
-                        <div className="h-2.5 md:h-3 bg-neutral-900 rounded-full overflow-hidden flex-1 border border-white/30 transform skew-x-[-10deg]">
-                            <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-150" style={{ width: `${hudData.p1Stamina}%` }} />
-                        </div>
-                        {/* Skill Cooldown Indicator */}
-                        <div className="relative w-8 h-8 md:w-10 md:h-10 transform skew-x-[-10deg]">
-                            <div className="absolute inset-0 bg-neutral-900 rounded-lg border border-white/30 overflow-hidden">
-                                <div
-                                    className="absolute bottom-0 left-0 right-0 bg-purple-500/80 transition-all duration-100"
-                                    style={{ height: `${100 - hudData.cooldownP1}%` }}
-                                />
-                            </div>
-                            <span className="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-bold text-white transform skew-x-[10deg]">
-                                E
+                        {/* Damage flash layer */}
+                        {hitFlash.p1 && <div className="absolute inset-0 bg-white animate-flash" />}
+                        {/* Health percentage overlay */}
+                        <div className="absolute inset-0 flex items-center justify-end px-4 transform skew-x-[15deg]">
+                            <span className="font-game text-sm text-white drop-shadow-lg italic">
+                                {Math.ceil(hudData.p1Health)}%
                             </span>
+                        </div>
+                    </div>
+                    {/* Stamina & Skill */}
+                    <div className="flex gap-3 mt-3 items-center">
+                        <div className="flex-1 h-2 bg-black/40 rounded-full overflow-hidden border border-white/10">
+                            <div className="h-full bg-cyan-400 box-glow-cyan transition-all duration-200" style={{ width: `${hudData.p1Stamina}%` }} />
+                        </div>
+                        {/* Skill Cooldown */}
+                        <div className="relative w-12 h-12 bg-neutral-900 border border-cyan-400/50 rounded-lg flex items-center justify-center overflow-hidden">
+                            <div
+                                className="absolute bottom-0 left-0 right-0 bg-cyan-400/30 transition-all duration-100"
+                                style={{ height: `${100 - hudData.cooldownP1}%` }}
+                            />
+                            <span className={`font-game text-lg ${hudData.cooldownP1 === 0 ? 'text-cyan-400 animate-pulse' : 'text-white/40'}`}>E</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Center - VS / Timer */}
-                <div className="flex flex-col items-center">
-                    <div className="font-bangers text-3xl md:text-5xl text-orange-500 drop-shadow-[0_0_10px_rgba(255,165,0,0.8)]">
-                        VS
-                    </div>
-                    <div className="text-white/60 text-[10px] md:text-xs font-comic mt-1">
-                        {gameState === GAME_STATES.COUNTDOWN ? 'GET READY!' :
-                            gameState === GAME_STATES.FIGHTING ? 'FIGHT!' : ''}
+                {/* Center - Timer/State */}
+                <div className="flex flex-col items-center pt-2">
+                    <div className="relative">
+                        <div className="font-game text-4xl text-orange-500 glow-gold italic skew-x-[-10deg]">
+                            99
+                        </div>
                     </div>
                 </div>
 
                 {/* Player 2 / CPU HUD */}
-                <div className="w-[300px] md:w-[350px] text-right">
-                    <div className="flex justify-between items-end mb-1">
-                        <span className="font-comic text-[10px] md:text-xs text-red-400">
-                            {hudData.p2Health > 66 ? 'DANGEROUS! ⚠️' : hudData.p2Health > 33 ? 'WEAKENING...' : 'ONE MORE! 💀'}
+                <div className={`w-[320px] md:w-[400px] text-right transition-transform ${lowHealthWarning.p2 ? 'animate-[glitch_0.2s_infinite]' : ''}`}>
+                    <div className="flex flex-col items-end mb-2">
+                        <span className={`text-xs font-game tracking-widest mb-1 ${lowHealthWarning.p2 ? 'text-red-500' : 'text-pink-500'}`}>
+                            {lowHealthWarning.p2 ? 'FINISH THEM!' : (gameMode === 'pve' ? 'CPU ENEMY' : 'PLAYER 2')}
                         </span>
-                        <span className="font-bangers text-2xl md:text-3xl text-white drop-shadow-md truncate max-w-[180px]">
+                        <span className="font-game text-3xl text-white drop-shadow-md truncate max-w-[200px]">
                             {hudData.p2Name}
                         </span>
                     </div>
-                    {/* P2 Health Bar */}
-                    <div className="h-6 md:h-8 bg-neutral-900 border-2 border-white rounded-xl overflow-hidden shadow-lg relative transform skew-x-[10deg]">
+                    {/* P2 Health Bar Container */}
+                    <div className={`health-container transform skew-x-[15deg] border-pink-500/50 ${hitFlash.p2 ? 'brightness-150 scale-[1.02]' : ''}`}>
                         <div
-                            className="absolute top-0 right-0 h-full bg-white transition-all duration-100 ease-linear"
+                            className="absolute top-0 right-0 h-full bg-white/20 transition-all duration-300"
                             style={{ width: `${hudData.p2DelayedHealth}%` }}
                         />
                         <div
-                            className="absolute top-0 right-0 h-full bg-gradient-to-l from-red-600 to-orange-500 transition-all duration-75"
+                            className="absolute top-0 right-0 h-full health-fill-p2 health-segment-mask"
                             style={{ width: `${hudData.p2Health}%` }}
                         />
-                        <span className="absolute inset-0 flex items-center justify-center text-xs md:text-sm font-bold text-white drop-shadow-lg transform skew-x-[-10deg]">
-                            {Math.ceil(hudData.p2Health)}%
-                        </span>
-                    </div>
-                    {/* Stamina */}
-                    <div className="flex gap-2 mt-2 justify-end">
-                        <div className="relative w-8 h-8 md:w-10 md:h-10 transform skew-x-[10deg]">
-                            <div className="absolute inset-0 bg-neutral-900 rounded-lg border border-white/30 overflow-hidden">
-                                <div
-                                    className="absolute bottom-0 left-0 right-0 bg-purple-500/80 transition-all duration-100"
-                                    style={{ height: `${100 - hudData.cooldownP2}%` }}
-                                />
-                            </div>
-                            <span className="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-bold text-white transform skew-x-[-10deg]">
-                                {gameMode === 'pvp' ? 'DEL' : 'AI'}
+                        {/* Damage flash layer */}
+                        {hitFlash.p2 && <div className="absolute inset-0 bg-white animate-flash" />}
+                        {/* Health percentage overlay */}
+                        <div className="absolute inset-0 flex items-center justify-start px-4 transform skew-x-[-15deg]">
+                            <span className="font-game text-sm text-white drop-shadow-lg italic">
+                                {Math.ceil(hudData.p2Health)}%
                             </span>
                         </div>
-                        <div className="h-2.5 md:h-3 bg-neutral-900 rounded-full overflow-hidden flex-1 border border-white/30 transform skew-x-[10deg]">
-                            <div className="h-full bg-gradient-to-l from-yellow-400 to-amber-500 ml-auto transition-all duration-150" style={{ width: `${hudData.p2Stamina}%` }} />
+                    </div>
+                    {/* Stamina & Skill */}
+                    <div className="flex gap-3 mt-3 items-center flex-row-reverse">
+                        <div className="flex-1 h-2 bg-black/40 rounded-full overflow-hidden border border-white/10">
+                            <div className="h-full bg-pink-500 box-glow-pink transition-all duration-200" style={{ width: `${hudData.p2Stamina}%` }} />
+                        </div>
+                        {/* Skill Cooldown */}
+                        <div className="relative w-12 h-12 bg-neutral-900 border border-pink-500/50 rounded-lg flex items-center justify-center overflow-hidden">
+                            <div
+                                className="absolute bottom-0 left-0 right-0 bg-pink-500/30 transition-all duration-100"
+                                style={{ height: `${100 - hudData.cooldownP2}%` }}
+                            />
+                            <span className={`font-game text-lg ${hudData.cooldownP2 === 0 ? 'text-pink-500 animate-pulse' : 'text-white/40'}`}>
+                                {gameMode === 'pvp' ? 'DEL' : 'AI'}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -632,7 +696,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                 ref={canvasRef}
                 width={CONFIG.canvasWidth}
                 height={CONFIG.canvasHeight}
-                className="block w-full h-full object-cover"
+                className={`block w-full h-full object-cover transition-all duration-1000 ${koFreeze ? 'grayscale brightness-50 contrast-150' : ''}`}
             />
 
             {/* Instructions Panel - Responsive */}
