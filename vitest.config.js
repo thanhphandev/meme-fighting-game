@@ -1,6 +1,9 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import path from 'path';
+import { fileURLToPath } from 'url';
+import { resolve } from 'path';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
@@ -23,11 +26,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@engine': path.resolve(__dirname, './src/engine'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@contexts': path.resolve(__dirname, './src/contexts'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@': resolve(__dirname, './src'),
+      '@engine': resolve(__dirname, './src/engine'),
+      '@components': resolve(__dirname, './src/components'),
+      '@contexts': resolve(__dirname, './src/contexts'),
+      '@hooks': resolve(__dirname, './src/hooks'),
     },
   },
 });

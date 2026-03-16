@@ -1,11 +1,19 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Gamepad2, Users, Zap, ChevronRight } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { SoundManager } from '../engine/systems/SoundManager'
 import SoundControl from './SoundControl'
 
+// Pre-generate stable particle positions to avoid Math.random in render
+const PARTICLES = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    left: (i * 17 + 3) % 100,
+    top: (i * 23 + 7) % 100,
+    duration: 3 + (i % 5) * 0.5,
+    delay: (i % 10) * 0.2,
+}))
+
 export default function Menu({ onStart, difficulty = 'medium', onSelectDifficulty }) {
-    const [hoveredButton, setHoveredButton] = useState(null)
 
     useEffect(() => {
         SoundManager.playBgm('bgm_menu')
@@ -32,22 +40,22 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
 
             {/* Floating Particles */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(20)].map((_, i) => (
+                {PARTICLES.map((p) => (
                     <motion.div
-                        key={i}
+                        key={p.id}
                         className="absolute w-1 h-1 bg-cyan-400/30 rounded-full"
                         style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
+                            left: `${p.left}%`,
+                            top: `${p.top}%`,
                         }}
                         animate={{
                             y: [0, -100, 0],
                             opacity: [0, 1, 0],
                         }}
                         transition={{
-                            duration: 3 + Math.random() * 2,
+                            duration: p.duration,
                             repeat: Infinity,
-                            delay: Math.random() * 2,
+                            delay: p.delay,
                         }}
                     />
                 ))}
@@ -114,8 +122,6 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
                     {/* VS CPU Button */}
                     <motion.button
                         onClick={() => handleButtonClick('pve')}
-                        onHoverStart={() => setHoveredButton('pve')}
-                        onHoverEnd={() => setHoveredButton(null)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="group relative flex-1 glass-card glass-card-hover p-6 cursor-pointer overflow-hidden"
@@ -144,8 +150,6 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
                     {/* VS Player Button */}
                     <motion.button
                         onClick={() => handleButtonClick('pvp')}
-                        onHoverStart={() => setHoveredButton('pvp')}
-                        onHoverEnd={() => setHoveredButton(null)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="group relative flex-1 glass-card glass-card-hover p-6 cursor-pointer overflow-hidden"

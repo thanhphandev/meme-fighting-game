@@ -24,7 +24,7 @@ export class Projectile {
         this.hasHit = false;
     }
 
-    update(deltaTime) {
+    update() {
         this.x += this.vx;
         this.y += this.vy;
         this.vy += this.gravity;

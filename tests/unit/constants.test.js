@@ -1,6 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { CHARACTERS, CONFIG } from '../../src/game/constants';
+import { describe, it, expect } from 'vitest';
+import { CHARACTERS, CONFIG } from '../../src/engine/data/constants';
 
 describe('Game Constants', () => {
   it('should have valid character data', () => {

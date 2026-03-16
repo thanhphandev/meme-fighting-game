@@ -59,7 +59,7 @@ export function useBattleLogic({
     memeSystem: null,
     eventSystem: null,
     animationId: null,
-    lastTime: performance.now(),
+    lastTime: 0,
     dialogueCooldown: 0,
     lastP1State: '',
     lastP2State: '',
@@ -69,7 +69,8 @@ export function useBattleLogic({
     initialized: false
   });
 
-  // Screen shake helper
+  const isPausedRef = useRef(isPaused);
+  useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
   const addScreenShake = useCallback((amount) => {
     gameRefs.current.shakeIntensity = amount;
   }, []);
@@ -207,7 +208,10 @@ export function useBattleLogic({
           eventSystem.startCountdown();
         }, 3000);
 
-        gameRefs.current.animationId = requestAnimationFrame(gameLoop);
+        gameRefs.current.animationId = requestAnimationFrame((ts) => {
+          gameRefs.current.lastTime = ts;
+          gameRefs.current.animationId = requestAnimationFrame(gameLoop);
+        });
       } catch (err) {
         if (import.meta.env.DEV) console.error("Failed to initialize battle:", err);
       }
@@ -220,7 +224,7 @@ export function useBattleLogic({
     const gameLoop = (timeStamp) => {
       if (!gameRefs.current.isMounted) return;
 
-      if (isPaused) {
+      if (isPausedRef.current) {
         gameRefs.current.lastTime = timeStamp;
         gameRefs.current.animationId = requestAnimationFrame(gameLoop);
         return;
@@ -239,7 +243,7 @@ export function useBattleLogic({
       }
 
       // Render mượt với interpolation (nếu cần)
-      renderGame(accumulator / FIXED_TIME_STEP);
+      renderGame();
 
       gameRefs.current.animationId = requestAnimationFrame(gameLoop);
     };
@@ -316,7 +320,7 @@ export function useBattleLogic({
       }
     };
 
-    const renderGame = (interpolation) => {
+    const renderGame = () => {
       const { p1, p2, particles, projectiles, memeSystem, eventSystem, shakeIntensity } = gameRefs.current;
 
       ctx.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
@@ -458,25 +462,20 @@ export function useBattleLogic({
     init();
 
     return () => {
-      gameRefs.current.isMounted = false;
-      gameRefs.current.initialized = false;
-      cancelAnimationFrame(gameRefs.current.animationId);
-      gameRefs.current.inputP1?.destroy();
-      gameRefs.current.inputP2?.destroy();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const refs = gameRefs.current;
+      refs.isMounted = false;
+      refs.initialized = false;
+      cancelAnimationFrame(refs.animationId);
+      refs.inputP1?.destroy();
+      refs.inputP2?.destroy();
       isFinishedRef.current = false;
       SoundManager.stopBgm();
     };
   // Chỉ re-run khi character, game mode thực sự thay đổi - KHÔNG bao gồm isPaused, callbacks
   }, [playerChar, cpuChar, background, cpuDifficulty, gameMode]);
 
-  // Separate effect for pause handling - không ảnh hưởng đến game loop chính
-  useEffect(() => {
-    if (!gameRefs.current.p1 || !gameRefs.current.p2) return;
-    // Pause chỉ cập nhật lastTime để tránh deltaTime lớn khi resume
-    if (gameRefs.current.animationId && isPaused) {
-      gameRefs.current.lastTime = performance.now();
-    }
-  }, [isPaused]);
+  // isPaused is handled via isPausedRef inside the game loop to avoid re-initializing
 
   return {
     canvasRef,

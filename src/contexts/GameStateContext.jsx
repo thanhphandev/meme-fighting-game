@@ -46,8 +46,8 @@ function gameReducer(state, action) {
         endMessage: null,
       };
 
-    case ACTIONS.SELECT_CHARACTER:
-      const { charId, isP1, nextScreen, randomCpu, randomBg } = action.payload;
+    case ACTIONS.SELECT_CHARACTER: {
+      const { charId, isP1, randomCpu, randomBg } = action.payload;
 
       if (isP1) {
         // P1 selected
@@ -77,6 +77,7 @@ function gameReducer(state, action) {
           screen: 'battle',
         };
       }
+    }
 
     case ACTIONS.GAME_OVER:
       return {

@@ -13,14 +13,12 @@ const PlayerHUD = memo(function PlayerHUD({
   isP1,
   isLowHealth,
   isHitFlash,
-  isCPU,
   gameMode
 }) {
   const borderColor = isP1 ? 'border-cyan-500/50' : 'border-pink-500/50';
   const accentColor = isP1 ? 'cyan' : 'pink';
   const fillClass = isP1 ? 'health-fill-p1' : 'health-fill-p2';
   const skewClass = isP1 ? 'skew-x-[-15deg]' : 'skew-x-[15deg]';
-  const healthAlign = isP1 ? 'left' : 'right';
   const containerAlign = isP1 ? '' : 'flex-row-reverse';
   const textAlign = isP1 ? '' : 'text-right items-end';
 

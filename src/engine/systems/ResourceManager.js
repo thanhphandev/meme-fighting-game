@@ -5,7 +5,7 @@ export class ResourceManager {
 
     async loadImages(assets) {
         const promises = assets.map(asset => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 // Check if already loaded
                 if (this.images[asset.id]) {
                     resolve(this.images[asset.id]);
