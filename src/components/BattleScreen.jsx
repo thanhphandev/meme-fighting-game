@@ -559,7 +559,14 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
                     <div className="relative w-full h-full flex items-center justify-between px-20">
                         <div className="flex flex-col items-center animate-[cinematic-intro_0.6s_ease-out_forwards]">
                             <div className="w-64 h-64 rounded-2xl border-4 border-cyan-400 bg-cyan-900/20 overflow-hidden box-glow-cyan">
-                                <img src={`/assets/${CHARACTERS.find(c => c.id === playerChar)?.asset}`} className="w-full h-full object-contain scale-150 translate-y-4" alt="p1" />
+                                <div
+                                    style={{
+                                        backgroundImage: `url(/assets/${CHARACTERS.find(c => c.id === playerChar)?.asset})`,
+                                        backgroundSize: `600% ${(CHARACTERS.find(c => c.id === playerChar)?.rowCount || 8) * 100}%`,
+                                        backgroundPosition: `0% ${CHARACTERS.find(c => c.id === playerChar)?.rows.idle * (100 / ((CHARACTERS.find(c => c.id === playerChar)?.rowCount || 8) - 1))}%`,
+                                    }}
+                                    className="w-full h-full scale-150 translate-y-4"
+                                />
                             </div>
                             <h2 className="text-game text-4xl mt-6 text-cyan-400 glow-cyan">{hudData.p1Name}</h2>
                         </div>
@@ -570,7 +577,14 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
 
                         <div className="flex flex-col items-center animate-[cinematic-intro_0.6s_ease-out_0.2s_forwards] opacity-0">
                             <div className="w-64 h-64 rounded-2xl border-4 border-pink-500 bg-pink-900/20 overflow-hidden box-glow-pink">
-                                <img src={`/assets/${CHARACTERS.find(c => c.id === cpuChar)?.asset}`} className="w-full h-full object-contain scale-150 translate-y-4 flip-horizontal" alt="p2" />
+                                <div
+                                    style={{
+                                        backgroundImage: `url(/assets/${CHARACTERS.find(c => c.id === cpuChar)?.asset})`,
+                                        backgroundSize: `600% ${(CHARACTERS.find(c => c.id === cpuChar)?.rowCount || 8) * 100}%`,
+                                        backgroundPosition: `0% ${CHARACTERS.find(c => c.id === cpuChar)?.rows.idle * (100 / ((CHARACTERS.find(c => c.id === cpuChar)?.rowCount || 8) - 1))}%`,
+                                    }}
+                                    className="w-full h-full scale-150 translate-y-4 flip-horizontal"
+                                />
                             </div>
                             <h2 className="text-game text-4xl mt-6 text-pink-500 glow-pink">{hudData.p2Name}</h2>
                         </div>
