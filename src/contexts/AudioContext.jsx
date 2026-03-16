@@ -33,17 +33,10 @@ export function AudioProvider({ children }) {
     };
   }, []);
 
-  // Sync mute state with SoundManager
-  useEffect(() => {
-    const states = SoundManager.getMuteStates();
-    if (states.isMuted !== isMuted) {
-      SoundManager.toggleMute();
-    }
-  }, [isMuted]);
-
   // Actions
   const toggleMute = useCallback(() => {
-    setIsMuted(prev => !prev);
+    SoundManager.toggleMute();
+    setIsMuted(SoundManager.getMuteStates().isMuted);
   }, []);
 
   const playBgm = useCallback((bgmName, loop = true) => {

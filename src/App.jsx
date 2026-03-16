@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react'
+import { useState, lazy, Suspense, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Menu from './components/Menu'
 import { BACKGROUNDS, CHARACTERS } from './engine/data/constants'
@@ -38,14 +38,14 @@ function App() {
   const [selectionPhase, setSelectionPhase] = useState('p1')
   const [endMessage, setEndMessage] = useState(null)
 
-  const startGame = (mode) => {
+  const startGame = useCallback((mode) => {
     SoundManager.playSfx('sfx_confirm')
     setGameMode(mode)
     setSelectionPhase('p1')
     setScreen('selection')
-  }
+  }, [])
 
-  const selectCharacter = (char) => {
+  const selectCharacter = useCallback((char) => {
     SoundManager.playSfx('sfx_select')
 
     if (selectionPhase === 'p1') {
@@ -66,25 +66,25 @@ function App() {
       setBackground(randomBg)
       setScreen('battle')
     }
-  }
+  }, [selectionPhase, gameMode])
 
-  const onGameOver = (winStatus) => {
+  const onGameOver = useCallback((winStatus) => {
     setWinner(winStatus)
     const messages = winStatus === 'p1' ? VICTORY_MESSAGES : DEFEAT_MESSAGES
     const randomMessage = messages[Math.floor(Math.random() * messages.length)]
     setEndMessage(randomMessage)
     SoundManager.playBgm('bgm_victory', false)
     setScreen('gameover')
-  }
+  }, [])
 
-  const handleRematch = () => {
+  const handleRematch = useCallback(() => {
     SoundManager.playSfx('sfx_confirm')
     setWinner(null)
     setEndMessage(null)
     setScreen('battle')
-  }
+  }, [])
 
-  const resetGame = () => {
+  const resetGame = useCallback(() => {
     SoundManager.playSfx('sfx_cancel')
     setScreen('menu')
     setPlayerChar(null)
@@ -92,11 +92,11 @@ function App() {
     setWinner(null)
     setEndMessage(null)
     setSelectionPhase('p1')
-  }
+  }, [])
 
-  const getCharacterName = (charId) => {
+  const getCharacterName = useCallback((charId) => {
     return CHARACTERS.find(c => c.id === charId)?.name || 'Unknown'
-  }
+  }, [])
 
   return (
     <div className="w-screen h-screen bg-[#0a0a0f] flex flex-col items-center justify-center overflow-hidden">

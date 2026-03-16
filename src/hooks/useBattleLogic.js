@@ -209,7 +209,7 @@ export function useBattleLogic({
 
         gameRefs.current.animationId = requestAnimationFrame(gameLoop);
       } catch (err) {
-        console.error("Failed to initialize battle:", err);
+        if (import.meta.env.DEV) console.error("Failed to initialize battle:", err);
       }
     };
 

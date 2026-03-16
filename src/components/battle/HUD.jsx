@@ -35,12 +35,10 @@ const HUD = memo(function HUD({
         gameMode={gameMode}
       />
 
-      {/* Center Timer */}
+      {/* Center - VS divider */}
       <div className="flex flex-col items-center pt-2">
-        <div className="relative">
-          <div className="font-game text-4xl text-orange-500 glow-gold italic skew-x-[-10deg]">
-            99
-          </div>
+        <div className="font-game text-2xl text-orange-500/60 italic skew-x-[-10deg]">
+          VS
         </div>
       </div>
 

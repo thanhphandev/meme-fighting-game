@@ -73,7 +73,7 @@ class SoundManagerClass {
                         resolve();
                     }, { once: true });
                     audio.addEventListener('error', () => {
-                        console.warn(`Failed to load sound: ${key}`);
+                        if (import.meta.env.DEV) console.warn(`Failed to load sound: ${key}`);
                         resolve(); // Don't block on sound load failure
                     }, { once: true });
                 } else {
@@ -94,7 +94,7 @@ class SoundManagerClass {
 
         const path = this.soundPaths[key];
         if (!path) {
-            console.warn(`Sound not found: ${key}`);
+            if (import.meta.env.DEV) console.warn(`Sound not found: ${key}`);
             return;
         }
 

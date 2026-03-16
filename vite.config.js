@@ -22,6 +22,7 @@ export default defineConfig({
     target: 'esnext',
     minify: 'esbuild',
     sourcemap: false,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -51,7 +52,6 @@ export default defineConfig({
     // Optimize asset handling
     assetsInlineLimit: 4096, // 4kb
     cssCodeSplit: true,
-    reportCompressedSize: false,
   },
   server: {
     port: 5173,

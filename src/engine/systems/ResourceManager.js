@@ -18,9 +18,9 @@ export class ResourceManager {
                     this.images[asset.id] = img;
                     resolve(img);
                 };
-                img.onerror = (e) => {
-                    console.error(`Failed to load asset: ${asset.src}`, e);
-                    reject(e);
+                img.onerror = () => {
+                    console.warn(`Failed to load asset: ${asset.src}`);
+                    resolve(null); // Don't reject — let game continue without the image
                 };
             });
         });

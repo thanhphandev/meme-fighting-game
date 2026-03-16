@@ -71,6 +71,7 @@ export class Fighter {
         this.skillActiveTimer = 0;
         this.isInvincible = false;
         this.scale = 1;
+        this.lastTickTime = 0;
 
         this.hitStunTimer = 0;
         this.invulnTimer = 0; // i-frames after being hit
@@ -375,8 +376,6 @@ export class Fighter {
             // Tick damage logic
             // Only damage every 'interval' frames
             const now = Date.now();
-            if (!this.lastTickTime) this.lastTickTime = 0;
-
             if (now - this.lastTickTime > (config.interval * 16 || 200)) {
                 const range = config.range || 200;
                 const dist = Math.abs((this.x + this.width / 2) - (opponent.x + opponent.width / 2));
