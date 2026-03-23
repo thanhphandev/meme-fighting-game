@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Gamepad2, Users, Zap, ChevronRight } from 'lucide-react'
+import { Gamepad2, Users, Zap, ChevronRight, Github } from 'lucide-react'
 import { useEffect } from 'react'
 import { SoundManager } from '../engine/systems/SoundManager'
 import SoundControl from './SoundControl'
@@ -37,6 +37,19 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
             {/* Animated Background */}
             <div className="bg-pattern" />
             <div className="bg-grid" />
+
+            {/* GitHub Link Action */}
+            <div className="absolute top-4 right-4 md:top-6 md:right-6 z-50">
+                <a 
+                    href="https://github.com/thanhphandev/meme-fighting-game" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl glass-card border border-white/20 hover:border-cyan-500/50 hover:bg-cyan-500/10 text-white transition-all group shadow-lg"
+                >
+                    <Github className="w-5 h-5 group-hover:scale-110 group-hover:text-cyan-400 transition-all border-none" />
+                    <span className="text-game text-sm hidden sm:block group-hover:text-cyan-400 transition-colors mt-0.5">GITHUB</span>
+                </a>
+            </div>
 
             {/* Floating Particles */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -238,10 +251,10 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
                 >
-                    <div className="flex items-center gap-2 text-white/20 text-xs">
-                        <Zap className="w-3 h-3" />
-                        <span className="text-display tracking-wider">Phan Văn Thành</span>
-                        <Zap className="w-3 h-3" />
+                    <div className="flex items-center gap-2 text-white/20 text-[10px] uppercase font-bold tracking-[0.2em] opacity-80 mt-2">
+                        <Zap className="w-3 h-3 text-cyan-500/50" />
+                        <span className="text-display">Meme Fighting Game • by Phan Văn Thành</span>
+                        <Zap className="w-3 h-3 text-pink-500/50" />
                     </div>
                 </motion.div>
             </div>

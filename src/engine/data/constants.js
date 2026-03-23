@@ -330,4 +330,8 @@ export const BACKGROUNDS = [
     { id: 'wasteland', asset: 'backgrounds/wasteland_bg.png', name: 'Thành Phố Đổ Nát' },
     { id: 'ice', asset: 'backgrounds/ice_cave_bg.png', name: 'Hang Động Băng Giá' },
     { id: 'magic', asset: 'backgrounds/magic_forest_bg.png', name: 'Khu Rừng Ma Thuật' },
+    { id: 'crystal_cave', asset: 'backgrounds/crystal_cave_bg.png', name: 'Hang Động Pha Lê' },
+    { id: 'dragon_peak', asset: 'backgrounds/dragon_peak_bg.png', name: 'Đỉnh Núi Rồng Thiêng' },
+    { id: 'steampunk_city', asset: 'backgrounds/steampunk_city_bg.png', name: 'Thành Phố Khói Bụi' },
+    { id: 'shrine_night', asset: 'backgrounds/shrine_night_bg.png', name: 'Đền Thờ Yêu Quái' },
 ];

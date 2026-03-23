@@ -4,6 +4,7 @@ import Menu from './components/Menu'
 import { BACKGROUNDS, CHARACTERS } from './engine/data/constants'
 import { SoundManager } from './engine/systems/SoundManager'
 import { Trophy, Skull, RotateCcw, Users, Home, Zap } from 'lucide-react'
+import MobileWarning from './components/MobileWarning'
 import './index.css'
 
 // Lazy load heavy components for code splitting
@@ -106,6 +107,7 @@ function App() {
 
   return (
     <div className="w-screen h-screen bg-[#0a0a0f] flex flex-col items-center justify-center overflow-hidden">
+      <MobileWarning />
       <AnimatePresence mode="wait">
         {screen === 'menu' && (
           <motion.div
