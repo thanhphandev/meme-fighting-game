@@ -1,7 +1,9 @@
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { CHARACTERS } from '../engine/data/constants'
+import { CHARACTERS, loadCustomCharacters } from '../engine/data/constants'
 import { SoundManager } from '../engine/systems/SoundManager'
-import { Swords, Wind, Zap, Flame, Shield } from 'lucide-react'
+import { Swords, Wind, Zap, Flame, Shield, PlusCircle } from 'lucide-react'
+import CharacterCreator from './CharacterCreator'
 
 // Skill type icons mapping
 const skillIcons = {
@@ -12,6 +14,15 @@ const skillIcons = {
 }
 
 export default function SelectionScreen({ onSelect, title = "SELECT YOUR MEME" }) {
+    const [showCreator, setShowCreator] = useState(false);
+    const [triggerReload, setTriggerReload] = useState(0);
+
+    useEffect(() => {
+        // Load custom characters from IndexedDB when component mounts
+        loadCustomCharacters().then(() => {
+            setTriggerReload(prev => prev + 1);
+        });
+    }, []);
 
     const handleSelect = (charId) => {
         SoundManager.playSfx('sfx_select')
@@ -42,6 +53,23 @@ export default function SelectionScreen({ onSelect, title = "SELECT YOUR MEME" }
 
             {/* Characters Grid */}
             <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 w-full max-h-[70vh] overflow-y-auto p-2 custom-scrollbar">
+                
+                {/* Add Custom Character Button */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    onClick={() => {
+                        SoundManager.playSfx('sfx_select');
+                        setShowCreator(true);
+                    }}
+                    className="group relative glass-card cursor-pointer overflow-hidden flex flex-col items-center justify-center border-2 border-dashed border-cyan-500/50 hover:border-cyan-400 bg-black/40 hover:bg-cyan-900/20 transition-all min-h-[160px] md:min-h-[220px]"
+                >
+                    <PlusCircle className="w-12 h-12 text-cyan-500 group-hover:text-cyan-400 mb-2 transition-transform group-hover:scale-110" />
+                    <span className="text-game text-xs md:text-sm text-cyan-400 group-hover:text-white transition-colors">ADD CUSTOM</span>
+                </motion.div>
+
                 {CHARACTERS.map((char, index) => {
                     const SkillIcon = skillIcons[char.skill.type] || Zap
 
@@ -62,7 +90,7 @@ export default function SelectionScreen({ onSelect, title = "SELECT YOUR MEME" }
                             <div className="relative aspect-square overflow-hidden">
                                 <motion.div
                                     style={{
-                                        backgroundImage: `url(/assets/${char.asset})`,
+                                        backgroundImage: `url(${char.asset.startsWith('http') || char.asset.startsWith('data:') ? char.asset : '/assets/' + char.asset})`,
                                         backgroundSize: `600% ${(char.rowCount || 8) * 100}%`,
                                         backgroundPosition: `0% ${char.rows.idle * (100 / ((char.rowCount || 8) - 1))}%`,
                                         width: '100%',
@@ -126,6 +154,14 @@ export default function SelectionScreen({ onSelect, title = "SELECT YOUR MEME" }
             >
                 💡 Click vào nhân vật để chọn • Mỗi nhân vật có skill đặc biệt riêng!
             </motion.p>
+
+            {/* Character Creator Modal */}
+            {showCreator && (
+                <CharacterCreator 
+                    onClose={() => setShowCreator(false)} 
+                    onCharacterAdded={() => setTriggerReload(prev => prev + 1)} 
+                />
+            )}
         </div>
     )
 }

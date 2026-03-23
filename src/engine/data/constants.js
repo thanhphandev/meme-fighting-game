@@ -26,7 +26,7 @@ export const CONFIG = {
     skillCooldown: 5000,
 };
 
-export const CHARACTERS = [
+export let CHARACTERS = [
     {
         id: 'buff_doge',
         name: 'Muscular Doge',
@@ -225,23 +225,6 @@ export const CHARACTERS = [
         }
     },
     {
-        id: 'tieu_yeu_ech',
-        name: 'Tiểu Yêu Ếch',
-        asset: 'characters/tieu_yeu_ech/spritesheet.png',
-        description: 'Ếch ộp tuần núi.',
-        stats: { speed: 10, jump: 20, damage: 12 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, win: 8, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 5, hit: 3, ko: 1, win: 4, roll: 6 },
-        skill: {
-            name: 'LƯỠI KÍCH',
-            type: 'projectile',
-            data: {
-                speedX: 20, speedY: 0, damage: 15, width: 40, height: 15,
-                color: '#0f0', shape: 'rect', life: 40, knockback: 15, effect: 'slime_shot'
-            }
-        }
-    },
-    {
         id: 'crocodile',
         name: 'Cá Sấu',
         asset: 'characters/crocodile/spritesheet.png',
@@ -267,65 +250,6 @@ export const CHARACTERS = [
             name: 'TORNADO SPADE',
             type: 'aoe',
             data: { speed: 20, damage: 20, range: 150, invuln: false, effect: 'impact' }
-        }
-    },
-    {
-        id: 'tieu_yeu_vuon',
-        name: 'Tiểu Yêu Vượn',
-        asset: 'characters/tieu_yeu_vuon/spritesheet.png',
-        description: 'Sức mạnh hoang dã.',
-        stats: { speed: 7, jump: 14, damage: 20 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, roll: 6 },
-        skill: {
-            name: 'PRIMAL SCREAM',
-            type: 'aoe',
-            data: { range: 250, damage: 10, stun: 100, interval: 20, duration: 40, visual: 'shockwave', effect: 'shockwave' }
-        }
-    },
-    {
-        id: 'horse',
-        name: 'Chiến Mã',
-        asset: 'characters/horse/spritesheet.png',
-        description: 'Chạy nhanh như gió.',
-        stats: { speed: 13, jump: 18, damage: 16 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, roll: 6 },
-        skill: {
-            name: 'HORSE KICK',
-            type: 'dash',
-            data: { speed: 30, damage: 25, range: 120, invuln: true, effect: 'impact' }
-        }
-    },
-    {
-        id: 'shark',
-        name: 'Cá Mập',
-        asset: 'characters/shark/spritesheet.png',
-        description: 'Hung thần đại dương.',
-        stats: { speed: 10, jump: 15, damage: 22 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, roll: 6 },
-        skill: {
-            name: 'JAWS SNAP',
-            type: 'projectile',
-            data: {
-                speedX: 15, speedY: 0, damage: 30, width: 60, height: 40,
-                color: '#00f', shape: 'rect', life: 50, knockback: 20, effect: 'water_spin'
-            }
-        }
-    },
-    {
-        id: 'bull',
-        name: 'Bò Tót',
-        asset: 'characters/bull/spritesheet.png',
-        description: 'Cục súc vô cực.',
-        stats: { speed: 8, jump: 12, damage: 24 },
-        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7, roll: 1 },
-        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 4, skill: 4, hit: 3, ko: 1, roll: 6 },
-        skill: {
-            name: 'RAGING BULL',
-            type: 'dash',
-            data: { speed: 25, damage: 30, range: 150, invuln: true, effect: 'impact' }
         }
     },
     {
@@ -359,19 +283,51 @@ export const CHARACTERS = [
             data: { speed: 20, damage: 20, range: 150, invuln: false, effect: 'impact' }
         }
     },
+    {
+        id: 'blackbeard',
+        name: 'Râu Đen',
+        asset: 'characters/blackbeard/spritesheet.png',
+        description: 'Tứ Hoàng với sức mạnh Hố Đen vô tận.',
+        stats: { speed: 6, jump: 10, damage: 32 },
+        rows: { idle: 0, run: 1, jump: 2, fall: 3, attack: 4, skill: 5, hit: 6, ko: 7 },
+        frameCounts: { idle: 4, run: 6, jump: 4, fall: 4, attack: 6, skill: 6, hit: 3, ko: 1 },
+        skill: {
+            name: 'YAMI YAMI NO MI',
+            type: 'aoe',
+            data: { range: 200, damage: 25, stun: 80, interval: 30, duration: 60, visual: 'shadow_vortex', effect: 'shadow_vortex' }
+        }
+    },
 ];
+
+import { CustomCharacterManager } from './CustomCharacterManager';
+
+// Wait for React to call this if needed or call it automatically on load
+export const loadCustomCharacters = async () => {
+    const customChars = await CustomCharacterManager.getAll();
+    if (customChars && customChars.length > 0) {
+        // Remove existing custom characters so we don't duplicate on hot-reload
+        CHARACTERS = CHARACTERS.filter(c => !c.isCustom);
+        CHARACTERS.push(...customChars);
+    }
+};
 
 export const BACKGROUNDS = [
     { id: 'swamp', asset: 'backgrounds/swamp_jungle_bg.png', name: 'Đầm Lầy Ma Quái' },
     { id: 'beach', asset: 'backgrounds/sunny_beach_bg.png', name: 'Bãi Biển Thiên Đường' },
     { id: 'arena', asset: 'backgrounds/grand_arena_bg.png', name: 'Đấu Trường La Mã' },
     { id: 'meadow', asset: 'backgrounds/meadow_bg.png', name: 'Đồng Cỏ Xanh' },
-];
-
-export const MEME_WORDS = [
-    "WOW!", "BONK!", "MUCH HURT", "SO BATTLE", "BRUH",
-    "EZ", "OOF", "NOPE", "FEELS GOOD MAN", "COPE",
-    "SEETHE", "ABSOLUTE UNIT", "REEEEEE", "BASED",
-    "CRINGE", "BRUH MOMENT", "THIS IS FINE", "FEARLESS",
-    "GIGACHAD VIBES", "SKILL ISSUE"
+    { id: 'classic', asset: 'backgrounds/background.png', name: 'Chiến Trường Hoàng Hôn' },
+    { id: 'cyberpunk', asset: 'backgrounds/cyberpunk_bg.png', name: 'Thành Phố Cyberpunk' },
+    { id: 'zen', asset: 'backgrounds/zen_garden_bg.png', name: 'Vườn Thiền Sakura' },
+    { id: 'volcano', asset: 'backgrounds/volcano_bg.png', name: 'Miệng Núi Lửa' },
+    { id: 'graveyard', asset: 'backgrounds/graveyard_bg.png', name: 'Nghĩa Trang Bí Ẩn' },
+    { id: 'alien', asset: 'backgrounds/alien_planet_bg.png', name: 'Hành Tinh Pha Lê' },
+    { id: 'dojo', asset: 'backgrounds/dojo_bg.png', name: 'Võ Đường Tuyết Sơn' },
+    { id: 'ship', asset: 'backgrounds/pirate_ship_bg.png', name: 'Tàu Cướp Biển' },
+    { id: 'lab', asset: 'backgrounds/secret_lab_bg.png', name: 'Phòng Thí Nghiệm Ngầm' },
+    { id: 'cloud', asset: 'backgrounds/cloud_palace_bg.png', name: 'Thiên Cung Cảnh Giới' },
+    { id: 'neon', asset: 'backgrounds/neon_alley_bg.png', name: 'Hẻm Tối Neon' },
+    { id: 'wasteland', asset: 'backgrounds/wasteland_bg.png', name: 'Thành Phố Đổ Nát' },
+    { id: 'ice', asset: 'backgrounds/ice_cave_bg.png', name: 'Hang Động Băng Giá' },
+    { id: 'magic', asset: 'backgrounds/magic_forest_bg.png', name: 'Khu Rừng Ma Thuật' },
 ];

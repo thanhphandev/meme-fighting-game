@@ -20,7 +20,7 @@ export { ResourceManager, resources } from './systems/ResourceManager';
 
 // Data
 export { getDialogue, DIALOGUE_EVENTS, CHARACTER_DIALOGUES } from './data/CharacterDialogues';
-export { CONFIG, CHARACTERS, BACKGROUNDS, MEME_WORDS } from './data/constants';
+export { CONFIG, CHARACTERS, BACKGROUNDS } from './data/constants';
 
 // Skills
 export * from './skills';

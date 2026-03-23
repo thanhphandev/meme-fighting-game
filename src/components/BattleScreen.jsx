@@ -47,14 +47,17 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
   const bgData = BACKGROUNDS.find(b => b.id === background?.id) || background;
 
   return (
-    <div
-      className="relative w-full h-full bg-black overflow-hidden"
-      style={{
-        backgroundImage: bgData?.asset ? `url(/assets/${bgData.asset})` : undefined,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
-    >
+    <div className="relative w-full h-full bg-black overflow-hidden">
+      {/* Background Layer */}
+      <div 
+        className={`absolute inset-0 transition-all duration-1000 ${koFreeze ? 'grayscale brightness-50 contrast-150' : ''}`}
+        style={{
+          backgroundImage: bgData?.asset ? `url(/assets/${bgData.asset})` : undefined,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      />
+
       {/* Overlays */}
       <div className="scanlines" />
       <div className={`vignette ${lowHealthWarning.p1 ? 'vignette-danger' : ''}`} />

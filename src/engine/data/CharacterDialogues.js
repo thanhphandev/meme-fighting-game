@@ -702,183 +702,6 @@ export const CHARACTER_DIALOGUES = {
             "Lại đây con!",
         ],
     },
-
-    // Little Ape Demon
-    tieu_yeu_vuon: {
-        intro: [
-            "Uga Uga! 🦍",
-            "Rừng xanh vẫy gọi!",
-            "Đấm phát chết luôn!",
-        ],
-        attack: [
-            "Bụp! 👊",
-            "Uga!",
-            "Đấm!",
-        ],
-        skill: [
-            "PRIMAL ROAR! 🗣️🔊",
-            "Hét banh xác!",
-            "Điếc tai chưa!",
-        ],
-        hit: [
-            "Đau đấy... 🦍",
-            "Grừ...",
-            "Thù này phải trả!",
-        ],
-        block: [
-            "Tay to đỡ hết! 🛡️",
-            "Cứng!",
-            "Muỗi!",
-        ],
-        win: [
-            "Vỗ ngực! Bụp bụp! 🦍🏆",
-            "Vua rừng xanh!",
-            "Yếu đuối quá!",
-        ],
-        lose: [
-            "Hoa mắt... 😵",
-            "Cần chuối...",
-            "Ngất...",
-        ],
-        taunt: [
-            "Sợ chưa con? 🦍",
-            "Nhìn cái cơ bắp này!",
-            "Uga buga!",
-        ],
-    },
-
-    // Horse
-    horse: {
-        intro: [
-            "Híiiii! 🐴",
-            "Đua không bạn ơi?",
-            "Tốc độ ánh sáng!",
-        ],
-        attack: [
-            "Đá hậu! 🦶",
-            "Hí!",
-            "Cẩn thận móng ngựa!",
-        ],
-        skill: [
-            "NON STOP! 🐎💨",
-            "Cú đá ngàn cân!",
-            "Chạy đâu cho thoát!",
-        ],
-        hit: [
-            "Hí... đau!",
-            "Gãy chân rồi...",
-            "Được lắm!",
-        ],
-        block: [
-            "Móng sắt! 🛡️",
-            "Keng!",
-            "Không thủng!",
-        ],
-        win: [
-            "Về đích nhất! 🏁🏆",
-            "Quá chậm!",
-            "Dust in my face!",
-        ],
-        lose: [
-            " què rồi... 🏥",
-            "Mệt quá...",
-            "Không chạy nổi nữa...",
-        ],
-        taunt: [
-            "Chậm như rùa! 🐢",
-            "Hí hí hí! 😂",
-            "Đuổi theo đi!",
-        ],
-    },
-
-    // Shark
-    shark: {
-        intro: [
-            "Ngửi thấy mùi máu... 🦈",
-            "Shark Tank time!",
-            "Đến giờ ăn rồi!",
-        ],
-        attack: [
-            "Cạp! 🦷",
-            "Xé xác!",
-            "Chomp!",
-        ],
-        skill: [
-            "JAWS ATTACK! 🦈🩸",
-            "Hàm cá mập!",
-            "Thủy quái tấn công!",
-        ],
-        hit: [
-            "Rụng răng rồi...",
-            "Da nhám mà vẫn đau!",
-            "Máu...",
-        ],
-        block: [
-            "Cứng như đá! 🛡️",
-            "Baby shark doo doo!",
-            "Chặn!",
-        ],
-        win: [
-            "Bữa ăn ngon miệng! 🍖",
-            "Ông trùm đại dương!",
-            "No nê!",
-        ],
-        lose: [
-            "Thành súp vi cá... 🍲",
-            "Phơi bụng...",
-            "Bơi ngửa...",
-        ],
-        taunt: [
-            "Sợ nước không? 🌊",
-            "Lại đây mà bơi!",
-            "Răng tao sắc lắm!",
-        ],
-    },
-
-    // Bull
-    bull: {
-        intro: [
-            "Màu đỏ đâu? 🐂",
-            "Húc bay tất cả!",
-            "Sôi máu rồi!",
-        ],
-        attack: [
-            "Húc! 🐂",
-            "Móc sừng!",
-            "Tránh ra!",
-        ],
-        skill: [
-            "RAGING BULL! 😤🔥",
-            "Càn quét!",
-            "Đừng cản đường tao!",
-        ],
-        hit: [
-            "Moo... đau!",
-            "Dày da mà vẫn thốn!",
-            "Cáu rồi nha!",
-        ],
-        block: [
-            "Sừng cản phá! 🛡️",
-            "Cứng!",
-            "Vô ích!",
-        ],
-        win: [
-            "Bò tót vô địch! 🐂🏆",
-            "Ai cản được tao?",
-            "Mạnh nhất!",
-        ],
-        lose: [
-            "Thành bít tết... 🥩",
-            "Chóng mặt quá...",
-            "Gãy sừng...",
-        ],
-        taunt: [
-            "Mày là vải đỏ à? 🟥",
-            "Yếu nhớt!",
-            "Moo moo!",
-        ],
-    },
-
     // Seadog
     seadog: {
         intro: [
@@ -964,6 +787,50 @@ export const CHARACTER_DIALOGUES = {
             "Làm yêu quái mà không có ước mơ thì làm heo quay cho rồi!",
             "Nhìn cái nồi của ta đi, nó sắp nấu ngươi đó! 🍲",
             "Ngươi có thấy Tề Thiên Đại Thánh không? cho ta xin chữ ký với"
+        ],
+    },
+
+    // Blackbeard (Râu Đen)
+    blackbeard: {
+        intro: [
+            "Zehahaha! Sự thống trị của Bóng Tối bắt đầu! 🌌",
+            "Thời đại của Râu Trắng đã kết thúc rồi!",
+            "Giấc mơ của con người... KHÔNG BAO GIỜ KẾT THÚC! 🏴‍☠️",
+        ],
+        attack: [
+            "Chết đi! 👊",
+            "Đập nát!",
+            "Zehahaha!",
+        ],
+        skill: [
+            "YAMI YAMI NO MI! Khắc tinh của vạn vật! 🌌",
+            "Bóng tối nuốt chửng tất cả!",
+            "Hố Đen Tử Thần!",
+        ],
+        hit: [
+            "Á á á! Đau đau đau! 😭",
+            "Khốn kiếp... đau chết mất!",
+            "Nhờn với tao à!",
+        ],
+        block: [
+            "Bóng tối hấp thu mọi thứ! 🛡️",
+            "Vô dụng thôi!",
+            "Lực hấp dẫn tuyệt đối!",
+        ],
+        win: [
+            "Zehahaha! Ta mới là Vua Hải Tặc! 👑",
+            "Tất cả hãy quỳ gối dưới sức mạnh của Hố Đen!",
+            "Chỉ là kẻ yếu ớt hạ đẳng!",
+        ],
+        lose: [
+            "Không thể nào... Tham vọng của ta...",
+            "Zeh...aha...ha... Râu Trắng...",
+            "Đau quá... ta không muốn chết...",
+        ],
+        taunt: [
+            "Chỉ được thế thôi sao? Zehahaha! 🌌",
+            "Sợ hãi bóng tối đi!",
+            "Đừng hòng chạy thoát khỏi sức hút của ta!",
         ],
     },
 };

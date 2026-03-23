@@ -137,7 +137,7 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
                             </div>
                             <div className="flex-1 text-left">
                                 <h3 className="text-game text-xl md:text-2xl text-white group-hover:text-cyan-400 transition-colors">
-                                    VS CPU
+                                    VS AI
                                 </h3>
                                 <p className="text-display text-sm text-white/50">
                                     Đối đầu với AI
@@ -184,7 +184,7 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
                     transition={{ delay: 0.5 }}
                 >
                     <span className="text-display text-sm text-white/40 uppercase tracking-widest">
-                        Độ khó CPU
+                        Độ khó AI
                     </span>
                     <div className="flex gap-2 p-1 bg-black/30 rounded-xl backdrop-blur-sm">
                         {[
@@ -198,8 +198,8 @@ export default function Menu({ onStart, difficulty = 'medium', onSelectDifficult
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className={`relative px-5 md:px-6 py-2.5 md:py-3 rounded-lg text-game text-sm md:text-base font-bold transition-all duration-300 ${difficulty === diff.key
-                                        ? `bg-gradient-to-r ${diff.color} text-black shadow-lg`
-                                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                                    ? `bg-gradient-to-r ${diff.color} text-black shadow-lg`
+                                    : 'text-white/60 hover:text-white hover:bg-white/5'
                                     }`}
                             >
                                 <span className="mr-1.5">{diff.icon}</span>

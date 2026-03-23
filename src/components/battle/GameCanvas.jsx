@@ -11,9 +11,7 @@ const GameCanvas = memo(forwardRef(function GameCanvas({ koFreeze }, ref) {
       ref={ref}
       width={CONFIG.canvasWidth}
       height={CONFIG.canvasHeight}
-      className={`block w-full h-full object-cover transition-all duration-1000 ${
-        koFreeze ? 'grayscale brightness-50 contrast-150' : ''
-      }`}
+      className="relative z-10 block w-full h-full object-cover transition-all duration-1000"
     />
   );
 }));
