@@ -3,9 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "pnpm@9.15.4", 
   "engines": {
-  "node": ">=20.0.0"
+    "node": "20.x"
   },
   "description": "Browser-based 2D fighting game featuring meme characters with canvas rendering",
   "author": "Your Name",
