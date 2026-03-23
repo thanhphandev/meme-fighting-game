@@ -61,7 +61,7 @@ Built with a custom Canvas-based game engine on top of React, targeting a locked
 - **Styling**: Tailwind CSS 4, Framer Motion
 - **State**: React Context + `useReducer`
 - **Audio**: Web Audio API via custom `SoundManager`
-- **Tooling**: ESLint 9, Vitest, pnpm
+- **Tooling**: ESLint 9, Vitest, npm
 
 ---
 
@@ -70,7 +70,7 @@ Built with a custom Canvas-based game engine on top of React, targeting a locked
 ### Prerequisites
 
 - Node.js >= 18
-- pnpm >= 8 (`npm install -g pnpm`)
+- npm >= 8 (`npm install -g npm`)
 
 ### Installation
 
@@ -80,10 +80,10 @@ git clone https://github.com/thanhphandev/meme-fighting-game.git
 cd meme-fighting-game
 
 # 2. Install dependencies
-pnpm install
+npm install
 
 # 3. Start the development server
-pnpm dev
+npm dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
@@ -91,12 +91,12 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 ### Other Commands
 
 ```bash
-pnpm build       # Production build → dist/
-pnpm preview     # Preview production build locally
-pnpm lint        # Run ESLint
-pnpm lint:fix    # Auto-fix lint errors
-pnpm test        # Run tests (Vitest)
-pnpm coverage    # Generate test coverage report
+npm build       # Production build → dist/
+npm preview     # Preview production build locally
+npm lint        # Run ESLint
+npm lint:fix    # Auto-fix lint errors
+npm test        # Run tests (Vitest)
+npm coverage    # Generate test coverage report
 ```
 
 ---
@@ -266,7 +266,7 @@ Contributions are welcome! Here's how to get started:
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feat/your-feature`
-3. Make your changes and ensure lint passes: `pnpm lint`
+3. Make your changes and ensure lint passes: `npm lint`
 4. Commit using conventional commits: `git commit -m "feat: add new character"`
 5. Push and open a Pull Request
 

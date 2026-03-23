@@ -8,6 +8,7 @@ import './index.css'
 
 // Lazy load heavy components for code splitting
 const SelectionScreen = lazy(() => import('./components/SelectionScreen'))
+const BackgroundSelection = lazy(() => import('./components/BackgroundSelection'))
 const BattleScreen = lazy(() => import('./components/BattleScreen'))
 
 // Vietnamese GenZ victory/defeat messages
@@ -60,13 +61,18 @@ function App() {
       } else {
         setSelectionPhase('p2')
       }
-    } else {
+    } else if (selectionPhase === 'p2') {
       setCpuChar(char)
-      const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)]
-      setBackground(randomBg)
-      setScreen('battle')
+      setSelectionPhase('bg') // Go to background selection next in PVP
+      setScreen('bg_selection')
     }
   }, [selectionPhase, gameMode])
+
+  const selectBackground = useCallback((bg) => {
+    SoundManager.playSfx('sfx_confirm')
+    setBackground(bg)
+    setScreen('battle')
+  }, [])
 
   const onGameOver = useCallback((winStatus) => {
     setWinner(winStatus)
@@ -136,6 +142,29 @@ function App() {
               <SelectionScreen
                 onSelect={selectCharacter}
                 title={selectionPhase === 'p1' ? "PLAYER 1 — CHỌN ĐI!" : "PLAYER 2 — TỚI LƯỢT!"}
+              />
+            </Suspense>
+          </motion.div>
+        )}
+
+        {screen === 'bg_selection' && (
+          <motion.div
+            key="bg_selection"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+            className="w-full h-full flex items-center justify-center"
+          >
+            <Suspense fallback={
+              <div className="flex flex-col items-center justify-center text-white">
+                <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                <p className="mt-4 text-game">Loading...</p>
+              </div>
+            }>
+              <BackgroundSelection
+                onSelect={selectBackground}
+                title="CHỌN BỐI CẢNH"
               />
             </Suspense>
           </motion.div>

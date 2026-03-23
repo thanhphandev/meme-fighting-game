@@ -37,11 +37,11 @@ const ControlsDisplay = memo(function ControlsDisplay({ gameMode }) {
         <div className="space-x-1 md:space-x-2">
           <span>WASD</span>
           <span className="hidden md:inline text-white/30">|</span>
-          <span>J (Hit)</span>
+          <span>{gameMode === 'pvp' ? 'V (Hit)' : 'J (Hit)'}</span>
           <span className="hidden md:inline text-white/30">|</span>
-          <span>K (Dash)</span>
+          <span>{gameMode === 'pvp' ? 'B (Dash)' : 'K (Dash)'}</span>
           <span className="hidden md:inline text-white/30">|</span>
-          <span>L (Skill)</span>
+          <span>{gameMode === 'pvp' ? 'N (Skill)' : 'L (Skill)'}</span>
         </div>
       </div>
 
@@ -52,11 +52,11 @@ const ControlsDisplay = memo(function ControlsDisplay({ gameMode }) {
           <div className="space-x-1 md:space-x-2">
             <span>ARROWS</span>
             <span className="hidden md:inline text-white/30">|</span>
-            <span>Num 1 / .</span>
+            <span>Num1/J</span>
             <span className="hidden md:inline text-white/30">|</span>
-            <span>Num 2 / /</span>
+            <span>Num2/K</span>
             <span className="hidden md:inline text-white/30">|</span>
-            <span>Num 3 / ;</span>
+            <span>Num3/L</span>
           </div>
         </div>
       )}

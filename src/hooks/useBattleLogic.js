@@ -127,12 +127,14 @@ export function useBattleLogic({
     gameRefs.current.isMounted = true;
 
     // Input setup
-    const p1Keys = { left: ['a'], right: ['d'], up: ['w'], attack: ['j', ' '], roll: ['k'], skill: ['l', 'u'] };
-    let inputP1 = new InputHandler(p1Keys);
+    let inputP1;
     let inputP2 = null;
 
     if (gameMode === 'pvp') {
-      const p2Keys = { left: ['arrowleft'], right: ['arrowright'], up: ['arrowup'], attack: ['1', 'numpad1', '.'], roll: ['2', 'numpad2', '/'], skill: ['3', 'numpad3', ';'] };
+      // Separated keys for PVP to avoid crossing arms and allow 2 players on same keyboard
+      const p1Keys = { left: ['a'], right: ['d'], up: ['w'], attack: ['v'], roll: ['b'], skill: ['n'] };
+      const p2Keys = { left: ['arrowleft'], right: ['arrowright'], up: ['arrowup'], attack: ['numpad1', 'j'], roll: ['numpad2', 'k'], skill: ['numpad3', 'l'] };
+      inputP1 = new InputHandler(p1Keys);
       inputP2 = new InputHandler(p2Keys);
     } else {
       const mergedKeys = { left: ['a', 'arrowleft'], right: ['d', 'arrowright'], up: ['w', 'arrowup'], attack: ['j', ' ', 'enter'], roll: ['k', 'shift'], skill: ['l', 'u', 'e'] };
