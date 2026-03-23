@@ -75,7 +75,7 @@ const PlayerHUD = memo(function PlayerHUD({
             style={{ height: `${100 - cooldown}%` }}
           />
           <span className={`font-game text-lg ${cooldown === 0 ? `text-${accentColor}-400 animate-pulse` : 'text-white/40'}`}>
-            {isP1 ? 'E' : (gameMode === 'pvp' ? 'DEL' : 'AI')}
+            {isP1 ? 'N' : (gameMode === 'pvp' ? 'L' : 'AI')}
           </span>
         </div>
       </div>

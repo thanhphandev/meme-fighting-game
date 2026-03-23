@@ -148,7 +148,11 @@ export function useBattleLogic({
     // Event system
     const eventSystem = new GameEventSystem({
       onStateChange: setGameState,
-      onAnnouncement: (...args) => onAnnouncementRef.current(...args)
+      onAnnouncement: (...args) => {
+        if (onAnnouncementRef.current) {
+          onAnnouncementRef.current(...args);
+        }
+      }
     });
     gameRefs.current.eventSystem = eventSystem;
 

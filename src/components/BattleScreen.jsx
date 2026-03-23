@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { Pause, Maximize, Minimize } from 'lucide-react';
 import SoundControl from './SoundControl';
 import { useBattleLogic } from '../hooks/useBattleLogic';
-import { VSIntro, HUD, GameCanvas, PauseOverlay, AnnouncementOverlay, ControlsDisplay } from './battle';
+import { VSIntro, HUD, GameCanvas, PauseOverlay, ControlsDisplay } from './battle';
 import { BACKGROUNDS } from '../engine/data/constants';
 
 /**
@@ -12,7 +12,6 @@ import { BACKGROUNDS } from '../engine/data/constants';
 export default function BattleScreen({ playerChar, cpuChar, background, onGameOver, cpuDifficulty = 'medium', onQuit, gameMode = 'pve' }) {
   const [isPaused, setIsPaused] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [announcement, setAnnouncement] = useState(null);
 
   const {
     canvasRef,
@@ -28,11 +27,7 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
     onGameOver,
     cpuDifficulty,
     gameMode,
-    isPaused,
-    onAnnouncement: (ann) => {
-      setAnnouncement(ann);
-      setTimeout(() => setAnnouncement(null), ann.timer || 2000);
-    }
+    gameMode
   });
 
   // Track fullscreen changes
@@ -124,8 +119,6 @@ export default function BattleScreen({ playerChar, cpuChar, background, onGameOv
         </button>
       </div>
 
-      {/* Announcement Overlay */}
-      <AnnouncementOverlay announcement={announcement} />
     </div>
   );
 }
